@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>架构 on 闲散工程师笔记</title>
+    <link>https://open-native.com/categories/%E6%9E%B6%E6%9E%84/</link>
+    <description>Recent content in 架构 on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 12 Mar 2023 00:24:55 +0800</lastBuildDate><atom:link href="https://open-native.com/categories/%E6%9E%B6%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何理解微服务架构中的负载均衡和API网关?</title>
+      <link>https://open-native.com/article/slb/</link>
+      <pubDate>Sun, 12 Mar 2023 00:24:55 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/slb/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://open-native.obs.cn-north-4.myhuaweicloud.com/1*4YiKYTkjpRLAfIg23XxPpA.webp&#34; alt=&#34;image.png&#34;&gt;&lt;br&gt;
+API网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。&lt;br&gt;
+API网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>分布式系统中亚稳定失败状态</title>
+      <link>https://open-native.com/article/metastable-failure/</link>
+      <pubDate>Thu, 13 Jan 2022 14:50:17 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/metastable-failure/</guid>
+      <description>&lt;p&gt;这篇文章的初衷，是记录拜读由Nathan Bronson, Aleksey Charapko, Abutalib Aghayev, and Timothy Zhu共同发表的论文&lt;a href=&#34;https://sigops.org/s/conferences/hotos/2021/papers/hotos21-s11-bronson.pdf&#34;&gt;Metastable Failures in Distributed Systems&lt;/a&gt;的收获，这篇论文描述了一个在大规模分布式系统中很常见的失败场景：亚稳定失败（metastable failures），它们为什么通常在高负载分布式系统中发生，以及解决问题的思路框架：如何识别和从亚稳定失败中恢复，甚至如何避免发生亚稳定失败。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

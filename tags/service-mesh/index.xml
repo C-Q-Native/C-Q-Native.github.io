@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>service-mesh on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/service-mesh/</link>
+    <description>Recent content in service-mesh on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 08 Apr 2023 21:29:24 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/service-mesh/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ISTIO Mixer 组件架构详解</title>
+      <link>https://open-native.com/article/mixer-intro/</link>
+      <pubDate>Sat, 08 Apr 2023 21:29:24 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/mixer-intro/</guid>
+      <description>&lt;p&gt;Mixer是Istio另一个非常重要的组件，主要职责就是负责提供策略控制和遥测统计。&lt;/p&gt;
+&lt;h3 id=&#34;1-mixer整体架构详解&#34;&gt;1. Mixer整体架构详解&lt;/h3&gt;
+&lt;p&gt;Mixer整体架构：
+&lt;img src=&#34;https://open-native.obs.cn-north-4.myhuaweicloud.com/1383365-20200114204447477-84964089.png&#34; alt=&#34;Mixer架构图&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在服务间进行请求转发时，Envoy对Mixer发起Check、Report这两次请求，即在转发请求前请求Mixer执行访问策略的管理配额，并在请求转发后上报要遥测数据。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>ISTIO Pilot 组件架构详解</title>
+      <link>https://open-native.com/article/pilot-intro/</link>
+      <pubDate>Mon, 27 Mar 2023 21:29:24 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/pilot-intro/</guid>
+      <description>&lt;p&gt;Pilot是Istio控制平面的核心组件，是管理和配置Istio服务网格中所有Envoy代理实例的司令官。&lt;/p&gt;
+&lt;h3 id=&#34;pilot架构详解&#34;&gt;Pilot架构详解&lt;/h3&gt;
+&lt;p&gt;Pilot架构图：&lt;br&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/servicemesher/website/master/content/blog/lightweight-service-mesh-practice-in-ucloud/00704eQkgy1fsaijtidnzj30hs0edq67.jpg&#34; alt=&#34;Pilot架构图&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Istio 1.17 版本新特性介绍</title>
+      <link>https://open-native.com/article/istio-1.17/</link>
+      <pubDate>Thu, 23 Feb 2023 11:43:45 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/istio-1.17/</guid>
+      <description>&lt;p&gt;2月14日，Istio社区发布了1.17的发布通告。1.17版本添加了一些重要的新功能，并将一些现有的功能成熟度标记为Beta，表明它们已经准备好生产使用。以下是一些亮点：&lt;/p&gt;
+&lt;h3 id=&#34;金丝雀升级和修订标签升级为beta版本&#34;&gt;金丝雀升级和修订标签升级为Beta版本&lt;/h3&gt;
+&lt;p&gt;Istio 1.6在版本中引入了对使用修订版按照金丝雀模式升级服务网格的基本支持。使用这种方法，您可以并排运行多个控制平面，而不会影响现有的部署，并缓慢地将工作负载从旧的控制平面迁移到新的控制平面。在Istio 1.10中，引入修订标签作为金丝雀升级的改进，以帮助减少操作员使用修改时必须做的更改数量，并安全升级Istio控制平面。这是我们的用户在生产过程中被广泛采用和使用的一个特性。所有这些特性的集成测试和端到端测试都已完成，已经升级为Beta版本。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>关于 istio-proxy 503/504等5xx问题排查</title>
+      <link>https://open-native.com/article/istio-proxy-503/</link>
+      <pubDate>Sun, 02 Oct 2022 23:05:46 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/istio-proxy-503/</guid>
+      <description>&lt;h4 id=&#34;问题描述&#34;&gt;问题描述&lt;/h4&gt;
+&lt;p&gt;在生产环境，我们最近部署了Istio Service Mesh，Istio控制平面会在每个服务Pod里自动注入一个sidecar。当各个服务都初始化istio-proxy，通过sidecar去实现服务间的调用时，应用和服务就会面临一个很普遍的问题：upstream 服务调用收到HTTP 503/504 response，这个报错信息通常都是由istio-proxy产生的。HTTP 503通常发生在应用和istio-proxy的inbound或者outbound调用，或者是服务网格外部的服务调用。影响面相对严重的是通过网格访问外部服务的outbound流量，相对小的是网格内部的inbound流量。HTTP 504的问题相对要少一些，只有在upstream service的接口response时间超过15秒时才会发生，因为istio-proxy的默认response超时时间就是15秒。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

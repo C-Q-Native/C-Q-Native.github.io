@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <script type="application/ld+json">
+
+{  
+  "@context":"http://schema.org",
+  "@type":"Website",
+  "@id":"https:\/\/open-native.com",
+  "author": {
+    "@type": "Person",
+    "name": "闲散工程师笔记",
+    
+    "image": "https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png"
+    
+  },
+  "name":"闲散工程师笔记",
+  "description":"\u003cp\u003eKubernetes从1.8版本起就声称单集群最多可支持5000个节点和15万个Pod，这个规模对于腰部以下团队来讲已经足够应对业务膨胀。但是总会出于混合云、可扩展性、降低网络延迟或者跨可用区故障隔离等各种各样因素考量去部署多集群。Kubernetes Cluster Federation 又名 KubeFed 或 Federation v2，Federation将使管理多个集群变得简单，打破各个集群边界，使之不再是一个个孤岛。\u003c\/p\u003e",
+  "url":"https:\/\/open-native.com\/article\/k8s-fed\/",
+  "keywords":"[cloud-native, kubernetes, kubernetes Federation]"
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="闲散工程师笔记">
+<meta name="keywords" content="cloud-native, kubernetes, kubernetes Federation">
+<meta name="description" content="Kubernetes从1.8版本起就声称单集群最多可支持5000个节点和15万个Pod，这个规模对于腰部以下团队来讲已经足够应对业务膨胀。但是总会出于混合云、可扩展性、降低网络延迟或者跨可用区故障隔离等各种各样因素考量去部署多集群。Kubernetes Cluster Federation 又名 KubeFed 或 Federation v2，Federation将使管理多个集群变得简单，打破各个集群边界，使之不再是一个个孤岛。">
+
+
+<meta property="og:description" content="Kubernetes从1.8版本起就声称单集群最多可支持5000个节点和15万个Pod，这个规模对于腰部以下团队来讲已经足够应对业务膨胀。但是总会出于混合云、可扩展性、降低网络延迟或者跨可用区故障隔离等各种各样因素考量去部署多集群。Kubernetes Cluster Federation 又名 KubeFed 或 Federation v2，Federation将使管理多个集群变得简单，打破各个集群边界，使之不再是一个个孤岛。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入学习kubernetes联邦">
+<meta name="twitter:title" content="深入学习kubernetes联邦">
+<meta property="og:url" content="https://open-native.com/article/k8s-fed/">
+<meta property="twitter:url" content="https://open-native.com/article/k8s-fed/">
+<meta property="og:site_name" content="闲散工程师笔记">
+<meta property="og:description" content="Kubernetes从1.8版本起就声称单集群最多可支持5000个节点和15万个Pod，这个规模对于腰部以下团队来讲已经足够应对业务膨胀。但是总会出于混合云、可扩展性、降低网络延迟或者跨可用区故障隔离等各种各样因素考量去部署多集群。Kubernetes Cluster Federation 又名 KubeFed 或 Federation v2，Federation将使管理多个集群变得简单，打破各个集群边界，使之不再是一个个孤岛。">
+<meta name="twitter:description" content="Kubernetes从1.8版本起就声称单集群最多可支持5000个节点和15万个Pod，这个规模对于腰部以下团队来讲已经足够应对业务膨胀。但是总会出于混合云、可扩展性、降低网络延迟或者跨可用区故障隔离等各种各样因素考量去部署多集群。Kubernetes Cluster Federation 又名 KubeFed 或 Federation v2，Federation将使管理多个集群变得简单，打破各个集群边界，使之不再是一个个孤岛。">
+<meta property="og:locale" content="zh-cn">
+
+  
+    <meta property="article:published_time" content="2023-02-08T23:14:58">
+  
+  
+    <meta property="article:modified_time" content="2023-02-08T23:14:58">
+  
+  
+  
+    
+      <meta property="article:section" content="kubernetes">
+    
+  
+  
+    
+      <meta property="article:tag" content="cloud-native">
+    
+      <meta property="article:tag" content="kubernetes">
+    
+      <meta property="article:tag" content="kubernetes Federation">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+  <meta property="twitter:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+
+
+
+
+
+
+    <title>深入学习kubernetes联邦</title>
+
+    <link rel="icon" href="https://open-native.com/images/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://open-native.com/article/k8s-fed/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="https://open-native.com/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://open-native.com/" aria-label="去首页">闲散工程师笔记</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://open-native.com/#about" aria-label="打开链接: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://open-native.com/#about" aria-label="阅读有关作者的更多信息">
+          <img class="sidebar-profile-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">闲散工程师笔记</h4>
+        
+          <h5 class="sidebar-profile-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/java" title="Java">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-info" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Java</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/RcXu" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/21171872/black-mr" target="_blank" rel="noopener" title="Stack Overflow">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/index.xml" title="RSS">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      深入学习kubernetes联邦
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2023-02-08T23:14:58&#43;08:00">
+        
+  二月 8, 2023
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/kubernetes">kubernetes</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <p>Kubernetes从1.8版本起就声称单集群最多可支持5000个节点和15万个Pod，这个规模对于腰部以下团队来讲已经足够应对业务膨胀。但是总会出于混合云、可扩展性、降低网络延迟或者跨可用区故障隔离等各种各样因素考量去部署多集群。Kubernetes Cluster Federation 又名 KubeFed 或 Federation v2，Federation将使管理多个集群变得简单，打破各个集群边界，使之不再是一个个孤岛。</p>
+<h2 id="为什么要kubernetes联邦">为什么要kubernetes联邦?</h2>
+<p>Federation的主要目标之一是能够定义API和API组（即 &ldquo;一种将<strong>规范的</strong> Kubernetes API 资源分配到不同集群的机制&rdquo;），其中包含联邦任何给定Kubernetes资源所需的基本原则。实现单一集群统一管理多个kubernetes集群的机制。这些集群可以是跨地域的，跨云厂商的或者是用户内部自建集群。Federated Service 的核心是包含一个 Template（Kubernetes服务的定义）、一个 Placement（部署到哪个集群）、一个 Override（在特定集群中的可选变化）和一个 ServiceDNSRecord（指定如何发现它的细节）。
+注意：联邦服务必须是 <strong>LoadBalancer</strong> 类型，以便它可以跨集群发现。</p>
+<p>Federation主要解决以下几个问题：</p>
+<ul>
+<li>跨集群同步资源：Federation 提供了在多个集群中保持资源同步的能力。例如，可以保证同一个 deployment 在多个集群中存在。</li>
+<li>跨集群服务发现：Federation提供了自动配置DNS服务以及在所有集群后端上进行负载均衡的能力。例如，可以提供一个全局 VIP 或者 DNS 记录，通过它可以访问多个集群后端。</li>
+<li>跨集群调度：保证服务的稳定性以及可用性。</li>
+</ul>
+<h2 id="集群联邦架构">集群联邦架构</h2>
+<p>集群联邦需要我们把资源从管理集群同步资源到联邦集群，传播（Propagation）是该项目引入的一个术语，它会将宿主集群中的资源分配到所有的联邦集群中。配置过程如下图所示：
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/federation-concepts.png" alt="image.png">
+上图中展示了配置集群联邦的过程：</p>
+<ul>
+<li>配置需要联邦的集群</li>
+<li>配置需要在集群中传播的 API 资源</li>
+<li>配置 API 资源如何分配到不同的集群</li>
+<li>对集群中 DNS 记录注册</li>
+</ul>
+<p>这个机制会需要引入以下三个概念：Template、Placement 和 Overrides：</p>
+<ul>
+<li>Template：定义了该资源的一些基本信息，以 Deployment 为例，可能包含部署的容器镜像、环境变量以及实例数等信息。</li>
+<li>Placement：决定该资源需要部署在哪些集群中。</li>
+<li>覆写原有 Template 中的资源，以满足当前集群的一些特定需求，例如实例数、拉镜像使用的秘钥等与集群有关的属性。</li>
+</ul>
+<p>在具体的实现上，kubefed 选择为集群中的所有资源生成对应的联邦资源，例如 Deployment 和对应的 FederatedDeployment。联邦资源中的 spec 字段存储了 Deployment 资源的模板，而 overrides 中定义了资源同步到不同集群时需要做的变更。</p>
+<pre tabindex="0"><code>kind: FederatedDeployment
+...
+spec:
+  ...
+  overrides:
+  # Apply overrides to cluster1
+    - clusterName: cluster1
+      clusterOverrides:
+        # Set the replicas field to 5
+        - path: &#34;/spec/replicas&#34;
+          value: 5
+        # Set the image of the first container
+        - path: &#34;/spec/template/spec/containers/0/image&#34;
+          value: &#34;nginx:1.17.0-alpine&#34;
+        # Ensure the annotation &#34;foo: bar&#34; exists
+        - path: &#34;/metadata/annotations&#34;
+          op: &#34;add&#34;
+          value:
+            foo: bar
+        # Ensure an annotation with key &#34;foo&#34; does not exist
+        - path: &#34;/metadata/annotations/foo&#34;
+          op: &#34;remove&#34;
+        # Adds an argument `-q` at index 0 of the args list
+        # this will obviously shift the existing arguments, if any
+        - path: &#34;/spec/template/spec/containers/0/args/0&#34;
+          op: &#34;add&#34;
+          value: &#34;-q&#34;
+</code></pre><h3 id="cluster-configuration">Cluster Configuration</h3>
+<p>通过 kubefedctl join/unjoin 来加入/删除集群，当成功加入时，会建立一个 KubeFedCluster 组件来储存集群相关信息，如 API Endpoint、CA Bundle 等。这些信息会被用在 KubeFed Controller 存取不同 Kubernetes 集群上，以确保能够建立 Kubernetes API 资源。如下所示：
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/sync-controller.png" alt="image">
+在 Federation 中有两种类型集群：</p>
+<ul>
+<li>Host : 用于提供 KubeFed API 与控制平面的集群。</li>
+<li>Member : 通过 KubeFed API 注册的集群，并提供相关身份凭证来让 KubeFed Controller 能够存取集群。Host 集群也可以作为 Member 被加入。</li>
+</ul>
+<h2 id="联邦服务与跨集群服务发现">联邦服务与跨集群服务发现</h2>
+<h3 id="pod-如何发现联邦服务">Pod 如何发现联邦服务</h3>
+<p>默认情况下，Kubernetes集群预先配置了集群本地DNS服务器，以及智能构建的DNS搜索路径，它们共同确保了由pod内部运行的软件发出的 myservice、myservice.mynamespace或 some-other-service.other-namespace 等 DNS 查询会自动扩展并正确解析到本地集群中运行的服务的相应 IP。</p>
+<p>随着联邦服务和跨集群服务发现的引入，这个概念被扩展到全局覆盖在你的集群联邦中所有集群中运行的Kubernetes服务。为了利用这个扩展的范围，我们需要使用一个稍微不同的DNS名称（例如myservice.mynamespace.myfederation）来解析联邦服务。使用不同的 DNS名称还可以避免现有的应用意外地穿越区域网络而会产生不必要的网络延迟。</p>
+<p>例如使用一个名为 nginx 的服务。</p>
+<p>在 us-central1-a 可用区的集群中的一个 pod 需要联系我们的 nginx 服务。它现在可以使用服务的联邦 DNS 名，即 nginx.mynamespace.myfederation ，而不是使用服务的传统集群本地 DNS 名（即 nginx.mynamespace 自动扩展为 nginx.mynamespace.svc.cluster.local）。这将被自动扩展并解析到离我的 nginx 服务最近的健康 shard。如果本地集群中存在一个健康的 shard，那么该服务的集群本地 IP 地址将被返回（通过集群本地 DNS）。这完全等同于非联邦服务解析。</p>
+<p>如果服务在本地集群中不存在（或者存在但没有健康的后端 pod），DNS 查询会自动扩展到 nginx.mynamespace.myfederation.svc.us-central1-a.example.com。在幕后，这可以找到离我们的可用区最近的一个 shard 的外部 IP。这个扩展是由集群本地 DNS 服务器自动执行的，它返回相关的 CNAME 记录。这就导致了对 DNS 记录的层次结构的遍历，并最终找到附近联邦服务的一个外部 IP。</p>
+<p>也可以通过明确指定适当的 DNS 名称，而不是依赖自动的DNS扩展，将目标锁定在 pod 本地以外的可用性区域和地区的服务 shard。例如，nginx.mynamespace.myfederation.svc.europe-west1.example.com 将解析到欧洲所有当前健康的服务 shard，即使发布查询的 pod 位于美国，也不管美国是否有健康的服务 shard，这对远程监控和其他类似的应用很有用。</p>
+<h3 id="从联邦集群之外的其他客户端发现联邦服务">从联邦集群之外的其他客户端发现联邦服务</h3>
+<p>对于外部客户端，目前还不能实现所述自动 DNS 扩展。外部客户需要指定联邦服务的一个完全限定的 DNS 名称，无论是区域、可用区还是全局名称。</p>
+<h3 id="type-configuration">Type Configuration</h3>
+<p>定义了哪些 Kubernetes API 资源要被用于联邦管理。比如说想将 ConfigMap 资源通过联邦机制建立在不同集群上时，就必须先在 Federation Host 集群中，通过 CRD 建立新资源 FederatedConfigMap，接着再建立名称为 configmaps 的 Type configuration（FederatedTypeConfig）资源，然后描述 ConfigMap 要被 FederatedConfigMap 所管理，这样 KubeFed Controllers 才能知道如何建立 Federated 资源。</p>
+<p>一个 Federated资源一般都会具备三个主要功能，这些信息能够在spec中由使用者自行定义，如下范例：</p>
+<pre tabindex="0"><code>apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: test-deployment
+  namespace: test-namespace
+spec:
+  template: 
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      ...
+  placement:
+    clusters:
+    - name: cluster2
+    - name: cluster1
+  overrides: 
+  - clusterName: cluster2
+    clusterOverrides:
+    - path: spec.replicas
+      value: 5
+</code></pre><ul>
+<li>Placement：定义 Federated 资源要分散到哪些集群上，若没有该文件，则不会分散到任何集群中。如 FederatedDeployment 中的 spec.placement 定义了两个集群时，这些集群将被同步建立相同的 Deployment。另外也支持用 spec.placement.clusterSelector 的方式来选择要放置的集群。</li>
+<li>Override：定义修改指定集群的 Federated 资源中的 spec.template 内容。如部署 FederatedDeployment 到不同公有云上的集群时，就能通过 spec.overrides 来调整 Volume 或副本数。</li>
+</ul>
+<h3 id="跨集群调度">跨集群调度</h3>
+<p>KubeFed 提供了一种自动化机制来将工作负载实例分散到不同的集群中，这能够基于总副本数与集群的定义策略来将 Deployment 或 ReplicaSet资源进行编排。编排策略是通过建立 ReplicaSchedulingPreference（RSP）文件，再由 KubeFed RSP Controller 监听与撷取RSP内容来将工作负载实例建立到指定的集群上。这是基于用户给出的高级用户偏好。这些偏好包括加权分布的语义和分布副本的限制（最小和最大）。这些还包括允许动态重新分配副本的语义，以防某些副本 Pod 仍然没有被调度到某些集群上，例如由于该集群资源不足。</p>
+<p>以下为一个RSP范例，假设有三个集群被联邦，名称分别为 ap-northeast、us-east 与 us-west。</p>
+<pre tabindex="0"><code>apiVersion: scheduling.kubefed.k8s.io/v1alpha1
+kind: ReplicaSchedulingPreference
+metadata:
+  name: test-deployment
+  namespace: test-ns
+spec:
+  targetKind: FederatedDeployment
+  totalReplicas: 15 
+  clusters: 
+    &#34;*&#34;:
+      weight: 2
+      maxReplicas: 12
+    ap-northeast:
+      minReplicas: 1
+      maxReplicas: 3
+      weight: 1
+</code></pre><p>整个过程如下：
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/kubefed-rsp.png" alt="image.png"></p>
+<h3 id="跨集群服务发现multi-cluster-dns">跨集群服务发现（Multi-cluster DNS）</h3>
+<p>KubeFed 提供了一组 API 资源，以及 Controllers 来实现跨集群Service/Ingress 的 DNS records自动产生机制，并结合ExternalDNS 来同步更新至 DNS 服务供应商。</p>
+<pre tabindex="0"><code>apiVersion: multiclusterdns.kubefed.k8s.io/v1alpha1
+kind: Domain
+metadata:
+  name: test
+  namespace: kube-federation-system
+domain: k8s.example.com
+---
+apiVersion: multiclusterdns.kubefed.k8s.io/v1alpha1
+kind: ServiceDNSRecord
+metadata:
+  name: nginx
+  namespace: development
+spec:
+  domainRef: test
+  recordTTL: 300
+</code></pre><p>首先假设已建立一个名称为 nginx 的 FederatedDeployment，然后放到 development namespace 中，并且也建立了对应的 FederatedService 提供 LoadBalancer。这时当建立上述 Domain 与 ServiceDNSRecord 后，KubeFed 的 Service DNS Controller 会依据 ServiceDNSRecord 文件内容，去收集不同集群的 Service 信息，并将这些信息更新至 ServiceDNSRecord 状态中，接着 DNS Endpoint Controller 会依据该 ServiceDNSRecord 的状态内容，建立一个 DNSEndpoint 文件，并产生 DNS records 资源，最后再由 ExternalDNS 来同步更新 DNS records 至 DNS 供应商。下图是 Service DNS 建立的架构。
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/kubefed-service-dns.jpg" alt="image.png">
+若是 Ingress 的话，会由 IngressDNSRecord 文件取代，并由 Ingress DNS Controller 收集信息。</p>
+<h2 id="federation本身当然也有他的缺点">Federation本身当然也有他的缺点：</h2>
+<ul>
+<li>增加网络带宽和成本：federation 控制平面监控所有集群以确保当前状态符合预期。如果集群在云服务提供商的不同区域或者不同的云服务提供商上运行时，这将导致明显的网络成本增加。</li>
+<li>减少跨集群隔离：federation 控制平面中的故障可能影响所有集群。通过在federation中实现最少的逻辑可以缓解这种情况。只要有可能，它就将尽力把工作委托给 kubernetes集群中的控制平面。这种设计和实现在安全性及避免多集群停止运行上也是错误的。</li>
+</ul>
+              
+
+
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/cloud-native/">cloud-native</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/kubernetes/">kubernetes</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/kubernetes-federation/">kubernetes Federation</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/k8s-injection/" data-tooltip="深入理解Sidecar Injection" aria-label="下一篇: 深入理解Sidecar Injection">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/dapr-intro/" data-tooltip="Dapr助力异构语言系统的事件驱动架构设计" aria-label="上一篇: Dapr助力异构语言系统的事件驱动架构设计">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/k8s-fed/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/k8s-fed/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/k8s-fed/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function() {
+        this.page.url = 'https:\/\/open-native.com\/article\/k8s-fed\/';
+        
+          this.page.identifier = '\/article\/k8s-fed\/'
+        
+      };
+      (function() {
+        
+        
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+          document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+          return;
+        }
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'tranquilpeak';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2023 闲散工程师笔记. All Rights Reserved
+  </span>
+  <span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span id="busuanzi_container_site_uv">
+    本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  </span>
+  <span id="busuanzi_container_page_pv">
+    本文访问量：<span id="busuanzi_value_page_pv"></span>
+  </span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/k8s-injection/" data-tooltip="深入理解Sidecar Injection" aria-label="下一篇: 深入理解Sidecar Injection">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/dapr-intro/" data-tooltip="Dapr助力异构语言系统的事件驱动架构设计" aria-label="上一篇: Dapr助力异构语言系统的事件驱动架构设计">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/k8s-fed/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/k8s-fed/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/k8s-fed/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Farticle%2Fk8s-fed%2F" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Farticle%2Fk8s-fed%2F" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Farticle%2Fk8s-fed%2F" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+    
+    <h4 id="about-card-name">闲散工程师笔记</h4>
+    
+      <div id="about-card-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        云原生.盐酒猿
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        CHINA🇨🇳
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://open-native.com/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://open-native.com/js/script-yqzy9wdlzix4lbbwdnzvwx3egsne77earqmn73v9uno8aupuph8wfguccut.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

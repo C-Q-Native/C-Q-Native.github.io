@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cilium on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/cilium/</link>
+    <description>Recent content in cilium on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 06 Apr 2023 15:55:09 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/cilium/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cilium Network Policy实践</title>
+      <link>https://open-native.com/article/cilium-network-policy/</link>
+      <pubDate>Thu, 06 Apr 2023 15:55:09 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/cilium-network-policy/</guid>
+      <description>&lt;h3 id=&#34;为什么需要networkpolicy&#34;&gt;为什么需要Networkpolicy&lt;/h3&gt;
+&lt;p&gt;Networkpolicy可以控制进出pod的网络流量。默认情况下，每个pod都可以相互通信。当你想要阻止某些微服务相互通信时，网络策略就会派上用场，特别是当你与其他团队在共享集群中工作时。这使您的微服务在多租户环境中更具有隔离性。&lt;br&gt;
+关于Networkpolicy的一些基础知识，可以参照文章：&lt;a href=&#34;http://open-native.com/article/networkpolicy/&#34;&gt;Kubernetes NetworkPolicy实践指南&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

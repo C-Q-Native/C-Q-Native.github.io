@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <script type="application/ld+json">
+
+{  
+  "@context":"http://schema.org",
+  "@type":"Website",
+  "@id":"https:\/\/open-native.com",
+  "author": {
+    "@type": "Person",
+    "name": "闲散工程师笔记",
+    
+    "image": "https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png"
+    
+  },
+  "name":"闲散工程师笔记",
+  "description":"\u003cp\u003eMixer是Istio另一个非常重要的组件，主要职责就是负责提供策略控制和遥测统计。\u003c\/p\u003e\n\u003ch3 id=\u00221-mixer整体架构详解\u0022\u003e1. Mixer整体架构详解\u003c\/h3\u003e\n\u003cp\u003eMixer整体架构：\n\u003cimg src=\u0022https:\/\/open-native.obs.cn-north-4.myhuaweicloud.com\/1383365-20200114204447477-84964089.png\u0022 alt=\u0022Mixer架构图\u0022\u003e\u003c\/p\u003e\n\u003cp\u003e在服务间进行请求转发时，Envoy对Mixer发起Check、Report这两次请求，即在转发请求前请求Mixer执行访问策略的管理配额，并在请求转发后上报要遥测数据。\u003c\/p\u003e",
+  "url":"https:\/\/open-native.com\/article\/mixer-intro\/",
+  "keywords":"[cloud-native, kubernetes, service-mesh, Istio]"
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="闲散工程师笔记">
+<meta name="keywords" content="cloud-native, kubernetes, service-mesh, Istio">
+<meta name="description" content="Mixer是Istio另一个非常重要的组件，主要职责就是负责提供策略控制和遥测统计。
+1. Mixer整体架构详解
+Mixer整体架构：
+
+在服务间进行请求转发时，Envoy对Mixer发起Check、Report这两次请求，即在转发请求前请求Mixer执行访问策略的管理配额，并在请求转发后上报要遥测数据。">
+
+
+<meta property="og:description" content="Mixer是Istio另一个非常重要的组件，主要职责就是负责提供策略控制和遥测统计。
+1. Mixer整体架构详解
+Mixer整体架构：
+
+在服务间进行请求转发时，Envoy对Mixer发起Check、Report这两次请求，即在转发请求前请求Mixer执行访问策略的管理配额，并在请求转发后上报要遥测数据。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ISTIO Mixer 组件架构详解">
+<meta name="twitter:title" content="ISTIO Mixer 组件架构详解">
+<meta property="og:url" content="https://open-native.com/article/mixer-intro/">
+<meta property="twitter:url" content="https://open-native.com/article/mixer-intro/">
+<meta property="og:site_name" content="闲散工程师笔记">
+<meta property="og:description" content="Mixer是Istio另一个非常重要的组件，主要职责就是负责提供策略控制和遥测统计。
+1. Mixer整体架构详解
+Mixer整体架构：
+
+在服务间进行请求转发时，Envoy对Mixer发起Check、Report这两次请求，即在转发请求前请求Mixer执行访问策略的管理配额，并在请求转发后上报要遥测数据。">
+<meta name="twitter:description" content="Mixer是Istio另一个非常重要的组件，主要职责就是负责提供策略控制和遥测统计。
+1. Mixer整体架构详解
+Mixer整体架构：
+
+在服务间进行请求转发时，Envoy对Mixer发起Check、Report这两次请求，即在转发请求前请求Mixer执行访问策略的管理配额，并在请求转发后上报要遥测数据。">
+<meta property="og:locale" content="zh-cn">
+
+  
+    <meta property="article:published_time" content="2023-04-08T21:29:24">
+  
+  
+    <meta property="article:modified_time" content="2023-04-08T21:29:24">
+  
+  
+  
+    
+      <meta property="article:section" content="Istio">
+    
+  
+  
+    
+      <meta property="article:tag" content="cloud-native">
+    
+      <meta property="article:tag" content="kubernetes">
+    
+      <meta property="article:tag" content="service-mesh">
+    
+      <meta property="article:tag" content="Istio">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+  <meta property="twitter:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+
+
+
+
+
+
+    <title>ISTIO Mixer 组件架构详解</title>
+
+    <link rel="icon" href="https://open-native.com/images/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://open-native.com/article/mixer-intro/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="https://open-native.com/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://open-native.com/" aria-label="去首页">闲散工程师笔记</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://open-native.com/#about" aria-label="打开链接: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://open-native.com/#about" aria-label="阅读有关作者的更多信息">
+          <img class="sidebar-profile-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">闲散工程师笔记</h4>
+        
+          <h5 class="sidebar-profile-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/java" title="Java">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-info" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Java</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/RcXu" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/21171872/black-mr" target="_blank" rel="noopener" title="Stack Overflow">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/index.xml" title="RSS">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      ISTIO Mixer 组件架构详解
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2023-04-08T21:29:24&#43;08:00">
+        
+  四月 8, 2023
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/istio">Istio</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <p>Mixer是Istio另一个非常重要的组件，主要职责就是负责提供策略控制和遥测统计。</p>
+<h3 id="1-mixer整体架构详解">1. Mixer整体架构详解</h3>
+<p>Mixer整体架构：
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/1383365-20200114204447477-84964089.png" alt="Mixer架构图"></p>
+<p>在服务间进行请求转发时，Envoy对Mixer发起Check、Report这两次请求，即在转发请求前请求Mixer执行访问策略的管理配额，并在请求转发后上报要遥测数据。</p>
+<p>Mixer通过Adapter机制，实现了应用程序与基础设置后端的解耦，即访问策略的执行和遥测数据的收集与应用程序本身分离。</p>
+<p>从整体架构上看，Mixer主要提供了三个核心功能：</p>
+<ul>
+<li>前置条件检查：在响应服务调用之前，根据前置条件提前验证。前置条件包括服务间的认证、黑白名单、是否通过ACL检查等等。</li>
+<li>配额管理：能够在多个维度上分配和释放配额。</li>
+<li>遥测报告：使服务能够上报日志和进行监控。</li>
+</ul>
+<h3 id="2-mixer服务模型">2. Mixer服务模型</h3>
+<p><img src="https://img0.baidu.com/it/u=2565284617,2648041919&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPG?w=500&amp;h=338" alt="Mixer服务模型"></p>
+<h4 id="template">Template</h4>
+<p>Template定义了传输给Adapter的数据格式，以及Adapter要处理这些数据必须实现的接口。</p>
+<p>一个完整的Template首先要包含proto文件，proto文件的属性有：Name、Template proto message、Template_variety。</p>
+<h4 id="adapter">Adapter</h4>
+<p>Adapter 主要实现要处理的所有Template定义的接口，需要定义Builder与Handler两个对象。</p>
+<p>Builder对象实现Template定义的所有HandlerBuilder接口，最后在其Builder方法中初始化Handler对象。Handler对象实现在Template中定义的所有Handler接口，在请求到来时处理生成的Instance对象，将Instance对象进一步处理并发发送到基础设施后端。</p>
+<h3 id="3-mixer的工作流程">3. Mixer的工作流程</h3>
+<h4 id="31-启动初始化">3.1 启动初始化</h4>
+<p>Mixer的启动流程主要包含一下步骤：</p>
+<ol>
+<li>加载所有内置并注册的Template信息。</li>
+<li>加载所有内置并注册的Adapter信息。</li>
+<li>命令行参数解析，解析所需的配置、服务器地址等。</li>
+<li>初始化API worker线程池，用来控制处理API请求的协程数。</li>
+<li>初始化Adapter Worker线程池，用来控制Adapter工作的协程数。</li>
+<li>初始化Template仓库，将加载的Template信息存到repo结构中。</li>
+<li>初始化Adapter map并生成Builder对象，最后将Adapter信息以名称为Key存到map中。</li>
+<li>初始化Mixer配置发现，主要配置Mixer获取配置信息的方式，例如通过Kubernetes或通过文件获取配置信息。</li>
+<li>初始化Runtime实例，Runtime实例基于发现的配置信息构造Mixer运行时的所有信息</li>
+<li>启动Runtime实例，开始监听配置文件的变化，配置对应的Handler实例与Dispatcher实例，在请求到来时，Dispatcher实例根据请求中的属性信息将请求分发到对应的Handler实例中进行处理。</li>
+<li>初始化Mixer的gRPC Server。</li>
+<li>启动gRPC Server，主要监听Check和Report接口，用来进行访问策略执行以及无侵入遥测</li>
+</ol>
+<h5 id="配置发现">配置发现</h5>
+<p>Mixer支持适配三种底层平台进行配置规则发现：文件系统、Kubernetes和MCP。</p>
+<p>Mixer基于Backend接口实现异步的事件通知机制。Backend接口的设计借鉴了Kubernetes的List-Watch设计思想，约束了一组与平台无关的API接口，底层平台必须实现这组API来获取Mixer配置信息。</p>
+<ul>
+<li>1）文件系统
+文件系统通过构造fsStore结构体实现了Backend中的全部接口，且在fsStore中保存所有的配置数据。</li>
+<li>2）Kubernetes方式
+Kubernetes方式通过构造Store结构体实现了Backend中的全部接口，且维护了所有资源的缓存。</li>
+<li>3）MCP方式
+同Pilot中的实现类似，Mixer可以通过MCP方式从Galley中获取配置信息。MCP使得Mixer无需感知底层平台的差异，专注于访问策略的执行和遥测处理。</li>
+</ul>
+<h5 id="runtime实例的初始化">Runtime实例的初始化</h5>
+<p>Runtime是Mixer运行时环境的主要入口，在Runtime实例初始化时，它将存储所有已加载的Template、Adapter信息。当用户配置信息到来时，Mixer将根据该配置信息初始化后端Adapter实例，并配置Envoy端请求的分发规则，这些数据也都被保存在Runtime实例中。</p>
+<h5 id="grpc-server的初始化">gRPC Server的初始化</h5>
+<p>gRPC Server实现了Mixer的基本功能，即接收客户端的请求并进行策略访问控制与遥测数据搜集，初始化流程：</p>
+<ul>
+<li>新建一个gRPC服务器，等待接口注册</li>
+<li>初始化gRPC Server对象</li>
+<li>将gRPC Server实现的MixerServer接口注册到gRPC服务器中。</li>
+</ul>
+<p>MixerServer包含两个重要的接口：Check与Report，Check接口主要处理策略访问控制与配额管理，Report接口主要手机遥测数据。</p>
+<ul>
+<li>1）Check接口
+Check接口主要根据在CheckRequest中携带的前置检查信息、配额管理信息，将请求分发到满足特定条件的后端Handler中处理，再将检查执行结果通过CheckResponse返回给客户端。</li>
+<li>2） Report接口
+Report接口主要根据在ReportRequest中携带的遥测信息，将请求分发到满足特定条件的后端Handler中处理。<br>
+与Check接口不同，Report接口返回的ReportResponse总是空值，仅在请求出错时对gRPC Server返回错误信息。</li>
+</ul>
+<h4 id="32-用户配置信息规则处理">3.2 用户配置信息规则处理</h4>
+<p>初始化完成后，Mixer将正式启动运行。初始化后的Runtime实例调用StartListening方法监听用户侧的配置信息，并根据监听到的配置文件生成对应的后端实例对象。当客户端API请求到来时，Mixer会根据请求中的属性数据，利用构造好的规则去匹配指定的后端实例对象执行。</p>
+<p><img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/WX20230414-121656.png" alt="Mixer配置规则处理流程"></p>
+<h5 id="1-监听用户的配置信息">1. 监听用户的配置信息</h5>
+<p>Mixer将接收到的配置信息均存储到Runtime实例的ephemeral对象中，ephemeral对象本身不做其他操作，只用来储存数据。</p>
+<p>监听操作首先调用Store的List接口取回现有的所有配置数据，并将这些配置数据存储到ephemeral对象的entries中，再调用Watch接口按收到的事件增量更新ephemeral。为了避免频繁更新后端模型对整个Mixer服务稳定性造成冲击，在watch事件到来之后不会立刻将数据写入ephemeral，从而同步出发更新所有Mixer后端资源信息，而是先将事件放入一个队列中，定时（默认1秒）将队列中的数据同步到ephemeral。
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/WX20230414-122408.png" alt="用户配置信息同步流程"></p>
+<h5 id="2-配置规则处理">2. 配置规则处理</h5>
+<p>在ephemeral的配置信息更新时，Mixer同步调用processNewConfig方法启动一轮后端配置更，主要流程如下：</p>
+<ul>
+<li>
+<p>1）初始化Snapshot对象（ephemeral.BuildSnapshot）
+根据在ephemeral中存储的信息初始化Snapshot对象，Snapshot对象本身不做其他操作，只用来保存用户的配置信息与Mixer内置的Template、Adapter的对应关系。</p>
+</li>
+<li>
+<p>2）构造Handler（handler.NewTable）
+NewTable方法根据在Snapshot对象中保存的Handler、Instance信息进行初始化并配置Adapter中的Handler对象，最后将配置好的Handler对象保存在handler.Table对象的entries中。entries以Handler名称为key对应到配置好的Handler。</p>
+</li>
+<li>
+<p>3）构造请求处理模型（routing.BuildTable）
+BuildTable方法主要讲初始化后的数据存入Mixer构造的数据模型中，在客户端请求到来时，根据条件将请求分发到特定后端Adapter的Handler实例中处理。</p>
+<p>Mixer的数据存储模型分为4个层次：将数据按Template类型分类；在单个Template分类中按命名空间分为多个分组；在单个分组中包含一个Handler实例及多个Instance实例；多个Instance实例又按匹配条件分为多个分组。
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/WX20230414-123205.png" alt="Mixer数据存储模型"></p>
+</li>
+<li>
+<p>4）保存数据模型（dispatcher.ChangeRoute）
+所有配置好的数据对象都被保存到了Mixer实现的四层数据模型routing.Table中，该模型用于在请求到来时，将特定的请求分发到模型中特定的Handler对象中处理。</p>
+</li>
+</ul>
+<h5 id="3-请求分发流程">3. 请求分发流程</h5>
+<p>Mixer根据用户的配置，结合已有的Template、Adapter信息生成四层数据模型，该模型用于在客户端API请求到来时匹配请求中的信息，并将请求分发到对应的后端去处理。</p>
+<h4 id="33-访问策略的执行">3.3 访问策略的执行</h4>
+<p>Mixer通过gRPC Server中的Check接口处理请求的访问策略的执行，即根据用户定义的策略判断此次请求是否可以执行。与通用的请求处理流程相同，Check接口根据请求中属性的值，按用户的配置将请求分发到特定的后端进行处理，用户可以在配置文件中定义访问策略，故称其为可扩展的访问策略。
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/WX20230414-123705.png" alt="访问策略处理流程"></p>
+<h5 id="1-attitude数据翻译">1. Attitude数据翻译</h5>
+<p>在Attribute数据中除了可以看到Words字段，还可以看到很多数据以整型数字表示。Mixer会结合gRPC Server初始化时保存在globalWordList中保存的属性词汇列表，翻译请求中的Attributes属性，例如：&ldquo;86:4&rdquo; 将被翻译为：&ldquo;user-agent: Mozilla/5.0&rdquo;。</p>
+<h5 id="2-attribute预处理">2. Attribute预处理</h5>
+<p>在访问策略执行前，Check接口首先对在请求中携带的属性进行预处理。预处理流程在请求所携带属性的基础上进行，处理后的属性集将被用于后续的访问策略执行中。
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/WX20230414-124524.png" alt="属性预处理处理流程">
+例如， Mixer内置的Kubernetesenv Adapter会监听Kubernetes集群中的pod信息，在请求到来时，在根据请求中的属性值，在请求的属性集中追加与Kubernetes相关的数据，如pod名称或者Label信息等。</p>
+<h5 id="3-对check类型的前置处理">3. 对Check类型的前置处理</h5>
+<p>在预处理完成之后，下一步就是利用已有的属性集进行Check类型的前置处理，即调用处理Check类型Template的Adapter进行前置检查，例如特定的用户是否可以访问特定的服务版本等。</p>
+<p>调用Adapter的流程：根据属性集及用户定义的规则，调用对应的Adapter处理请求。值得注意的是，一个用户的属性集可能会满足多个Adapter的调用条件，此时会将多个Adapter处理流程放入goroutine pool中并行处理。由于每个Adapter有可能处理多个Template对应的Instance，因此每个Adapter对每个Instance的处理流程都是在协程池中并行处理的。</p>
+<p>Adapter在处理完对应的所有Instance后将结果返回，返回的结果会被合并，即对所有Adapter返回结果进行判断，只要其中一个Adapter返回失败的结果，则认为本次请求检查不通过。
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/WX20230414-141124.png" alt="属性预处理流程"></p>
+<h5 id="4-对quota类型的处理">4. 对Quota类型的处理</h5>
+<p>在Check类型的前置检查完成后，如果检查失败，则直接将失败结果返回给客户端。如果检查成功，则将继续进行Quota类型的配额相关检查。与Check类型的操作流程相似，对Quota类型的检查也是调用相应的Adapter进行配额管理的。</p>
+<p>与Check类型的前置检查流程不同，Quota类型的配额管理只针对特定名称的Instance实例，Instance实例名称从CheckRequest的Quotas参数传入。如果没有匹配到该特定名称的Instance实例，则直接将默认值返回给客户端；如果成功匹配到该特定名称的Instance，则调用相应的Adapter将结果返回客户端。</p>
+<h4 id="34-无侵入遥测">3.4 无侵入遥测</h4>
+<p>只需要配置好要收集的数据格式，Mixer就可以帮助用户收集想要的监控数据和日志信息。Mixer通过gRPC Server中的Report接口来处理请求遥测数据的收集。</p>
+<h5 id="1-遥测数据的接收">1. 遥测数据的接收</h5>
+<p>为了提高整体效率，Envoy会在遥测数据缓存到一定数量时，同时上报缓存的遥测数据到Mixer，因此Report接口接收的数据是多组属性。</p>
+<p><img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/WX20230414-161501.png" alt="遥测数据接收流程"></p>
+<h5 id="2-遥测数据的处理">2. 遥测数据的处理</h5>
+<p>在接收到多组属性后，Report接口将遍历其中的每组属性。前期处理包括属性数据翻译和属性数据预处理与Check接口的处理逻辑基本一致。</p>
+<p>对于请求分发，Report接口只是将属性中的数据利用Adapter实例传输给后端基础设施，因此只需要向客户端返回处理成功或失败的状态。</p>
+              
+
+
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/cloud-native/">cloud-native</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/kubernetes/">kubernetes</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/service-mesh/">service-mesh</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/istio/">Istio</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/descheduler/" data-tooltip="Kubernetes集群均衡器-Descheduler" aria-label="下一篇: Kubernetes集群均衡器-Descheduler">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/cilium-network-policy/" data-tooltip="Cilium Network Policy实践" aria-label="上一篇: Cilium Network Policy实践">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/mixer-intro/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/mixer-intro/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/mixer-intro/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function() {
+        this.page.url = 'https:\/\/open-native.com\/article\/mixer-intro\/';
+        
+          this.page.identifier = '\/article\/mixer-intro\/'
+        
+      };
+      (function() {
+        
+        
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+          document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+          return;
+        }
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'tranquilpeak';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2023 闲散工程师笔记. All Rights Reserved
+  </span>
+  <span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span id="busuanzi_container_site_uv">
+    本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  </span>
+  <span id="busuanzi_container_page_pv">
+    本文访问量：<span id="busuanzi_value_page_pv"></span>
+  </span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/descheduler/" data-tooltip="Kubernetes集群均衡器-Descheduler" aria-label="下一篇: Kubernetes集群均衡器-Descheduler">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/cilium-network-policy/" data-tooltip="Cilium Network Policy实践" aria-label="上一篇: Cilium Network Policy实践">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/mixer-intro/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/mixer-intro/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/mixer-intro/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Farticle%2Fmixer-intro%2F" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Farticle%2Fmixer-intro%2F" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Farticle%2Fmixer-intro%2F" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+    
+    <h4 id="about-card-name">闲散工程师笔记</h4>
+    
+      <div id="about-card-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        云原生.盐酒猿
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        CHINA🇨🇳
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://open-native.com/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://open-native.com/js/script-yqzy9wdlzix4lbbwdnzvwx3egsne77earqmn73v9uno8aupuph8wfguccut.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

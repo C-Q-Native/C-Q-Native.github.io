@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ebpf on 闲散工程师笔记</title>
+    <link>https://open-native.com/categories/ebpf/</link>
+    <description>Recent content in ebpf on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 27 Feb 2023 21:17:50 +0800</lastBuildDate><atom:link href="https://open-native.com/categories/ebpf/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>一文解读eBPF</title>
+      <link>https://open-native.com/article/ebpf/</link>
+      <pubDate>Mon, 27 Feb 2023 21:17:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/ebpf/</guid>
+      <description>&lt;h3 id=&#34;介绍&#34;&gt;介绍&lt;/h3&gt;
+&lt;p&gt;eBPF（extended Berkeley Packet Filter）是一种Linux内核中的虚拟机技术，它允许用户在内核中运行自定义的代码，从而实现更高级别的网络过滤、监控和安全功能等。eBPF最初是由Linux内核开发者Brendan Gregg和Others在2014年提出的，它是传统BPF（Berkeley Packet Filter）的增强版，支持更多的指令和数据结构，使得用户可以编写更加复杂和高级的代码。&lt;/p&gt;
+&lt;p&gt;eBPF技术的核心是一个虚拟机，该虚拟机运行在内核中，具有JIT（即时编译）功能，可以将用户编写的eBPF代码编译成本地代码，从而获得接近本地代码的执行效率。eBPF代码可以在运行时动态注入到内核中，而不需要重新编译或重新启动内核，从而使得它在运行时可以快速适应不同的场景和需求。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

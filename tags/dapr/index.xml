@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dapr on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/dapr/</link>
+    <description>Recent content in Dapr on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 02 Feb 2023 22:43:18 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/dapr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Dapr助力异构语言系统的事件驱动架构设计</title>
+      <link>https://open-native.com/article/dapr-intro/</link>
+      <pubDate>Thu, 02 Feb 2023 22:43:18 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/dapr-intro/</guid>
+      <description>&lt;p&gt;我们在探讨微服务时，通常避不开服务的颗粒度和服务之间的松耦合。也就是说服务应该是能够自治的，能够掌控服务所有的依赖，并且尽量降低同步通信的频率。今天我们来探讨一下实现分布式服务松耦合的事件驱动架构模式，以及异构语言系统如何实现事件驱动架构设计。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从日志来探究Dapr源码-Dapr runtime的启动过程</title>
+      <link>https://open-native.com/article/dapr-runtime-start/</link>
+      <pubDate>Fri, 13 Jan 2023 23:02:40 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/dapr-runtime-start/</guid>
+      <description>&lt;h4 id=&#34;日志&#34;&gt;日志&lt;/h4&gt;
+&lt;p&gt;首先，我们来整体观察一下在kubernetes集群环境下dapr服务的启动日志，以便对启动过程的时间线有一个整体的印象。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

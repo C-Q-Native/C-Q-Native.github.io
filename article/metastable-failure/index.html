@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <script type="application/ld+json">
+
+{  
+  "@context":"http://schema.org",
+  "@type":"Website",
+  "@id":"https:\/\/open-native.com",
+  "author": {
+    "@type": "Person",
+    "name": "闲散工程师笔记",
+    
+    "image": "https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png"
+    
+  },
+  "name":"闲散工程师笔记",
+  "description":"\u003cp\u003e这篇文章的初衷，是记录拜读由Nathan Bronson, Aleksey Charapko, Abutalib Aghayev, and Timothy Zhu共同发表的论文\u003ca href=\u0022https:\/\/sigops.org\/s\/conferences\/hotos\/2021\/papers\/hotos21-s11-bronson.pdf\u0022\u003eMetastable Failures in Distributed Systems\u003c\/a\u003e的收获，这篇论文描述了一个在大规模分布式系统中很常见的失败场景：亚稳定失败（metastable failures），它们为什么通常在高负载分布式系统中发生，以及解决问题的思路框架：如何识别和从亚稳定失败中恢复，甚至如何避免发生亚稳定失败。\u003c\/p\u003e",
+  "url":"https:\/\/open-native.com\/article\/metastable-failure\/",
+  "keywords":"[分布式, architecture]"
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="闲散工程师笔记">
+<meta name="keywords" content="分布式, architecture">
+<meta name="description" content="这篇文章的初衷，是记录拜读由Nathan Bronson, Aleksey Charapko, Abutalib Aghayev, and Timothy Zhu共同发表的论文Metastable Failures in Distributed Systems的收获，这篇论文描述了一个在大规模分布式系统中很常见的失败场景：亚稳定失败（metastable failures），它们为什么通常在高负载分布式系统中发生，以及解决问题的思路框架：如何识别和从亚稳定失败中恢复，甚至如何避免发生亚稳定失败。">
+
+
+<meta property="og:description" content="这篇文章的初衷，是记录拜读由Nathan Bronson, Aleksey Charapko, Abutalib Aghayev, and Timothy Zhu共同发表的论文Metastable Failures in Distributed Systems的收获，这篇论文描述了一个在大规模分布式系统中很常见的失败场景：亚稳定失败（metastable failures），它们为什么通常在高负载分布式系统中发生，以及解决问题的思路框架：如何识别和从亚稳定失败中恢复，甚至如何避免发生亚稳定失败。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式系统中亚稳定失败状态">
+<meta name="twitter:title" content="分布式系统中亚稳定失败状态">
+<meta property="og:url" content="https://open-native.com/article/metastable-failure/">
+<meta property="twitter:url" content="https://open-native.com/article/metastable-failure/">
+<meta property="og:site_name" content="闲散工程师笔记">
+<meta property="og:description" content="这篇文章的初衷，是记录拜读由Nathan Bronson, Aleksey Charapko, Abutalib Aghayev, and Timothy Zhu共同发表的论文Metastable Failures in Distributed Systems的收获，这篇论文描述了一个在大规模分布式系统中很常见的失败场景：亚稳定失败（metastable failures），它们为什么通常在高负载分布式系统中发生，以及解决问题的思路框架：如何识别和从亚稳定失败中恢复，甚至如何避免发生亚稳定失败。">
+<meta name="twitter:description" content="这篇文章的初衷，是记录拜读由Nathan Bronson, Aleksey Charapko, Abutalib Aghayev, and Timothy Zhu共同发表的论文Metastable Failures in Distributed Systems的收获，这篇论文描述了一个在大规模分布式系统中很常见的失败场景：亚稳定失败（metastable failures），它们为什么通常在高负载分布式系统中发生，以及解决问题的思路框架：如何识别和从亚稳定失败中恢复，甚至如何避免发生亚稳定失败。">
+<meta property="og:locale" content="zh-cn">
+
+  
+    <meta property="article:published_time" content="2022-01-13T14:50:17">
+  
+  
+    <meta property="article:modified_time" content="2022-01-13T14:50:17">
+  
+  
+  
+    
+      <meta property="article:section" content="架构">
+    
+  
+  
+    
+      <meta property="article:tag" content="架构">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+  <meta property="twitter:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+
+
+
+
+
+
+    <title>分布式系统中亚稳定失败状态</title>
+
+    <link rel="icon" href="https://open-native.com/images/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://open-native.com/article/metastable-failure/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="https://open-native.com/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://open-native.com/" aria-label="去首页">闲散工程师笔记</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://open-native.com/#about" aria-label="打开链接: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://open-native.com/#about" aria-label="阅读有关作者的更多信息">
+          <img class="sidebar-profile-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">闲散工程师笔记</h4>
+        
+          <h5 class="sidebar-profile-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/java" title="Java">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-info" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Java</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/RcXu" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/21171872/black-mr" target="_blank" rel="noopener" title="Stack Overflow">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/index.xml" title="RSS">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      分布式系统中亚稳定失败状态
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2022-01-13T14:50:17&#43;08:00">
+        
+  一月 13, 2022
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/%e6%9e%b6%e6%9e%84">架构</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <p>这篇文章的初衷，是记录拜读由Nathan Bronson, Aleksey Charapko, Abutalib Aghayev, and Timothy Zhu共同发表的论文<a href="https://sigops.org/s/conferences/hotos/2021/papers/hotos21-s11-bronson.pdf">Metastable Failures in Distributed Systems</a>的收获，这篇论文描述了一个在大规模分布式系统中很常见的失败场景：亚稳定失败（metastable failures），它们为什么通常在高负载分布式系统中发生，以及解决问题的思路框架：如何识别和从亚稳定失败中恢复，甚至如何避免发生亚稳定失败。</p>
+<h4 id="现实世界中的亚稳定失败"><strong>现实世界中的亚稳定失败</strong></h4>
+<p>下图是某个公园中非常著名的徒步路线中非常关键的一部分：两座山之间一段狭长的山脊，在两座山之间徒步，只有扶着铁链穿过这段山梁才能保证安全。可以假想这段铁链就是一个分布式系统。
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/2314028985-62c6b28562bdb.jpg" alt="铁链">
+当公园不对徒步者人数做限制时，就有可能引起人群拥挤以至于长时间在起点等待去尝试减低负载。你可以想象一下”系统“经历了以下的状态转换。</p>
+<ol>
+<li>
+<p>稳定状态（Stable state）
+当人群低于某个安全阈值时，任何一个风险因素（例如：缓慢通过铁链的徒步者）都可能引起降速，但是系统仍然能够自愈。</p>
+</li>
+<li>
+<p>脆弱状态（Vulnerable state）
+拥挤人群的数量持续增加超过了某个阈值，对于每段铁链的竞争也会增加 —— 下山的人必须要等待上山的人通过，或者干脆冒险不使用铁链而绕过他们。同样，上山的人也必须等待下山的人通过。当这种模式发生时，只要拥挤人群的数量低于某个阈值，系统仍然是可以工作的，但它现在是非常脆弱的，可能变成不可自愈的失败状态。</p>
+</li>
+<li>
+<p>亚稳定失败状态（Metastable Failure State）
+当系统处于脆弱状态，某些风险因素可能导致情况恶化。想象一下，一组徒步者需要花费更长的时间通过铁链，这将会使其他上山和下山的人速度降下来。越来越多的人等待，导致在铁链两端和身在其中的剩余空间越来越狭窄，进而导致人们需要更多的时间通过，进一步导致更多的人等待&hellip;情况循环恶化 —— 进入亚稳定失败状态。
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/2957888225-62c6bca36cbf3_fix732.jpg" alt="保持系统处于亚稳定失败状态的正反馈循环">
+<em>保持系统处于亚稳定失败状态的正反馈循环</em></p>
+</li>
+</ol>
+<p>由于这个自续的反馈循环，系统将保持在这个状态，即使移除最初的诱发风险因素。为了恢复，需要采取其他的措施，例如将负载降低到特定阈值以下。</p>
+<h4 id="亚稳定失败定义"><strong>亚稳定失败定义</strong></h4>
+<p>关于亚稳定失败的定义论文中描述如下</p>
+<blockquote>
+<p>亚稳定失败发生在对于负载来源没有控制的开放系统中，一个风险因素导致系统进入一个糟糕的状态，并且会持续存在甚至风险因素被移除。在这个状态系统的效率通常会很低，并且会产生持续影响——通常使工作负载放大或者整体效率降低——阻止系统从这个糟糕的状态中恢复。
+Metastable failures occur in open systems with an uncontrolled source of load where a trigger causes the system to enter a bad state that persists even when the trigger is removed. In this state the goodput (i.e., throughput of useful work) is unusably low, and there is a sustaining effect — often involving work amplification or decreased overall efficiency — that prevents the system from leaving the bad state.</p>
+</blockquote>
+<p><img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/2127254734-62c6c29c4e0b1_fix732.jpg" alt="image.png">
+如果这样，那么为什么不总是运行在稳定状态？诚如，在许多系统中高效的资源利用是非常重要的，所以许多系统选择运行在脆弱状态而不是稳定状态，已获得更高的效率。
+当系统处于亚稳定失败状态，系统不会自愈，想要恢复需要采取重要措施，例如降低负载。</p>
+<h4 id="问题的症结正反馈循环"><strong>问题的症结：正反馈循环</strong></h4>
+<p>正反馈循环是亚稳定失败发生的根源。例如，在维基百科中给出了这样例子：</p>
+<blockquote>
+<p><strong>A</strong>生产了更多的<strong>B</strong>，<strong>B</strong>反过来又生产了更多的<strong>A</strong></p>
+</blockquote>
+<p>又例如，人群狂奔：假设美国纽约街道上正在进行独立日游行，突然有人开始奔跑（A）导致周围人群开始恐慌（B），更多的人开始奔跑（A）更多的人开始恐慌（B）更多人开始奔跑。。。最终导致人群狂奔（也许现在还没有枪响）。</p>
+<p>可能有很多不同风险因素能够将系统带到亚稳定失败状态。但是，能够将系统保持在这种状态甚至在移除该风险因素之后仍然不能发生变化的，是自我维持的反馈循环。</p>
+<h4 id="亚稳定失败的例子"><strong>亚稳定失败的例子</strong></h4>
+<ol>
+<li>重试导致工作负载放大
+假设我们有一个web服务端承接客户端请求，持久层数据库服务的性能为300 QPS和100毫秒的延迟，服务端有一个原生的重试机制：每次请求失败都会立即重试。</li>
+</ol>
+<p>只要服务端入流量的请求负载低于150QPS，即使发生重试，当一个风险因素（例如短暂的网络故障）发生并导致请求积压它依然可以自愈。这就是“健康”状态。</p>
+<p>然而，当负载超过150QPS，系统将进入“脆弱”状态——假设负载为280QPS，当处于这种状态时系统依然还是可以工作的。现在，如果在服务端和数据库直接有10S的网络断开，数据库将面对流量的陡增（原始流量+重试），这将增加请求延迟进而导致更多的重试，进一步增加请求延。导致一个自续的循环。</p>
+<ol>
+<li>为happy path所做的优化工作
+任何为happy path优化而做出的努力都更可能进入亚稳定失败状态。假设上边同样的系统但是有一个缓存服务以降低数据库服务的调用次数。如果缓存命中率是90%，那么服务端在脆弱状态下能够处理3000QPS（服务端处理300QPS）的负载。但是如果缓存服务由于某些原因需要重启，那么我们将面临一个问题：它将是完美进入到亚稳定失败状态的诱因。论文中将3000QPS称为表面容量（<em>advertised capacity</em>）（系统将处于脆弱状态的上限），而300QPS是隐含容量（<em>hidden capacity</em>）（系统能够自愈的上限）。</li>
+</ol>
+<p>以上展示的工作负载放大在许多大规模请求中断时是非常普遍的。但是研究的案例我发现最有感兴趣的是“连接不平衡”，由于使用MRU策略，两个系统之间的连接中最慢的连接总是被选择。</p>
+<h4 id="如何处理已知的亚稳定失败">如何处理已知的亚稳定失败</h4>
+<p>在论文中描述了一些预防已知亚稳定失败的技术：</p>
+<ol>
+<li>
+<p>专注于风险因素的持续反馈循环
+去定位一个亚稳定失败模式，专注于弱化正反馈循环，这涉及到工作负载放大，而不是针对风险因素打地鼠。</p>
+</li>
+<li>
+<p>识别最强反馈循环
+理解哪里是产生工作负载放大最大的实例，然后为它定义一个最大值。大体上，识别最强反馈循环并且不要追逐每一个反馈循环。
+如何识别他们呢？压力测试是一个方式。但是挑战是越大规模的服务，反馈循环越强，所以第一次在大规模服务中会发现很多问题。
+因此，你能做的事情是识别被风险因素影响的特征指标：例如，上述实例中的重试率。通过这样，你可以理解稳定、脆弱和亚稳定失败状态的边界。</p>
+</li>
+<li>
+<p>弱化反馈循环
+论文描述了一些弱化反馈循环的方法。例如包括削弱负载和熔断机制。主要的挑战是这将由客户端来决策何时重试和故障转移，但是客户端通常没有全局信息（并且试图去提供这种服务本身也可能导致失败）。区分短暂的负载峰值和持续性的过载是非常重要的，你可能需要有指标帮助你去准确的识别这两者。</p>
+</li>
+</ol>
+<p>论文为组织激励提供了一个很好的示例，奖励正确的优化措施（例如优先降低资源使用率）而不是在更有可能导致亚稳定失败的happy path上的优化。</p>
+<h4 id="总结">总结</h4>
+<p>希望通过以上的讨论能有所收益，希望下次在发现”一些列的请求失败“、”死亡螺旋“、”彻底失败“等等，你可以使用这些作为一个思考框架或者通用语言去理解他。论文中还有许多其他的示例和思考，感兴趣可以阅读一下论文原文。</p>
+<p>原文地址：<a href="https://blog.techlanika.com/metastable-failures-in-distributed-systems-what-causes-them-and-3-things-you-can-do-to-tame-them-8fd56d593950">Metastable Failures in Distributed Systems: What Causes Them and 3 Things You can do to Tame Them</a></p>
+              
+
+
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/%E6%9E%B6%E6%9E%84/">架构</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/ddd-intro/" data-tooltip="浅析领域驱动设计" aria-label="下一篇: 浅析领域驱动设计">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--disabled">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/metastable-failure/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/metastable-failure/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/metastable-failure/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function() {
+        this.page.url = 'https:\/\/open-native.com\/article\/metastable-failure\/';
+        
+          this.page.identifier = '\/article\/metastable-failure\/'
+        
+      };
+      (function() {
+        
+        
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+          document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+          return;
+        }
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'tranquilpeak';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2023 闲散工程师笔记. All Rights Reserved
+  </span>
+  <span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span id="busuanzi_container_site_uv">
+    本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  </span>
+  <span id="busuanzi_container_page_pv">
+    本文访问量：<span id="busuanzi_value_page_pv"></span>
+  </span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/ddd-intro/" data-tooltip="浅析领域驱动设计" aria-label="下一篇: 浅析领域驱动设计">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--disabled">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/metastable-failure/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/metastable-failure/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/metastable-failure/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Farticle%2Fmetastable-failure%2F" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Farticle%2Fmetastable-failure%2F" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Farticle%2Fmetastable-failure%2F" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+    
+    <h4 id="about-card-name">闲散工程师笔记</h4>
+    
+      <div id="about-card-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        云原生.盐酒猿
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        CHINA🇨🇳
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://open-native.com/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://open-native.com/js/script-yqzy9wdlzix4lbbwdnzvwx3egsne77earqmn73v9uno8aupuph8wfguccut.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

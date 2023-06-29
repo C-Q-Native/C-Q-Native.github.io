@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>微服务 on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+    <description>Recent content in 微服务 on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 12 Mar 2023 00:24:55 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何理解微服务架构中的负载均衡和API网关?</title>
+      <link>https://open-native.com/article/slb/</link>
+      <pubDate>Sun, 12 Mar 2023 00:24:55 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/slb/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://open-native.obs.cn-north-4.myhuaweicloud.com/1*4YiKYTkjpRLAfIg23XxPpA.webp&#34; alt=&#34;image.png&#34;&gt;&lt;br&gt;
+API网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。&lt;br&gt;
+API网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

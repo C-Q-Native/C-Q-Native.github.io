@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <script type="application/ld+json">
+
+{  
+  "@context":"http://schema.org",
+  "@type":"Website",
+  "@id":"https:\/\/open-native.com",
+  "author": {
+    "@type": "Person",
+    "name": "闲散工程师笔记",
+    
+    "image": "https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png"
+    
+  },
+  "name":"闲散工程师笔记",
+  "description":"\u003cp\u003e\u003cimg src=\u0022https:\/\/open-native.obs.cn-north-4.myhuaweicloud.com\/1*4YiKYTkjpRLAfIg23XxPpA.webp\u0022 alt=\u0022image.png\u0022\u003e\u003cbr\u003e\nAPI网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。\u003cbr\u003e\nAPI网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。\u003c\/p\u003e",
+  "url":"https:\/\/open-native.com\/article\/slb\/",
+  "keywords":"[分布式, architecture, 微服务]"
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="闲散工程师笔记">
+<meta name="keywords" content="分布式, architecture, 微服务">
+<meta name="description" content="
+API网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。
+API网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。">
+
+
+<meta property="og:description" content="
+API网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。
+API网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何理解微服务架构中的负载均衡和API网关?">
+<meta name="twitter:title" content="如何理解微服务架构中的负载均衡和API网关?">
+<meta property="og:url" content="https://open-native.com/article/slb/">
+<meta property="twitter:url" content="https://open-native.com/article/slb/">
+<meta property="og:site_name" content="闲散工程师笔记">
+<meta property="og:description" content="
+API网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。
+API网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。">
+<meta name="twitter:description" content="
+API网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。
+API网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。">
+<meta property="og:locale" content="zh-cn">
+
+  
+    <meta property="article:published_time" content="2023-03-12T00:24:55">
+  
+  
+    <meta property="article:modified_time" content="2023-03-12T00:24:55">
+  
+  
+  
+    
+      <meta property="article:section" content="架构">
+    
+  
+  
+    
+      <meta property="article:tag" content="架构">
+    
+      <meta property="article:tag" content="微服务">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+  <meta property="twitter:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+
+
+
+
+
+
+    <title>如何理解微服务架构中的负载均衡和API网关?</title>
+
+    <link rel="icon" href="https://open-native.com/images/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://open-native.com/article/slb/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="https://open-native.com/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://open-native.com/" aria-label="去首页">闲散工程师笔记</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://open-native.com/#about" aria-label="打开链接: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://open-native.com/#about" aria-label="阅读有关作者的更多信息">
+          <img class="sidebar-profile-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">闲散工程师笔记</h4>
+        
+          <h5 class="sidebar-profile-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/java" title="Java">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-info" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Java</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/RcXu" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/21171872/black-mr" target="_blank" rel="noopener" title="Stack Overflow">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/index.xml" title="RSS">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      如何理解微服务架构中的负载均衡和API网关?
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2023-03-12T00:24:55&#43;08:00">
+        
+  三月 12, 2023
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/%e6%9e%b6%e6%9e%84">架构</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <p><img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/1*4YiKYTkjpRLAfIg23XxPpA.webp" alt="image.png"><br>
+API网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。<br>
+API网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。</p>
+<p>负载均衡器负责在微服务的多个实例之间分发incoming方向请求，以实现高可用用性、高性能和可伸缩性。它有助于在多个实例之间均匀地分布工作负载，并确保每个实例都充分发挥其服务能力。</p>
+<p>一句话总结，API网关提供了与API管理相关的higher-level功能，而负载均衡器提供了与微服务的多个实例之间的流量分配相关的 lower-level 功能。</p>
+<h4 id="微服务中的api网关">微服务中的API网关</h4>
+<p>API网关是微服务体系结构中使用的基本模式之一，它作为反向代理将请求从客户端路由到多个内部服务。它还为所有客户端提供与系统交互的单一入口，从而实现对API的更好的可伸缩性、安全性和版本控制。<br>
+假设现在有一个基于微服务架构的电商系统，允许用户浏览和购买产品。该商城由几个微服务组成：商品服务、购物车服务、订单服务和用户服务。<br>
+为了简化客户端和这些微服务之间的交互，可以使用API网关。API网关充当所有客户端请求的单一入口，并将它们路由到适当的微服务。<br>
+例如，当用户查看商品时，客户端向API网关发出请求，网关将请求转发给商品服务。当用户想要下订单时，网关将请求转发给订单服务。<br>
+通过使用API网关，您可以简化客户端代码，减少需要发出的请求数量，并为客户端与微服务交互提供统一的接口。<br>
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/1*zE0Rj5WUI785qZYrqPkbyQ.webp" alt="image.png"></p>
+<h5 id="什么时候使用api网关">什么时候使用API网关</h5>
+<p>当我们知道了什么是API网关以及它提供了什么服务的时候，就很容易理解应该在什么时候去使用它。</p>
+<ol>
+<li>为多个微服务提供统一的入口。</li>
+<li>实现安全性：API 网关可以为所有微服务强制执行安全策略，例如身份认证可鉴权。</li>
+<li>提高性能：API 网关可以缓存来自微服务的响应，并减少到达后端请求的数量。</li>
+<li>简化客户端：API 网关可以抽象底层微服务的复杂性，并为客户端提供更简单的交互接口。甚至可以抽象服务之间的请求协议，例如服务之间的PRC协议。</li>
+<li>版本控制和路由：API网关可以根据请求参数将请求路由到相同微服务的不同版本或不同的微服务。</li>
+</ol>
+<p>所以，它不仅仅是将请求转发到微服务，这是API网关和负载均衡器最主要的区别。</p>
+<h4 id="什么是负载均衡器">什么是负载均衡器</h4>
+<p>负载均衡器将传入的网络流量分布到服务器集群中的多个服务器或节点上，不只是在微服务架构中，它可以应用到在任何架构中。<br>
+通过在服务器之间均匀地分配工作负载，它有助于提高应用程序和服务的性能、可伸缩性和可用性。<br>
+通过这种方式，负载均衡器可以确保在其他服务器相对空闲时，没有一台服务器会流量过载，这可以提高资源利用率并提高整个系统的可靠性。<br>
+<img src="https://open-native.obs.cn-north-4.myhuaweicloud.com/0*5xVRwiiPVj7SnY7t.webp" alt="image.png"></p>
+<h5 id="什么时候使用负载均衡器">什么时候使用负载均衡器</h5>
+<p>负载均衡器在微服务架构中，主要将传入的网络流量分布到相同服务的多个实例中。<br>
+负载均衡器可以帮助提高应用程序的可用性和可伸缩性，这就是为什么它们在微服务架构出现之前就已经存在了很长一段时间。<br>
+当应用程序的流量过大，且服务的单个实例无法处理负载时，也会使用负载平衡器。当应用程序跨多个服务器或数据中心部署时，也会使用负载平衡器。</p>
+<p><strong>负载均衡器的优缺点</strong><br>
+优点:</p>
+<ul>
+<li>提升性能和可伸缩性：负载均衡器将流量均匀地分布在多个服务器上，降低每个服务器上的负载，并确保没有服务器不堪重负。</li>
+<li>高可用性和容错性：如果一台服务器发生故障，负载均衡器可以自动将流量重定向到其他健康的服务器，确保即使一些服务器宕机，服务仍然可用。</li>
+<li>灵活性和可自定义：负载均衡器可以使用不同的算法和规则进行自定义负载策略，以最适合系统特定需求的方式处理流量。</li>
+</ul>
+<p>缺点:</p>
+<ul>
+<li>复杂性和成本：负载均衡器会增加系统的复杂性和成本，因为它们需要额外的硬件或软件来管理和维护。</li>
+<li>单点故障：负载均衡器本身故障，可能导致整个系统不可用。</li>
+<li>增加延迟：负载均衡器通过在客户端和服务器之间添加额外的跳点来增加系统延迟。</li>
+</ul>
+<h4 id="微服务架构中负载均衡器和api网关的区别">微服务架构中负载均衡器和API网关的区别</h4>
+<ol>
+<li>目的<br>
+API网关的主要目的是为微服务提供统一的API，而负载均衡器的主要目的是在多个服务器上均匀地分配流量。</li>
+<li>功能<br>
+API网关可以实现路由、安全、负载均衡和API管理等多种功能，而负载均衡器只负责流量分配。</li>
+<li>路由<br>
+API网关基于一组预定义的规则去路由请求，而负载均衡器则是基于预定义的算法路由请求，例如轮询或最少连接数，或者是session。</li>
+<li>协议支持<br>
+API网关通常支持多种协议，如HTTP、RPC、WebSocket等，而负载均衡器只支持传输层的协议，如TCP和UDP。</li>
+<li>安全<br>
+API网关提供诸如身份验证、鉴权和SSL等特性，而负载均衡器只提供诸如SSL等基本安全特性。</li>
+<li>缓存<br>
+API网关可以缓存来自微服务的响应以提高性能，而负载均衡器不提供缓存功能。</li>
+<li>格式转换<br>
+API网关可以在不同格式之间转换数据，而负载平衡器不提供数据转换功能。</li>
+<li>服务发现<br>
+API网关可以与服务发现机制集成以动态发现微服务，而负载均衡器则依赖于静态配置。</li>
+<li>颗粒度
+API网关可以提供到API端点粒度的精细控制，而负载均衡器只控制服务器级的流量。</li>
+<li>可扩展性
+API网关可以处理大量的API请求并管理微服务的扩展，而负载均衡器只提供水平扩展功能。</li>
+</ol>
+<p>以上就是传统微服务架构中关于API网关和负载均衡器的区别的讨论。</p>
+              
+
+
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/%E6%9E%B6%E6%9E%84/">架构</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/networkpolicy/" data-tooltip="Kubernetes NetworkPolicy实践指南" aria-label="下一篇: Kubernetes NetworkPolicy实践指南">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/r-l/" data-tooltip="在Kubernetes中，如何设置CPU的requests和limits" aria-label="上一篇: 在Kubernetes中，如何设置CPU的requests和limits">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/slb/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/slb/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/slb/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function() {
+        this.page.url = 'https:\/\/open-native.com\/article\/slb\/';
+        
+          this.page.identifier = '\/article\/slb\/'
+        
+      };
+      (function() {
+        
+        
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+          document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+          return;
+        }
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'tranquilpeak';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2023 闲散工程师笔记. All Rights Reserved
+  </span>
+  <span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span id="busuanzi_container_site_uv">
+    本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  </span>
+  <span id="busuanzi_container_page_pv">
+    本文访问量：<span id="busuanzi_value_page_pv"></span>
+  </span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/networkpolicy/" data-tooltip="Kubernetes NetworkPolicy实践指南" aria-label="下一篇: Kubernetes NetworkPolicy实践指南">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/r-l/" data-tooltip="在Kubernetes中，如何设置CPU的requests和limits" aria-label="上一篇: 在Kubernetes中，如何设置CPU的requests和limits">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/slb/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/slb/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/slb/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Farticle%2Fslb%2F" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Farticle%2Fslb%2F" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Farticle%2Fslb%2F" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+    
+    <h4 id="about-card-name">闲散工程师笔记</h4>
+    
+      <div id="about-card-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        云原生.盐酒猿
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        CHINA🇨🇳
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://open-native.com/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://open-native.com/js/script-yqzy9wdlzix4lbbwdnzvwx3egsne77earqmn73v9uno8aupuph8wfguccut.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Articles on 闲散工程师笔记</title>
+    <link>https://open-native.com/article/</link>
+    <description>Recent content in Articles on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 24 Apr 2023 22:27:50 +0800</lastBuildDate><atom:link href="https://open-native.com/article/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes Labels And Annotatios</title>
+      <link>https://open-native.com/article/kubernetes-labels/</link>
+      <pubDate>Mon, 24 Apr 2023 22:27:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/kubernetes-labels/</guid>
+      <description>In Kubernetes, you can use labels to assign key-value pairs to any resources.
+Labels are ubiquitous and necessary to everyday operations such as creating services.
+However, how should you name and use those labels?
+Let&amp;rsquo;s start with the basics
+Any resource in Kubernetes can have labels
+Some labels are vital (e.g. service&amp;rsquo;s selector, operators, etc.), and others are useful to tag resources (e.g. labelling a deployment)
+Kubectl offers a --show-labels flag to help you list resources and their labels</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Security Pratices</title>
+      <link>https://open-native.com/article/kubernetes-security-pratices/</link>
+      <pubDate>Sat, 22 Apr 2023 21:51:31 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/kubernetes-security-pratices/</guid>
+      <description>In this video I talk about a super important topic, which is security in Kubernetes and what are some of the best practices for securing your Kubernetes cluster.
+The big challenge that we see in terms of Kubernetes security is that it&amp;rsquo;s already so challenging to set up a Kubernetes cluster and to configure it to deploy the applications in it, that security often becomes the afterthought, adding on top of that already complex configuration.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes集群均衡器-Descheduler</title>
+      <link>https://open-native.com/article/descheduler/</link>
+      <pubDate>Wed, 12 Apr 2023 22:39:38 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/descheduler/</guid>
+      <description>&lt;h3 id=&#34;集群均衡器的必要性&#34;&gt;集群均衡器的必要性&lt;/h3&gt;
+&lt;p&gt;从 &lt;code&gt;kube-scheduler&lt;/code&gt; 的角度来看，它通过各种算法计算出最佳节点去运行 Pod 是非常完美的，当出现新的 Pod 进行调度时，调度程序会根据其当时对 Kubernetes 集群的资源描述做出最佳调度决定。但是 Kubernetes 集群是动态的，集群在一段时间内就会出现不均衡的状态，例如新节点上线与故障节点下线，或者节点维护，需要先执行节点排水，但是维护完成后，之前的 Pod 并不会自动回到该节点上来，因为 Pod 一旦被绑定了节点是不会触发重新调度的；又或者例如节点上 pod 利用率的变化导致某些节点利用率过低或者过高；节点标签变化导致 pod 的亲和策略不满足要求等等，kubernetes 集群在一段时间内就出现了不均衡的状态，所以需要均衡器来重新平衡集群。&lt;/p&gt;
+&lt;h3 id=&#34;descheduler-组件简介&#34;&gt;Descheduler 组件简介&lt;/h3&gt;
+&lt;p&gt;Kubernetes Descheduler 组件是一个可选的 Kubernetes 插件，用于自动化 Kubernetes 集群中节点的调度和优化。它的主要目的是解决 Kubernetes 集群中节点资源利用率不高的问题，通过在集群中调度和剔除空闲或低负载节点来优化集群的资源利用率。&lt;/p&gt;
+&lt;p&gt;具体来说，Descheduler 通过周期性检查 Kubernetes 集群中的节点负载情况，然后根据用户定义的策略来判断哪些节点需要剔除或迁移。它可以识别那些负载较低的节点，并将其与其他节点进行合并，从而使节点的资源利用率更高。&lt;/p&gt;
+&lt;p&gt;此外，Descheduler 还可以帮助用户预防节点故障。当一个节点出现问题时，Descheduler 可以自动将该节点上的 Pod 迁移到其他节点上，以确保 Kubernetes 集群的高可用性和稳定性。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>ISTIO Mixer 组件架构详解</title>
+      <link>https://open-native.com/article/mixer-intro/</link>
+      <pubDate>Sat, 08 Apr 2023 21:29:24 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/mixer-intro/</guid>
+      <description>&lt;p&gt;Mixer是Istio另一个非常重要的组件，主要职责就是负责提供策略控制和遥测统计。&lt;/p&gt;
+&lt;h3 id=&#34;1-mixer整体架构详解&#34;&gt;1. Mixer整体架构详解&lt;/h3&gt;
+&lt;p&gt;Mixer整体架构：
+&lt;img src=&#34;https://open-native.obs.cn-north-4.myhuaweicloud.com/1383365-20200114204447477-84964089.png&#34; alt=&#34;Mixer架构图&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在服务间进行请求转发时，Envoy对Mixer发起Check、Report这两次请求，即在转发请求前请求Mixer执行访问策略的管理配额，并在请求转发后上报要遥测数据。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Cilium Network Policy实践</title>
+      <link>https://open-native.com/article/cilium-network-policy/</link>
+      <pubDate>Thu, 06 Apr 2023 15:55:09 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/cilium-network-policy/</guid>
+      <description>&lt;h3 id=&#34;为什么需要networkpolicy&#34;&gt;为什么需要Networkpolicy&lt;/h3&gt;
+&lt;p&gt;Networkpolicy可以控制进出pod的网络流量。默认情况下，每个pod都可以相互通信。当你想要阻止某些微服务相互通信时，网络策略就会派上用场，特别是当你与其他团队在共享集群中工作时。这使您的微服务在多租户环境中更具有隔离性。&lt;br&gt;
+关于Networkpolicy的一些基础知识，可以参照文章：&lt;a href=&#34;http://open-native.com/article/networkpolicy/&#34;&gt;Kubernetes NetworkPolicy实践指南&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>ISTIO Pilot 组件架构详解</title>
+      <link>https://open-native.com/article/pilot-intro/</link>
+      <pubDate>Mon, 27 Mar 2023 21:29:24 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/pilot-intro/</guid>
+      <description>&lt;p&gt;Pilot是Istio控制平面的核心组件，是管理和配置Istio服务网格中所有Envoy代理实例的司令官。&lt;/p&gt;
+&lt;h3 id=&#34;pilot架构详解&#34;&gt;Pilot架构详解&lt;/h3&gt;
+&lt;p&gt;Pilot架构图：&lt;br&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/servicemesher/website/master/content/blog/lightweight-service-mesh-practice-in-ucloud/00704eQkgy1fsaijtidnzj30hs0edq67.jpg&#34; alt=&#34;Pilot架构图&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Centos 7.x内核版本升级实践</title>
+      <link>https://open-native.com/article/kernel-upgrade/</link>
+      <pubDate>Sun, 19 Mar 2023 16:26:38 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/kernel-upgrade/</guid>
+      <description>&lt;p&gt;默认情况下，Centos7.X的内核版本是3.10，如何去升级内核呢？&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;查看一下当前的系统版本&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;~ uname -r
+3.10.0-1160.el7.x86_64
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes NetworkPolicy实践指南</title>
+      <link>https://open-native.com/article/networkpolicy/</link>
+      <pubDate>Fri, 17 Mar 2023 21:35:04 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/networkpolicy/</guid>
+      <description>&lt;p&gt;根据Kubernetes的网络模型，集群中的所有pod都可以直接相互通信，不管它们存在于哪个节点上，或存在于哪个命名空间中，通信过程不需要NAT。从可用性的角度来看，这是非常便捷的，但从安全性来看，这貌似有一点问题。假设攻击者侵入了一个不受网络限制地pod，他就可以连接到同一集群中的任何一个pod，甚至是有权限访问敏感信息的pod。&lt;br&gt;
+使用NetworkPolicy，可以在IP地址或端口级别上限制Kubernetes集群中pod之间的网络流量。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>如何理解微服务架构中的负载均衡和API网关?</title>
+      <link>https://open-native.com/article/slb/</link>
+      <pubDate>Sun, 12 Mar 2023 00:24:55 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/slb/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://open-native.obs.cn-north-4.myhuaweicloud.com/1*4YiKYTkjpRLAfIg23XxPpA.webp&#34; alt=&#34;image.png&#34;&gt;&lt;br&gt;
+API网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。&lt;br&gt;
+API网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在Kubernetes中，如何设置CPU的requests和limits</title>
+      <link>https://open-native.com/article/r-l/</link>
+      <pubDate>Tue, 07 Mar 2023 19:06:49 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/r-l/</guid>
+      <description>&lt;p&gt;在Kubernetes集群中，该如何设置CPU的requests和limits呢？&lt;/p&gt;
+&lt;p&gt;可供选择的策略包含：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只使用limits&lt;/li&gt;
+&lt;li&gt;从来不用limits，只是设置requests&lt;/li&gt;
+&lt;li&gt;或者，两者哪一个都不用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;该作何选择呢？&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>一文解读eBPF</title>
+      <link>https://open-native.com/article/ebpf/</link>
+      <pubDate>Mon, 27 Feb 2023 21:17:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/ebpf/</guid>
+      <description>&lt;h3 id=&#34;介绍&#34;&gt;介绍&lt;/h3&gt;
+&lt;p&gt;eBPF（extended Berkeley Packet Filter）是一种Linux内核中的虚拟机技术，它允许用户在内核中运行自定义的代码，从而实现更高级别的网络过滤、监控和安全功能等。eBPF最初是由Linux内核开发者Brendan Gregg和Others在2014年提出的，它是传统BPF（Berkeley Packet Filter）的增强版，支持更多的指令和数据结构，使得用户可以编写更加复杂和高级的代码。&lt;/p&gt;
+&lt;p&gt;eBPF技术的核心是一个虚拟机，该虚拟机运行在内核中，具有JIT（即时编译）功能，可以将用户编写的eBPF代码编译成本地代码，从而获得接近本地代码的执行效率。eBPF代码可以在运行时动态注入到内核中，而不需要重新编译或重新启动内核，从而使得它在运行时可以快速适应不同的场景和需求。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Istio 1.17 版本新特性介绍</title>
+      <link>https://open-native.com/article/istio-1.17/</link>
+      <pubDate>Thu, 23 Feb 2023 11:43:45 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/istio-1.17/</guid>
+      <description>&lt;p&gt;2月14日，Istio社区发布了1.17的发布通告。1.17版本添加了一些重要的新功能，并将一些现有的功能成熟度标记为Beta，表明它们已经准备好生产使用。以下是一些亮点：&lt;/p&gt;
+&lt;h3 id=&#34;金丝雀升级和修订标签升级为beta版本&#34;&gt;金丝雀升级和修订标签升级为Beta版本&lt;/h3&gt;
+&lt;p&gt;Istio 1.6在版本中引入了对使用修订版按照金丝雀模式升级服务网格的基本支持。使用这种方法，您可以并排运行多个控制平面，而不会影响现有的部署，并缓慢地将工作负载从旧的控制平面迁移到新的控制平面。在Istio 1.10中，引入修订标签作为金丝雀升级的改进，以帮助减少操作员使用修改时必须做的更改数量，并安全升级Istio控制平面。这是我们的用户在生产过程中被广泛采用和使用的一个特性。所有这些特性的集成测试和端到端测试都已完成，已经升级为Beta版本。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>深入理解Sidecar Injection</title>
+      <link>https://open-native.com/article/k8s-injection/</link>
+      <pubDate>Wed, 08 Feb 2023 23:14:58 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/k8s-injection/</guid>
+      <description>&lt;p&gt;在云原生生态愈加成熟的加持下，微服务架构体系服务治理能力下沉，基础设施的服务能力和计算能力进一步抽象，以达到进一步实现应用程序和基础服务更加细化的垂直分工和运行时解耦，已经成为越来越容易被大家 所追求的新趋势。&lt;br&gt;
+而被社区广泛使用的Sidecar模式，通过部署独立进程的Sidecar实现与应用程序松耦合，大大降低了构建高可用、高度弹性和高度可扩展微服务架构体系的复杂度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>深入学习kubernetes联邦</title>
+      <link>https://open-native.com/article/k8s-fed/</link>
+      <pubDate>Wed, 08 Feb 2023 23:14:58 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/k8s-fed/</guid>
+      <description>&lt;p&gt;Kubernetes从1.8版本起就声称单集群最多可支持5000个节点和15万个Pod，这个规模对于腰部以下团队来讲已经足够应对业务膨胀。但是总会出于混合云、可扩展性、降低网络延迟或者跨可用区故障隔离等各种各样因素考量去部署多集群。Kubernetes Cluster Federation 又名 KubeFed 或 Federation v2，Federation将使管理多个集群变得简单，打破各个集群边界，使之不再是一个个孤岛。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Dapr助力异构语言系统的事件驱动架构设计</title>
+      <link>https://open-native.com/article/dapr-intro/</link>
+      <pubDate>Thu, 02 Feb 2023 22:43:18 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/dapr-intro/</guid>
+      <description>&lt;p&gt;我们在探讨微服务时，通常避不开服务的颗粒度和服务之间的松耦合。也就是说服务应该是能够自治的，能够掌控服务所有的依赖，并且尽量降低同步通信的频率。今天我们来探讨一下实现分布式服务松耦合的事件驱动架构模式，以及异构语言系统如何实现事件驱动架构设计。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从日志来探究Dapr源码-Dapr runtime的启动过程</title>
+      <link>https://open-native.com/article/dapr-runtime-start/</link>
+      <pubDate>Fri, 13 Jan 2023 23:02:40 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/dapr-runtime-start/</guid>
+      <description>&lt;h4 id=&#34;日志&#34;&gt;日志&lt;/h4&gt;
+&lt;p&gt;首先，我们来整体观察一下在kubernetes集群环境下dapr服务的启动日志，以便对启动过程的时间线有一个整体的印象。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>关于 istio-proxy 503/504等5xx问题排查</title>
+      <link>https://open-native.com/article/istio-proxy-503/</link>
+      <pubDate>Sun, 02 Oct 2022 23:05:46 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/istio-proxy-503/</guid>
+      <description>&lt;h4 id=&#34;问题描述&#34;&gt;问题描述&lt;/h4&gt;
+&lt;p&gt;在生产环境，我们最近部署了Istio Service Mesh，Istio控制平面会在每个服务Pod里自动注入一个sidecar。当各个服务都初始化istio-proxy，通过sidecar去实现服务间的调用时，应用和服务就会面临一个很普遍的问题：upstream 服务调用收到HTTP 503/504 response，这个报错信息通常都是由istio-proxy产生的。HTTP 503通常发生在应用和istio-proxy的inbound或者outbound调用，或者是服务网格外部的服务调用。影响面相对严重的是通过网格访问外部服务的outbound流量，相对小的是网格内部的inbound流量。HTTP 504的问题相对要少一些，只有在upstream service的接口response时间超过15秒时才会发生，因为istio-proxy的默认response超时时间就是15秒。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>浅析领域驱动设计</title>
+      <link>https://open-native.com/article/ddd-intro/</link>
+      <pubDate>Wed, 02 Mar 2022 23:29:33 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/ddd-intro/</guid>
+      <description>&lt;p&gt;领域驱动设计（Domain Driven Design，简称DDD）是一种软件设计方法论，它的目标是通过深入理解业务领域，将该领域的知识转化为软件模型和实现，以实现高效、可维护、可扩展和易于理解的软件系统。&lt;/p&gt;
+&lt;p&gt;领域驱动设计的核心理念是将业务领域的知识与软件开发过程紧密结合。在DDD中，业务领域被视为软件系统中最重要的部分，因为它提供了系统的核心价值。因此，DDD将业务领域作为软件设计的中心，将其抽象为一个领域模型。领域模型是业务领域知识的表达，它描述了业务领域中的实体、值对象、聚合和业务规则等概念，并将它们组织成一个有机的整体。通过领域模型，DDD可以将业务知识转化为软件设计中的实体和类，使得开发人员可以更好地理解业务需求，更加高效地实现软件系统。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>分布式系统中亚稳定失败状态</title>
+      <link>https://open-native.com/article/metastable-failure/</link>
+      <pubDate>Thu, 13 Jan 2022 14:50:17 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/metastable-failure/</guid>
+      <description>&lt;p&gt;这篇文章的初衷，是记录拜读由Nathan Bronson, Aleksey Charapko, Abutalib Aghayev, and Timothy Zhu共同发表的论文&lt;a href=&#34;https://sigops.org/s/conferences/hotos/2021/papers/hotos21-s11-bronson.pdf&#34;&gt;Metastable Failures in Distributed Systems&lt;/a&gt;的收获，这篇论文描述了一个在大规模分布式系统中很常见的失败场景：亚稳定失败（metastable failures），它们为什么通常在高负载分布式系统中发生，以及解决问题的思路框架：如何识别和从亚稳定失败中恢复，甚至如何避免发生亚稳定失败。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

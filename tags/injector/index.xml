@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>injector on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/injector/</link>
+    <description>Recent content in injector on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 08 Feb 2023 23:14:58 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/injector/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深入理解Sidecar Injection</title>
+      <link>https://open-native.com/article/k8s-injection/</link>
+      <pubDate>Wed, 08 Feb 2023 23:14:58 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/k8s-injection/</guid>
+      <description>&lt;p&gt;在云原生生态愈加成熟的加持下，微服务架构体系服务治理能力下沉，基础设施的服务能力和计算能力进一步抽象，以达到进一步实现应用程序和基础服务更加细化的垂直分工和运行时解耦，已经成为越来越容易被大家 所追求的新趋势。&lt;br&gt;
+而被社区广泛使用的Sidecar模式，通过部署独立进程的Sidecar实现与应用程序松耦合，大大降低了构建高可用、高度弹性和高度可扩展微服务架构体系的复杂度。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>架构 on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/%E6%9E%B6%E6%9E%84/</link>
+    <description>Recent content in 架构 on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 12 Mar 2023 00:24:55 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/%E6%9E%B6%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何理解微服务架构中的负载均衡和API网关?</title>
+      <link>https://open-native.com/article/slb/</link>
+      <pubDate>Sun, 12 Mar 2023 00:24:55 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/slb/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://open-native.obs.cn-north-4.myhuaweicloud.com/1*4YiKYTkjpRLAfIg23XxPpA.webp&#34; alt=&#34;image.png&#34;&gt;&lt;br&gt;
+API网关和负载均衡器都是微服务体系结构中非常重要的组件，但它们却发挥着不同的作用，各司其职。&lt;br&gt;
+API网关是所有API请求的唯一入口，其为微服务提供了路由、限流、熔断、认证和鉴权、API版本控制等功能。向上对客户端隐藏了底层微服务的复杂性，向下还对各个领域服务提供防腐层的作用。在宏观上讲，通过上述功能，API网关将不确定性（流量的不确定性、用户行为的不确定性等等）转化为确定性，极大提高了系统的可靠程度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>一文解读eBPF</title>
+      <link>https://open-native.com/article/ebpf/</link>
+      <pubDate>Mon, 27 Feb 2023 21:17:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/ebpf/</guid>
+      <description>&lt;h3 id=&#34;介绍&#34;&gt;介绍&lt;/h3&gt;
+&lt;p&gt;eBPF（extended Berkeley Packet Filter）是一种Linux内核中的虚拟机技术，它允许用户在内核中运行自定义的代码，从而实现更高级别的网络过滤、监控和安全功能等。eBPF最初是由Linux内核开发者Brendan Gregg和Others在2014年提出的，它是传统BPF（Berkeley Packet Filter）的增强版，支持更多的指令和数据结构，使得用户可以编写更加复杂和高级的代码。&lt;/p&gt;
+&lt;p&gt;eBPF技术的核心是一个虚拟机，该虚拟机运行在内核中，具有JIT（即时编译）功能，可以将用户编写的eBPF代码编译成本地代码，从而获得接近本地代码的执行效率。eBPF代码可以在运行时动态注入到内核中，而不需要重新编译或重新启动内核，从而使得它在运行时可以快速适应不同的场景和需求。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>浅析领域驱动设计</title>
+      <link>https://open-native.com/article/ddd-intro/</link>
+      <pubDate>Wed, 02 Mar 2022 23:29:33 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/ddd-intro/</guid>
+      <description>&lt;p&gt;领域驱动设计（Domain Driven Design，简称DDD）是一种软件设计方法论，它的目标是通过深入理解业务领域，将该领域的知识转化为软件模型和实现，以实现高效、可维护、可扩展和易于理解的软件系统。&lt;/p&gt;
+&lt;p&gt;领域驱动设计的核心理念是将业务领域的知识与软件开发过程紧密结合。在DDD中，业务领域被视为软件系统中最重要的部分，因为它提供了系统的核心价值。因此，DDD将业务领域作为软件设计的中心，将其抽象为一个领域模型。领域模型是业务领域知识的表达，它描述了业务领域中的实体、值对象、聚合和业务规则等概念，并将它们组织成一个有机的整体。通过领域模型，DDD可以将业务知识转化为软件设计中的实体和类，使得开发人员可以更好地理解业务需求，更加高效地实现软件系统。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>分布式系统中亚稳定失败状态</title>
+      <link>https://open-native.com/article/metastable-failure/</link>
+      <pubDate>Thu, 13 Jan 2022 14:50:17 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/metastable-failure/</guid>
+      <description>&lt;p&gt;这篇文章的初衷，是记录拜读由Nathan Bronson, Aleksey Charapko, Abutalib Aghayev, and Timothy Zhu共同发表的论文&lt;a href=&#34;https://sigops.org/s/conferences/hotos/2021/papers/hotos21-s11-bronson.pdf&#34;&gt;Metastable Failures in Distributed Systems&lt;/a&gt;的收获，这篇论文描述了一个在大规模分布式系统中很常见的失败场景：亚稳定失败（metastable failures），它们为什么通常在高负载分布式系统中发生，以及解决问题的思路框架：如何识别和从亚稳定失败中恢复，甚至如何避免发生亚稳定失败。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

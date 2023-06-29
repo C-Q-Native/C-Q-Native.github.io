@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubernetes Labels on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/kubernetes-labels/</link>
+    <description>Recent content in kubernetes Labels on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 24 Apr 2023 22:27:50 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/kubernetes-labels/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes Labels And Annotatios</title>
+      <link>https://open-native.com/article/kubernetes-labels/</link>
+      <pubDate>Mon, 24 Apr 2023 22:27:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/kubernetes-labels/</guid>
+      <description>In Kubernetes, you can use labels to assign key-value pairs to any resources.
+Labels are ubiquitous and necessary to everyday operations such as creating services.
+However, how should you name and use those labels?
+Let&amp;rsquo;s start with the basics
+Any resource in Kubernetes can have labels
+Some labels are vital (e.g. service&amp;rsquo;s selector, operators, etc.), and others are useful to tag resources (e.g. labelling a deployment)
+Kubectl offers a --show-labels flag to help you list resources and their labels</description>
+    </item>
+    
+  </channel>
+</rss>

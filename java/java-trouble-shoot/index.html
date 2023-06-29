@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <script type="application/ld+json">
+
+{  
+  "@context":"http://schema.org",
+  "@type":"Website",
+  "@id":"https:\/\/open-native.com",
+  "author": {
+    "@type": "Person",
+    "name": "闲散工程师笔记",
+    
+    "image": "https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png"
+    
+  },
+  "name":"闲散工程师笔记",
+  "description":"\u003ch3 id=\u0022运行参数\u0022\u003e运行参数\u003c\/h3\u003e\n\u003cp\u003e关于java启动参数配置，大家可以参阅：\u003ca href=\u0022https:\/\/docs.oracle.com\/javase\/8\/docs\/technotes\/tools\/unix\/toc.html\u0022\u003e官方文档\u003c\/a\u003e\u003c\/p\u003e\n\u003ch4 id=\u0022查看jvm参数\u0022\u003e查看JVM参数\u003c\/h4\u003e\n\u003cp\u003e使用命令 \u003ccode\u003ejps -l\u003c\/code\u003e 查看所有正在运行的Java程序，同时显示启动类类名，获取到PID\u003c\/p\u003e\n\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e4706 org.apache.catalina.startup.Bootstrap\n5023 sun.tools.jps.Jps\n\u003c\/code\u003e\u003c\/pre\u003e",
+  "url":"https:\/\/open-native.com\/java\/java-trouble-shoot\/",
+  "keywords":"[]"
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="闲散工程师笔记">
+<meta name="keywords" content="">
+<meta name="description" content="运行参数
+关于java启动参数配置，大家可以参阅：官方文档
+查看JVM参数
+使用命令 jps -l 查看所有正在运行的Java程序，同时显示启动类类名，获取到PID
+4706 org.apache.catalina.startup.Bootstrap
+5023 sun.tools.jps.Jps
+">
+
+
+<meta property="og:description" content="运行参数
+关于java启动参数配置，大家可以参阅：官方文档
+查看JVM参数
+使用命令 jps -l 查看所有正在运行的Java程序，同时显示启动类类名，获取到PID
+4706 org.apache.catalina.startup.Bootstrap
+5023 sun.tools.jps.Jps
+">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 问题排查">
+<meta name="twitter:title" content="Java 问题排查">
+<meta property="og:url" content="https://open-native.com/java/java-trouble-shoot/">
+<meta property="twitter:url" content="https://open-native.com/java/java-trouble-shoot/">
+<meta property="og:site_name" content="闲散工程师笔记">
+<meta property="og:description" content="运行参数
+关于java启动参数配置，大家可以参阅：官方文档
+查看JVM参数
+使用命令 jps -l 查看所有正在运行的Java程序，同时显示启动类类名，获取到PID
+4706 org.apache.catalina.startup.Bootstrap
+5023 sun.tools.jps.Jps
+">
+<meta name="twitter:description" content="运行参数
+关于java启动参数配置，大家可以参阅：官方文档
+查看JVM参数
+使用命令 jps -l 查看所有正在运行的Java程序，同时显示启动类类名，获取到PID
+4706 org.apache.catalina.startup.Bootstrap
+5023 sun.tools.jps.Jps
+">
+<meta property="og:locale" content="zh-cn">
+
+  
+    <meta property="article:published_time" content="2018-09-10T16:23:19">
+  
+  
+    <meta property="article:modified_time" content="2018-09-10T16:23:19">
+  
+  
+  
+    
+      <meta property="article:section" content="java">
+    
+  
+  
+    
+      <meta property="article:tag" content="java">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+  <meta property="twitter:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+
+
+
+
+
+
+    <title>Java 问题排查</title>
+
+    <link rel="icon" href="https://open-native.com/images/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://open-native.com/java/java-trouble-shoot/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="https://open-native.com/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="1">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://open-native.com/" aria-label="去首页">闲散工程师笔记</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://open-native.com/#about" aria-label="打开链接: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="1">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://open-native.com/#about" aria-label="阅读有关作者的更多信息">
+          <img class="sidebar-profile-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">闲散工程师笔记</h4>
+        
+          <h5 class="sidebar-profile-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/java" title="Java">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-info" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Java</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/RcXu" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/21171872/black-mr" target="_blank" rel="noopener" title="Stack Overflow">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/index.xml" title="RSS">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="1"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      Java 问题排查
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2018-09-10T16:23:19&#43;08:00">
+        
+  九月 10, 2018
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/java">java</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <h3 id="运行参数">运行参数</h3>
+<p>关于java启动参数配置，大家可以参阅：<a href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html">官方文档</a></p>
+<h4 id="查看jvm参数">查看JVM参数</h4>
+<p>使用命令 <code>jps -l</code> 查看所有正在运行的Java程序，同时显示启动类类名，获取到PID</p>
+<pre tabindex="0"><code>4706 org.apache.catalina.startup.Bootstrap
+5023 sun.tools.jps.Jps
+</code></pre><p><code>jinfo -flags PID</code> 查看运行时进程参数与JVM参数</p>
+<pre tabindex="0"><code>Attaching to process ID 28987, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.171-b11
+Non-default VM flags: -XX:CICompilerCount=3 -XX:InitialHeapSize=132120576 -XX:MaxHeapSize=2092957696 -XX:MaxNewSize=697303040 -XX:MinHeapDeltaBytes=524288 -XX:NewSize=44040192 -XX:OldSize=88080384 -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseParallelGC
+Command line:  -Dspring.config.location=application.properties -Dspring.profiles.active=staging
+</code></pre><p><code>java -XX:+PrintFlagsFinal -version</code> 查看当前虚拟机默认JVM参数</p>
+<h4 id="查看即时gc状态">查看即时GC状态</h4>
+<p><code>jstat -gc PID 1000 10</code> 每秒查看一次gc信息，共10次</p>
+<p>输出参数的具体含义可以参照：<a href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstat.html">文档</a></p>
+<pre tabindex="0"><code>S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT   
+512.0  512.0   15.3   0.0    4416.0   1055.2   11372.0     7572.5   14720.0 14322.5 1664.0 1522.8     40    0.137   8      0.039    0.176
+</code></pre><p>期间可能碰到提示<code>sun.jvm.hotspot.runtime.VMVersionMismatchException: Supported versions are 24.181-b01. Target VM is 25.171-b11</code>的问题，原因在于安装了多个版本，使用<code>which、ls -l</code>可简介定位到与当前执行Java程序相同的Java版本</p>
+<h3 id="错误排查">错误排查</h3>
+<h4 id="内存问题">内存问题</h4>
+<p>内存泄露导致OOM？内存占用异常的高？这是生产环境常常出现的问题，Java提供dump文件供我们对内存里发生过的事情进行了记录，我们需要借助一些工具从中获取有价值的信息。</p>
+<h5 id="导出dump文件">导出Dump文件</h5>
+<ol>
+<li>提前对Java程序加上这些参数印dump文件 <code>-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./</code></li>
+<li>对正在运行的程序使用<code>jmap：jmap -dump:format=b,file=heap.hprof PID</code></li>
+</ol>
+<h5 id="分析dump文件">分析Dump文件</h5>
+<p>如果Dump文件不太大的话，可以传到 <a href="http://heaphero.io/index.jsp">http://heaphero.io/index.jsp</a> 来分析</p>
+<p>文件比较大，且想进行更加系统的分析，推荐使用<a href="https://www.eclipse.org/mat/">MAT</a>分析，有如下几种常用查看方式</p>
+<ol>
+<li>首页中的【Leak Suspects】能推测出问题所在</li>
+<li>点击【Create a histogram from an arbitrary set of objects】查到所有对象的数量</li>
+<li>右键点击某个对象【Merge Shortest Paths to GC Roots】-&gt; 【exclude all phantom/weak/soft etc. references】能查询到大量数量的某个对象是哪个GC ROOT引用的</li>
+</ol>
+<h4 id="线程问题">线程问题</h4>
+<p>任务长时间不退出？CPU 负载过高？很可能因为死循环或者死锁，导致某些线程一直执行不被中断，但是不报错是最烦人的，所以日志里看不到错误信息，并且又不能用dump文件分析，因为跟内存无关。这个时候就需要用线程分析工具来帮我们了。</p>
+<h5 id="导出jstack文件">导出jstack文件</h5>
+<p>使用<code>jstack PID &gt; 文件</code>，如果失败请加<code>-F</code>参数，如果还失败请使用Java程序启动时使用的用户执行jstack，下面是jstack的部分输出格式</p>
+<pre tabindex="0"><code>  线程名                                                              PID的16进制
+&#34;http-nio-8080-Acceptor-0&#34; #17 daemon prio=5 os_prio=0 tid=0x00007fac2c4bd000 nid=0x29f4 runnable [0x00007fac192f6000]
+   java.lang.Thread.State: RUNNABLE（tomcat的工作线程正在运行，有NEW/RUNNABLE/BLOCKED/WAITING/TIMED_WATING/TERMINATED状态）
+    at sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method)
+    at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:422)
+    at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:250)
+    - locked &lt;0x00000000faf845a8&gt; (a java.lang.Object)
+    at org.apache.tomcat.util.net.NioEndpoint$Acceptor.run(NioEndpoint.java:682)
+    at java.lang.Thread.run(Thread.java:748)
+</code></pre><p>jstack的输出可以看到所有的线程以及他们的状态，我们就可以看有哪些我们自己创建的正在运行的线程，那很可能就是那个一直在执行的线程了，此时线程名就格外重要了，所以建议创建新线程时指定有意义的线程名。当然，通过PID查找也非常方便。</p>
+<h5 id="排查步骤">排查步骤</h5>
+<ul>
+<li><code>top</code> 查看到哪个java程序负载高</li>
+<li><code>top -p PID -H</code> 查看该进程所有进程的运行状态</li>
+<li>记录下高负载的线程ID，<code>printf &quot;&amp;x&quot; PID</code>转换成16进制</li>
+<li><code>jstack PID &gt; 文件</code></li>
+<li>在jstack文件中用转换成16进制之后的线程ID查询线程运行堆栈</li>
+<li>从堆栈中了解到线程在执行什么任务，并结合业务与代码判断问题所在</li>
+</ul>
+              
+
+
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/java/">java</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/bean-lifetime/" data-tooltip="Spring Bean 的生命周期" aria-label="下一篇: Spring Bean 的生命周期">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--disabled">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/java/java-trouble-shoot/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/java/java-trouble-shoot/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/java/java-trouble-shoot/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function() {
+        this.page.url = 'https:\/\/open-native.com\/java\/java-trouble-shoot\/';
+        
+          this.page.identifier = '\/java\/java-trouble-shoot\/'
+        
+      };
+      (function() {
+        
+        
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+          document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+          return;
+        }
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'tranquilpeak';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2023 闲散工程师笔记. All Rights Reserved
+  </span>
+  <span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span id="busuanzi_container_site_uv">
+    本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  </span>
+  <span id="busuanzi_container_page_pv">
+    本文访问量：<span id="busuanzi_value_page_pv"></span>
+  </span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/bean-lifetime/" data-tooltip="Spring Bean 的生命周期" aria-label="下一篇: Spring Bean 的生命周期">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--disabled">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/java/java-trouble-shoot/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/java/java-trouble-shoot/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/java/java-trouble-shoot/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="1">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Fjava%2Fjava-trouble-shoot%2F" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Fjava%2Fjava-trouble-shoot%2F" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Fjava%2Fjava-trouble-shoot%2F" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+    
+    <h4 id="about-card-name">闲散工程师笔记</h4>
+    
+      <div id="about-card-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        云原生.盐酒猿
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        CHINA🇨🇳
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://open-native.com/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://open-native.com/js/script-yqzy9wdlzix4lbbwdnzvwx3egsne77earqmn73v9uno8aupuph8wfguccut.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

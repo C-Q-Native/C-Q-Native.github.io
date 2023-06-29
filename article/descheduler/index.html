@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <script type="application/ld+json">
+
+{  
+  "@context":"http://schema.org",
+  "@type":"Website",
+  "@id":"https:\/\/open-native.com",
+  "author": {
+    "@type": "Person",
+    "name": "闲散工程师笔记",
+    
+    "image": "https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png"
+    
+  },
+  "name":"闲散工程师笔记",
+  "description":"\u003ch3 id=\u0022集群均衡器的必要性\u0022\u003e集群均衡器的必要性\u003c\/h3\u003e\n\u003cp\u003e从 \u003ccode\u003ekube-scheduler\u003c\/code\u003e 的角度来看，它通过各种算法计算出最佳节点去运行 Pod 是非常完美的，当出现新的 Pod 进行调度时，调度程序会根据其当时对 Kubernetes 集群的资源描述做出最佳调度决定。但是 Kubernetes 集群是动态的，集群在一段时间内就会出现不均衡的状态，例如新节点上线与故障节点下线，或者节点维护，需要先执行节点排水，但是维护完成后，之前的 Pod 并不会自动回到该节点上来，因为 Pod 一旦被绑定了节点是不会触发重新调度的；又或者例如节点上 pod 利用率的变化导致某些节点利用率过低或者过高；节点标签变化导致 pod 的亲和策略不满足要求等等，kubernetes 集群在一段时间内就出现了不均衡的状态，所以需要均衡器来重新平衡集群。\u003c\/p\u003e\n\u003ch3 id=\u0022descheduler-组件简介\u0022\u003eDescheduler 组件简介\u003c\/h3\u003e\n\u003cp\u003eKubernetes Descheduler 组件是一个可选的 Kubernetes 插件，用于自动化 Kubernetes 集群中节点的调度和优化。它的主要目的是解决 Kubernetes 集群中节点资源利用率不高的问题，通过在集群中调度和剔除空闲或低负载节点来优化集群的资源利用率。\u003c\/p\u003e\n\u003cp\u003e具体来说，Descheduler 通过周期性检查 Kubernetes 集群中的节点负载情况，然后根据用户定义的策略来判断哪些节点需要剔除或迁移。它可以识别那些负载较低的节点，并将其与其他节点进行合并，从而使节点的资源利用率更高。\u003c\/p\u003e\n\u003cp\u003e此外，Descheduler 还可以帮助用户预防节点故障。当一个节点出现问题时，Descheduler 可以自动将该节点上的 Pod 迁移到其他节点上，以确保 Kubernetes 集群的高可用性和稳定性。\u003c\/p\u003e",
+  "url":"https:\/\/open-native.com\/article\/descheduler\/",
+  "keywords":"[cloud-native, kubernetes]"
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="闲散工程师笔记">
+<meta name="keywords" content="cloud-native, kubernetes">
+<meta name="description" content="集群均衡器的必要性
+从 kube-scheduler 的角度来看，它通过各种算法计算出最佳节点去运行 Pod 是非常完美的，当出现新的 Pod 进行调度时，调度程序会根据其当时对 Kubernetes 集群的资源描述做出最佳调度决定。但是 Kubernetes 集群是动态的，集群在一段时间内就会出现不均衡的状态，例如新节点上线与故障节点下线，或者节点维护，需要先执行节点排水，但是维护完成后，之前的 Pod 并不会自动回到该节点上来，因为 Pod 一旦被绑定了节点是不会触发重新调度的；又或者例如节点上 pod 利用率的变化导致某些节点利用率过低或者过高；节点标签变化导致 pod 的亲和策略不满足要求等等，kubernetes 集群在一段时间内就出现了不均衡的状态，所以需要均衡器来重新平衡集群。
+Descheduler 组件简介
+Kubernetes Descheduler 组件是一个可选的 Kubernetes 插件，用于自动化 Kubernetes 集群中节点的调度和优化。它的主要目的是解决 Kubernetes 集群中节点资源利用率不高的问题，通过在集群中调度和剔除空闲或低负载节点来优化集群的资源利用率。
+具体来说，Descheduler 通过周期性检查 Kubernetes 集群中的节点负载情况，然后根据用户定义的策略来判断哪些节点需要剔除或迁移。它可以识别那些负载较低的节点，并将其与其他节点进行合并，从而使节点的资源利用率更高。
+此外，Descheduler 还可以帮助用户预防节点故障。当一个节点出现问题时，Descheduler 可以自动将该节点上的 Pod 迁移到其他节点上，以确保 Kubernetes 集群的高可用性和稳定性。">
+
+
+<meta property="og:description" content="集群均衡器的必要性
+从 kube-scheduler 的角度来看，它通过各种算法计算出最佳节点去运行 Pod 是非常完美的，当出现新的 Pod 进行调度时，调度程序会根据其当时对 Kubernetes 集群的资源描述做出最佳调度决定。但是 Kubernetes 集群是动态的，集群在一段时间内就会出现不均衡的状态，例如新节点上线与故障节点下线，或者节点维护，需要先执行节点排水，但是维护完成后，之前的 Pod 并不会自动回到该节点上来，因为 Pod 一旦被绑定了节点是不会触发重新调度的；又或者例如节点上 pod 利用率的变化导致某些节点利用率过低或者过高；节点标签变化导致 pod 的亲和策略不满足要求等等，kubernetes 集群在一段时间内就出现了不均衡的状态，所以需要均衡器来重新平衡集群。
+Descheduler 组件简介
+Kubernetes Descheduler 组件是一个可选的 Kubernetes 插件，用于自动化 Kubernetes 集群中节点的调度和优化。它的主要目的是解决 Kubernetes 集群中节点资源利用率不高的问题，通过在集群中调度和剔除空闲或低负载节点来优化集群的资源利用率。
+具体来说，Descheduler 通过周期性检查 Kubernetes 集群中的节点负载情况，然后根据用户定义的策略来判断哪些节点需要剔除或迁移。它可以识别那些负载较低的节点，并将其与其他节点进行合并，从而使节点的资源利用率更高。
+此外，Descheduler 还可以帮助用户预防节点故障。当一个节点出现问题时，Descheduler 可以自动将该节点上的 Pod 迁移到其他节点上，以确保 Kubernetes 集群的高可用性和稳定性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes集群均衡器-Descheduler">
+<meta name="twitter:title" content="Kubernetes集群均衡器-Descheduler">
+<meta property="og:url" content="https://open-native.com/article/descheduler/">
+<meta property="twitter:url" content="https://open-native.com/article/descheduler/">
+<meta property="og:site_name" content="闲散工程师笔记">
+<meta property="og:description" content="集群均衡器的必要性
+从 kube-scheduler 的角度来看，它通过各种算法计算出最佳节点去运行 Pod 是非常完美的，当出现新的 Pod 进行调度时，调度程序会根据其当时对 Kubernetes 集群的资源描述做出最佳调度决定。但是 Kubernetes 集群是动态的，集群在一段时间内就会出现不均衡的状态，例如新节点上线与故障节点下线，或者节点维护，需要先执行节点排水，但是维护完成后，之前的 Pod 并不会自动回到该节点上来，因为 Pod 一旦被绑定了节点是不会触发重新调度的；又或者例如节点上 pod 利用率的变化导致某些节点利用率过低或者过高；节点标签变化导致 pod 的亲和策略不满足要求等等，kubernetes 集群在一段时间内就出现了不均衡的状态，所以需要均衡器来重新平衡集群。
+Descheduler 组件简介
+Kubernetes Descheduler 组件是一个可选的 Kubernetes 插件，用于自动化 Kubernetes 集群中节点的调度和优化。它的主要目的是解决 Kubernetes 集群中节点资源利用率不高的问题，通过在集群中调度和剔除空闲或低负载节点来优化集群的资源利用率。
+具体来说，Descheduler 通过周期性检查 Kubernetes 集群中的节点负载情况，然后根据用户定义的策略来判断哪些节点需要剔除或迁移。它可以识别那些负载较低的节点，并将其与其他节点进行合并，从而使节点的资源利用率更高。
+此外，Descheduler 还可以帮助用户预防节点故障。当一个节点出现问题时，Descheduler 可以自动将该节点上的 Pod 迁移到其他节点上，以确保 Kubernetes 集群的高可用性和稳定性。">
+<meta name="twitter:description" content="集群均衡器的必要性
+从 kube-scheduler 的角度来看，它通过各种算法计算出最佳节点去运行 Pod 是非常完美的，当出现新的 Pod 进行调度时，调度程序会根据其当时对 Kubernetes 集群的资源描述做出最佳调度决定。但是 Kubernetes 集群是动态的，集群在一段时间内就会出现不均衡的状态，例如新节点上线与故障节点下线，或者节点维护，需要先执行节点排水，但是维护完成后，之前的 Pod 并不会自动回到该节点上来，因为 Pod 一旦被绑定了节点是不会触发重新调度的；又或者例如节点上 pod 利用率的变化导致某些节点利用率过低或者过高；节点标签变化导致 pod 的亲和策略不满足要求等等，kubernetes 集群在一段时间内就出现了不均衡的状态，所以需要均衡器来重新平衡集群。
+Descheduler 组件简介
+Kubernetes Descheduler 组件是一个可选的 Kubernetes 插件，用于自动化 Kubernetes 集群中节点的调度和优化。它的主要目的是解决 Kubernetes 集群中节点资源利用率不高的问题，通过在集群中调度和剔除空闲或低负载节点来优化集群的资源利用率。
+具体来说，Descheduler 通过周期性检查 Kubernetes 集群中的节点负载情况，然后根据用户定义的策略来判断哪些节点需要剔除或迁移。它可以识别那些负载较低的节点，并将其与其他节点进行合并，从而使节点的资源利用率更高。
+此外，Descheduler 还可以帮助用户预防节点故障。当一个节点出现问题时，Descheduler 可以自动将该节点上的 Pod 迁移到其他节点上，以确保 Kubernetes 集群的高可用性和稳定性。">
+<meta property="og:locale" content="zh-cn">
+
+  
+    <meta property="article:published_time" content="2023-04-12T22:39:38">
+  
+  
+    <meta property="article:modified_time" content="2023-04-12T22:39:38">
+  
+  
+  
+    
+      <meta property="article:section" content="kubernetes">
+    
+  
+  
+    
+      <meta property="article:tag" content="cloud-native">
+    
+      <meta property="article:tag" content="kubernetes">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+  <meta property="twitter:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+
+
+
+
+
+
+    <title>Kubernetes集群均衡器-Descheduler</title>
+
+    <link rel="icon" href="https://open-native.com/images/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://open-native.com/article/descheduler/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="https://open-native.com/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://open-native.com/" aria-label="去首页">闲散工程师笔记</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://open-native.com/#about" aria-label="打开链接: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://open-native.com/#about" aria-label="阅读有关作者的更多信息">
+          <img class="sidebar-profile-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">闲散工程师笔记</h4>
+        
+          <h5 class="sidebar-profile-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/java" title="Java">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-info" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Java</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/RcXu" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/21171872/black-mr" target="_blank" rel="noopener" title="Stack Overflow">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/index.xml" title="RSS">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      Kubernetes集群均衡器-Descheduler
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2023-04-12T22:39:38&#43;08:00">
+        
+  四月 12, 2023
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/kubernetes">kubernetes</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <h3 id="集群均衡器的必要性">集群均衡器的必要性</h3>
+<p>从 <code>kube-scheduler</code> 的角度来看，它通过各种算法计算出最佳节点去运行 Pod 是非常完美的，当出现新的 Pod 进行调度时，调度程序会根据其当时对 Kubernetes 集群的资源描述做出最佳调度决定。但是 Kubernetes 集群是动态的，集群在一段时间内就会出现不均衡的状态，例如新节点上线与故障节点下线，或者节点维护，需要先执行节点排水，但是维护完成后，之前的 Pod 并不会自动回到该节点上来，因为 Pod 一旦被绑定了节点是不会触发重新调度的；又或者例如节点上 pod 利用率的变化导致某些节点利用率过低或者过高；节点标签变化导致 pod 的亲和策略不满足要求等等，kubernetes 集群在一段时间内就出现了不均衡的状态，所以需要均衡器来重新平衡集群。</p>
+<h3 id="descheduler-组件简介">Descheduler 组件简介</h3>
+<p>Kubernetes Descheduler 组件是一个可选的 Kubernetes 插件，用于自动化 Kubernetes 集群中节点的调度和优化。它的主要目的是解决 Kubernetes 集群中节点资源利用率不高的问题，通过在集群中调度和剔除空闲或低负载节点来优化集群的资源利用率。</p>
+<p>具体来说，Descheduler 通过周期性检查 Kubernetes 集群中的节点负载情况，然后根据用户定义的策略来判断哪些节点需要剔除或迁移。它可以识别那些负载较低的节点，并将其与其他节点进行合并，从而使节点的资源利用率更高。</p>
+<p>此外，Descheduler 还可以帮助用户预防节点故障。当一个节点出现问题时，Descheduler 可以自动将该节点上的 Pod 迁移到其他节点上，以确保 Kubernetes 集群的高可用性和稳定性。</p>
+<p>descheduler 可以根据一些规则和配置策略来帮助我们重新平衡集群状态，其核心原理是根据其策略配置找到可以被移除的 Pod 并驱逐它们，其本身并不会进行调度被驱逐的 Pod，而是依靠默认的调度器来实现，目前支持的策略有：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RemoveDuplicates</td>
+<td>将节点上同类型的Pod进行迁移，确保只有一个Pod与同一节点上运行的ReplicaSet、Replication Controller、StatefulSet或者Job关联</td>
+</tr>
+<tr>
+<td>LowNodeUtilization</td>
+<td>将 requests 比率较高节点上的Pod进行迁移，该策略主要用于查找未充分利用的节点，并从其他节点驱逐 Pod，以便 kube-scheudler 重新将它们调度到未充分利用的节点上。</td>
+</tr>
+<tr>
+<td>HighNodeUtilization</td>
+<td>将 requests 比率较低节点上的Pod进行迁移</td>
+</tr>
+<tr>
+<td>RemovePodsViolatingInterPodAntiAffinity</td>
+<td>将不满足反亲和性的Pod进行迁移</td>
+</tr>
+<tr>
+<td>RemovePodsViolatingNodeAffinity</td>
+<td>将不满足节点节点亲和性策略的Pod进行迁移</td>
+</tr>
+<tr>
+<td>RemovePodsViolatingNodeTaints</td>
+<td>将不满足节点污点策略的Pod进行迁移</td>
+</tr>
+<tr>
+<td>RemovePodsViolatingTopologySpreadConstraint</td>
+<td>该策略确保从节点驱逐违反拓扑分布约束的 Pods，具体来说，它试图驱逐将拓扑域平衡到每个约束的 maxSkew 内所需的最小 Pod 数，不过该策略需要 k8s 版本高于1.18才能使用</td>
+</tr>
+<tr>
+<td>RemovePodsHavingTooManyRestarts</td>
+<td>将重启次数过多的Pod进行迁移</td>
+</tr>
+<tr>
+<td>PodLifeTime</td>
+<td>该策略用于驱逐比 maxPodLifeTimeSeconds 更旧的 Pods，可以通过 podStatusPhases 来配置哪类状态的 Pods 会被驱逐</td>
+</tr>
+<tr>
+<td>RemoveFailedPods</td>
+<td>将运行失败的Pod进行迁移</td>
+</tr>
+</tbody>
+</table>
+<p>这些策略可以通过在Descheduler的配置文件中指定来启用。</p>
+<h3 id="安装descheduler组件">安装Descheduler组件</h3>
+<p>您可以使用以下命令在Kubernetes集群上安装Descheduler：</p>
+<pre tabindex="0"><code>kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/kube-descheduler/master/examples/kubernetes-example.yaml
+</code></pre><h3 id="pdb">PDB</h3>
+<p>由于使用 Descheduler 会将 Pod 驱逐进行重调度，但是如果一个服务的所有副本都被驱逐的话，则可能导致该服务不可用。如果服务本身存在单点故障，驱逐的时候肯定就会造成服务不可用了，这种情况我们强烈建议使用反亲和性和多副本来避免单点故障，但是如果服务本身就被打散在多个节点上，这些 Pod 都被驱逐的话，这个时候也会造成服务不可用了，这种情况下我们可以通过配置 PDB(PodDisruptionBudget) 对象来避免所有副本同时被删除。</p>
+<pre tabindex="0"><code>apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-demo
+spec:
+  maxUnavailable: 1  # 设置最多不可用的副本数量，或者使用 minAvailable，可以使用整数或百分比
+  selector:
+    matchLabels:    # 匹配Pod标签
+      app: demo
+</code></pre><p>所以如果使用 Descheduler 来重新平衡集群状态，那么我们强烈建议给应用创建一个对应的 PodDisruptionBudget 对象进行保护。</p>
+<h3 id="策略应用示例">策略应用示例</h3>
+<p>使用Descheduler，可以通过配置 DeschedulerPolicy 的 strategies，可以指定 descheduler 的执行策略，这些策略都是可以启用或禁用的。</p>
+<p><strong>RemoveDuplicates</strong><br>
+该策略确保只有一个和 Pod 关联的 ReplicaSet、RC、Deployment 或者 Job 资源对象运行在同一节点上。如果还有更多的 Pod 则将这些重复的 Pod 进行驱逐，以便更好地在集群中分散 Pod。如果某些节点由于某些原因崩溃了，这些节点上的 Pod 漂移到了其他节点，导致多个与 RS 或者 RC 关联的 Pod 在同一个节点上运行，就有可能发生这种情况，一旦出现故障的节点再次准备就绪，就可以启用该策略来驱逐这些重复的 Pod。</p>
+<p>配置策略的时候，可以指定参数 excludeOwnerKinds 用于排除类型，这些类型下的 Pod 不会被驱逐：</p>
+<pre tabindex="0"><code>apiVersion: &#34;descheduler/v1alpha1&#34;
+kind: &#34;DeschedulerPolicy&#34;
+strategies:
+  &#34;RemoveDuplicates&#34;:
+     enabled: true
+     params:
+       removeDuplicates:
+         excludeOwnerKinds:
+         - &#34;ReplicaSet&#34;
+</code></pre><p>当前，没有与该策略关联的参数，要禁用该策略，也很简单，只需要配置成 <code>false</code> 即可：</p>
+<pre tabindex="0"><code>apiVersion: &#34;descheduler/v1alpha1&#34;
+kind: &#34;DeschedulerPolicy&#34;
+strategies:
+  &#34;RemoveDuplicates&#34;:
+     enabled: false
+</code></pre><p><strong>PodLifeTime</strong><br>
+该策略用于驱逐比 maxPodLifeTimeSeconds 更旧的 Pods，可以通过 podStatusPhases 来配置哪类状态的 Pods 会被驱逐，建议为每个应用程序创建一个 PDB，以确保应用程序的可用性，比如我们可以配置如下所示的策略来驱逐运行超过7天的 Pod：</p>
+<pre tabindex="0"><code>apiVersion: &#34;descheduler/v1alpha1&#34;
+kind: &#34;DeschedulerPolicy&#34;
+strategies:
+  &#34;PodLifeTime&#34;:
+    enabled: true
+    params:
+      maxPodLifeTimeSeconds: 604800  # Pods 运行最多7天
+</code></pre><p><strong>LowNodeUtilization</strong><br>
+该策略查找未充分利用的节点，并从其他节点驱逐 Pod，以便 <code>kube-scheudler</code> 重新将它们调度到未充分利用的节点上。该策略的参数可以通过字段 <code>nodeResourceUtilizationThresholds</code> 进行配置。</p>
+<p>节点的利用率不足可以通过配置 <code>thresholds</code> 阈值参数来确定，可以通过 CPU、内存和 Pod 数量的百分比进行配置。如果节点的使用率均低于所有阈值，则认为该节点未充分利用。</p>
+<pre tabindex="0"><code>apiVersion: descheduler/v1alpha1
+kind: DeschedulerPolicy
+strategies:
+- name: LowNodeUtilization
+  enabled: true
+  params:
+    nodeSelector: &#34;&#34;
+    removeDuplicates: true
+    targetThresholds:
+      thresholds:
+      - name: LowNodeUtilization
+        target: 10
+        minRejuvenationCandidates: 1
+        evictionPolicy:
+          deleteLocalData: true
+          deleteEmptyDirData: true
+          deleteStatefulSetPVCs: true
+        nodeResourceUtilizationThresholds:
+          thresholds:
+          - name: memory
+            target: 90
+            mode: &#34;total&#34;
+</code></pre><p>在这个配置文件中，您定义了一个名为LowNodeUtilization的策略，用于检测节点的使用情况。该策略会检测所有节点的内存使用率，并将使用率低于10%的节点标记为“可删除”节点。此外，您还定义了一些其他的参数，如节点选择器、目标阈值和资源利用率阈值。</p>
+<p>此外，还有一个可配置的阈值 <code>targetThresholds</code>，该阈值用于计算可从中驱逐 Pod 的那些潜在节点，对于所有节点 <code>thresholds</code> 和 <code>targetThresholds</code> 之间的阈值被认为是合理使用的，不考虑驱逐。targetThresholds 阈值也可以针对 CPU、内存和 Pod 数量进行配置。<code>thresholds</code> 和 <code>targetThresholds</code> 可以根据你的集群需求进行动态调整:</p>
+<pre tabindex="0"><code>apiVersion: &#34;descheduler/v1alpha1&#34;
+kind: &#34;DeschedulerPolicy&#34;
+strategies:
+  &#34;LowNodeUtilization&#34;:
+     enabled: true
+     params:
+       nodeResourceUtilizationThresholds:
+         thresholds:
+           &#34;cpu&#34; : 20
+           &#34;memory&#34;: 20
+           &#34;pods&#34;: 20
+         targetThresholds:
+           &#34;cpu&#34; : 50
+           &#34;memory&#34;: 50
+           &#34;pods&#34;: 50
+</code></pre><p>需要注意的是：</p>
+<ul>
+<li>仅支持以下三种资源类型：cpu、memory、pods</li>
+<li><code>thresholds</code> 和 <code>targetThresholds</code> 必须配置相同的类型</li>
+<li>参数值的访问是0-100(百分制)</li>
+<li>相同的资源类型，<code>thresholds</code> 的配置不能高于 <code>targetThresholds</code> 的配置</li>
+</ul>
+<p>如果未指定任何资源类型，则默认是100%，以避免节点从未充分利用变为过度利用。和 LowNodeUtilization 策略关联的另一个参数是 numberOfNodes，只有当未充分利用的节点数大于该配置值的时候，才可以配置该参数来激活该策略，该参数对于大型集群非常有用，其中有一些节点可能会频繁使用或短期使用不足，默认情况下，numberOfNodes 为0。</p>
+<p><strong>RemovePodsViolatingNodeTaints</strong><br>
+该策略可以确保从节点中删除违反 NoSchedule 污点的 Pod。比如有一个名为 podA 的 Pod，通过配置容忍 key=value:NoSchedule 允许被调度到有该污点配置的节点上，如果节点的污点随后被更新或者删除了，则污点将不再被 Pods 的容忍满足，然后将被驱逐。</p>
+<pre tabindex="0"><code>apiVersion: descheduler/v1alpha1
+kind: DeschedulerPolicy
+strategies:
+- name: RemovePodsViolatingNodeTaints
+  enabled: true
+  params:
+    nodeSelector: &#34;&#34;
+    removeDuplicates: true
+    taints:
+    - key: node.example.com/special
+      effect: NoSchedule
+      tolerationSeconds: 3600
+    podAffinityPreference:
+      weightedPodAffinityTerm:
+        weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - myapp
+</code></pre><p>在这个配置文件中，您定义了一个名为RemovePodsViolatingNodeTaints的策略，用于删除违反节点污点规则的Pod。该策略会检测所有节点的污点规则，并将违反规则的Pod标记为“可删除”Pod。此外，您还定义了一些其他的参数，如节点选择器、污点规则、Pod关联性和Pod亲和性偏好。</p>
+<p><strong>RemovePodsViolatingInterPodAntiAffinity</strong><br>
+该策略可以确保从节点中删除违反 Pod 反亲和性的 Pod，比如某个节点上有 podA 这个 Pod，并且 podB 和 podC(在同一个节点上运行)具有禁止它们在同一个节点上运行的反亲和性规则，则 podA 将被从该节点上驱逐，以便 podB 和 podC 运行正常运行。当 podB 和 podC 已经运行在节点上后，反亲和性规则被创建就会发送这样的问题。</p>
+<pre tabindex="0"><code>apiVersion: descheduler/v1alpha1
+kind: DeschedulerPolicy
+strategies:
+- name: RemovePodsViolatingInterPodAntiAffinity
+  enabled: true
+  params:
+    nodeSelector: &#34;&#34;
+    removeDuplicates: true
+    interPodAntiAffinity:
+      topologyKey: kubernetes.io/hostname
+      labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - myapp
+      namespaces:
+      - default
+      - production
+    podAffinityPreference:
+      weightedPodAffinityTerm:
+        weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - myapp
+</code></pre><p>在这个配置文件中，您定义了一个名为RemovePodsViolatingInterPodAntiAffinity的策略，用于删除违反Pod亲和性规则的Pod。该策略会检测所有Pod的亲和性规则，并将违反规则的Pod标记为“可删除”Pod。此外，您还定义了一些其他的参数，如节点选择器、Pod亲和性和Pod亲和性偏好。</p>
+<p><strong>RemovePodsViolatingNodeAffinity</strong><br>
+该策略确保从节点中删除违反节点亲和性的 Pod。比如名为 podA 的 Pod 被调度到了节点 nodeA，podA 在调度的时候满足了节点亲和性规则 requiredDuringSchedulingIgnoredDuringExecution，但是随着时间的推移，节点 nodeA 不再满足该规则了，那么如果另一个满足节点亲和性规则的节点 nodeB 可用，则 podA 将被从节点 nodeA 驱逐.</p>
+<pre tabindex="0"><code>apiVersion: descheduler/v1alpha1
+kind: DeschedulerPolicy
+strategies:
+- name: RemovePodsViolatingNodeAffinity
+  enabled: true
+  params:
+    nodeSelector: &#34;&#34;
+    removeDuplicates: true
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node.example.com/zone
+            operator: In
+            values:
+            - zone1
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: node.example.com/region
+            operator: In
+            values:
+            - region1
+      namespaces:
+      - default
+      - production
+    podAffinityPreference:
+      weightedPodAffinityTerm:
+        weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - myapp
+</code></pre><p>在这个配置文件中，您定义了一个名为RemovePodsViolatingNodeAffinity的策略，用于删除违反节点亲和性规则的Pod。该策略会检测所有Pod的节点亲和性规则，并将违反规则的Pod标记为“可删除”Pod。此外，您还定义了一些其他的参数，如节点选择器、节点亲和性和Pod亲和性偏好。</p>
+<h3 id="过滤-pods">过滤 Pods</h3>
+<p>在驱逐 Pods 的时候，有时并不需要所有 Pods 都被驱逐，descheduler 提供了两种主要的方式进行过滤：命名空间过滤和优先级过滤。</p>
+<h4 id="命名空间过滤">命名空间过滤</h4>
+<p>比如只驱逐某些命令空间下的 Pods，则可以使用 include 参数进行配置，如下所示：</p>
+<pre tabindex="0"><code>apiVersion: &#34;descheduler/v1alpha1&#34;
+kind: &#34;DeschedulerPolicy&#34;
+strategies:
+  &#34;PodLifeTime&#34;:
+     enabled: true
+     params:
+        podLifeTime:
+          maxPodLifeTimeSeconds: 86400
+        namespaces:
+          include:
+          - &#34;namespace1&#34;
+          - &#34;namespace2&#34;
+</code></pre><p>又或者要排除掉某些命令空间下的 Pods，则可以使用 exclude 参数配置，如下所示：</p>
+<pre tabindex="0"><code>apiVersion: &#34;descheduler/v1alpha1&#34;
+kind: &#34;DeschedulerPolicy&#34;
+strategies:
+  &#34;PodLifeTime&#34;:
+     enabled: true
+     params:
+        podLifeTime:
+          maxPodLifeTimeSeconds: 86400
+        namespaces:
+          exclude:
+          - &#34;namespace1&#34;
+          - &#34;namespace2&#34;
+</code></pre><h4 id="优先级过滤">优先级过滤</h4>
+<p>所有策略都可以配置优先级阈值，只有在该阈值以下的 Pod 才会被驱逐，我们可以通过设置 thresholdPriorityClassName(将阈值设置为指定优先级类别的值)或 thresholdPriority(直接设置阈值)参数来指定该阈值。默认情况下，该阈值设置为 system-cluster-critical 这个 PriorityClass 类的值。</p>
+<p>比如使用 thresholdPriority：</p>
+<pre tabindex="0"><code>apiVersion: &#34;descheduler/v1alpha1&#34;
+kind: &#34;DeschedulerPolicy&#34;
+strategies:
+  &#34;PodLifeTime&#34;:
+     enabled: true
+     params:
+        podLifeTime:
+          maxPodLifeTimeSeconds: 86400
+        thresholdPriority: 10000
+</code></pre><p>或者使用 thresholdPriorityClassName 进行过滤：</p>
+<pre tabindex="0"><code>apiVersion: &#34;descheduler/v1alpha1&#34;
+kind: &#34;DeschedulerPolicy&#34;
+strategies:
+  &#34;PodLifeTime&#34;:
+     enabled: true
+     params:
+        podLifeTime:
+          maxPodLifeTimeSeconds: 86400
+        thresholdPriorityClassName: &#34;priorityclass1&#34;
+</code></pre><p>不过需要注意不能同时配置 thresholdPriority 和 thresholdPriorityClassName，如果指定的优先级类不存在，则 descheduler 不会创建它，并且会引发错误。</p>
+<h3 id="注意事项">注意事项</h3>
+<p>当使用descheduler驱除Pods的时候，需要注意以下几点：</p>
+<ul>
+<li>关键性 Pod 不会被驱逐，比如 priorityClassName 设置为 system-cluster-critical 或 system-node-critical 的 Pod</li>
+<li>不属于 RS、Deployment 或 Job 管理的 Pods 不会被驱逐</li>
+<li>DaemonSet 创建的 Pods 不会被驱逐</li>
+<li>使用 LocalStorage 的 Pod 不会被驱逐，除非设置 evictLocalStoragePods: true</li>
+<li>具有 PVC 的 Pods 不会被驱逐，除非设置 ignorePvcPods: true</li>
+<li>在 LowNodeUtilization 和 RemovePodsViolatingInterPodAntiAffinity 策略下，Pods 按优先级从低到高进行驱逐，如果优先级相同，Besteffort 类型的 Pod 要先于 Burstable 和 Guaranteed 类型被驱逐</li>
+<li>annotations 中带有 descheduler.alpha.kubernetes.io/evict 字段的 Pod 都可以被驱逐，该注释用于覆盖阻止驱逐的检查，用户可以选择驱逐哪个Pods</li>
+<li>如果 Pods 驱逐失败，可以设置 &ndash;v=4 从 descheduler 日志中查找原因，如果驱逐违反 PDB 约束，则不会驱逐这类 Pods</li>
+</ul>
+<p><strong>策略公共配置</strong></p>
+<ul>
+<li>nodeSelector - 限制处理的节点</li>
+<li>evictLocalStoragePods - 允许驱逐具有本地存储的 Pod</li>
+<li>evictSystemCriticalPods - [警告：将驱逐 Kubernetes 系统 Pod] 允许驱逐具有任何优先级的 Pod，包括像 kube-dns 这样的系统 Pod</li>
+<li>ignorePvcPods- 设置是否应驱逐或忽略 PVC pod（默认为false）</li>
+<li>maxNoOfPodsToEvictPerNode - 从每个节点驱逐的 Pod 的最大数量（通过所有策略求和）</li>
+</ul>
+<pre tabindex="0"><code>apiVersion: &#34;descheduler/v1alpha1&#34;
+kind: &#34;DeschedulerPolicy&#34;
+nodeSelector: prod=dev
+evictLocalStoragePods: true
+evictSystemCriticalPods: true
+maxNoOfPodsToEvictPerNode: 40
+ignorePvcPods: false
+strategies:
+  ...
+</code></pre><h3 id="总结">总结</h3>
+<p>descheduler可以说是在我们日常k8s运维过程中，提高资源使用效率的法宝。它的文档写的非常详细，感兴趣可以自己参详：<a href="https://github.com/kubernetes-sigs/descheduler#policy-and-strategies">官方文档</a></p>
+              
+
+
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/cloud-native/">cloud-native</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/kubernetes/">kubernetes</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/kubernetes-security-pratices/" data-tooltip="Kubernetes Security Pratices" aria-label="下一篇: Kubernetes Security Pratices">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/mixer-intro/" data-tooltip="ISTIO Mixer 组件架构详解" aria-label="上一篇: ISTIO Mixer 组件架构详解">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/descheduler/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/descheduler/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/descheduler/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function() {
+        this.page.url = 'https:\/\/open-native.com\/article\/descheduler\/';
+        
+          this.page.identifier = '\/article\/descheduler\/'
+        
+      };
+      (function() {
+        
+        
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+          document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+          return;
+        }
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'tranquilpeak';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2023 闲散工程师笔记. All Rights Reserved
+  </span>
+  <span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span id="busuanzi_container_site_uv">
+    本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  </span>
+  <span id="busuanzi_container_page_pv">
+    本文访问量：<span id="busuanzi_value_page_pv"></span>
+  </span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/kubernetes-security-pratices/" data-tooltip="Kubernetes Security Pratices" aria-label="下一篇: Kubernetes Security Pratices">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/mixer-intro/" data-tooltip="ISTIO Mixer 组件架构详解" aria-label="上一篇: ISTIO Mixer 组件架构详解">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/descheduler/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/descheduler/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/descheduler/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Farticle%2Fdescheduler%2F" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Farticle%2Fdescheduler%2F" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Farticle%2Fdescheduler%2F" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+    
+    <h4 id="about-card-name">闲散工程师笔记</h4>
+    
+      <div id="about-card-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        云原生.盐酒猿
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        CHINA🇨🇳
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://open-native.com/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://open-native.com/js/script-yqzy9wdlzix4lbbwdnzvwx3egsne77earqmn73v9uno8aupuph8wfguccut.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

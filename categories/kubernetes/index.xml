@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubernetes on 闲散工程师笔记</title>
+    <link>https://open-native.com/categories/kubernetes/</link>
+    <description>Recent content in kubernetes on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 24 Apr 2023 22:27:50 +0800</lastBuildDate><atom:link href="https://open-native.com/categories/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes Labels And Annotatios</title>
+      <link>https://open-native.com/article/kubernetes-labels/</link>
+      <pubDate>Mon, 24 Apr 2023 22:27:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/kubernetes-labels/</guid>
+      <description>In Kubernetes, you can use labels to assign key-value pairs to any resources.
+Labels are ubiquitous and necessary to everyday operations such as creating services.
+However, how should you name and use those labels?
+Let&amp;rsquo;s start with the basics
+Any resource in Kubernetes can have labels
+Some labels are vital (e.g. service&amp;rsquo;s selector, operators, etc.), and others are useful to tag resources (e.g. labelling a deployment)
+Kubectl offers a --show-labels flag to help you list resources and their labels</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Security Pratices</title>
+      <link>https://open-native.com/article/kubernetes-security-pratices/</link>
+      <pubDate>Sat, 22 Apr 2023 21:51:31 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/kubernetes-security-pratices/</guid>
+      <description>In this video I talk about a super important topic, which is security in Kubernetes and what are some of the best practices for securing your Kubernetes cluster.
+The big challenge that we see in terms of Kubernetes security is that it&amp;rsquo;s already so challenging to set up a Kubernetes cluster and to configure it to deploy the applications in it, that security often becomes the afterthought, adding on top of that already complex configuration.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes集群均衡器-Descheduler</title>
+      <link>https://open-native.com/article/descheduler/</link>
+      <pubDate>Wed, 12 Apr 2023 22:39:38 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/descheduler/</guid>
+      <description>&lt;h3 id=&#34;集群均衡器的必要性&#34;&gt;集群均衡器的必要性&lt;/h3&gt;
+&lt;p&gt;从 &lt;code&gt;kube-scheduler&lt;/code&gt; 的角度来看，它通过各种算法计算出最佳节点去运行 Pod 是非常完美的，当出现新的 Pod 进行调度时，调度程序会根据其当时对 Kubernetes 集群的资源描述做出最佳调度决定。但是 Kubernetes 集群是动态的，集群在一段时间内就会出现不均衡的状态，例如新节点上线与故障节点下线，或者节点维护，需要先执行节点排水，但是维护完成后，之前的 Pod 并不会自动回到该节点上来，因为 Pod 一旦被绑定了节点是不会触发重新调度的；又或者例如节点上 pod 利用率的变化导致某些节点利用率过低或者过高；节点标签变化导致 pod 的亲和策略不满足要求等等，kubernetes 集群在一段时间内就出现了不均衡的状态，所以需要均衡器来重新平衡集群。&lt;/p&gt;
+&lt;h3 id=&#34;descheduler-组件简介&#34;&gt;Descheduler 组件简介&lt;/h3&gt;
+&lt;p&gt;Kubernetes Descheduler 组件是一个可选的 Kubernetes 插件，用于自动化 Kubernetes 集群中节点的调度和优化。它的主要目的是解决 Kubernetes 集群中节点资源利用率不高的问题，通过在集群中调度和剔除空闲或低负载节点来优化集群的资源利用率。&lt;/p&gt;
+&lt;p&gt;具体来说，Descheduler 通过周期性检查 Kubernetes 集群中的节点负载情况，然后根据用户定义的策略来判断哪些节点需要剔除或迁移。它可以识别那些负载较低的节点，并将其与其他节点进行合并，从而使节点的资源利用率更高。&lt;/p&gt;
+&lt;p&gt;此外，Descheduler 还可以帮助用户预防节点故障。当一个节点出现问题时，Descheduler 可以自动将该节点上的 Pod 迁移到其他节点上，以确保 Kubernetes 集群的高可用性和稳定性。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Cilium Network Policy实践</title>
+      <link>https://open-native.com/article/cilium-network-policy/</link>
+      <pubDate>Thu, 06 Apr 2023 15:55:09 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/cilium-network-policy/</guid>
+      <description>&lt;h3 id=&#34;为什么需要networkpolicy&#34;&gt;为什么需要Networkpolicy&lt;/h3&gt;
+&lt;p&gt;Networkpolicy可以控制进出pod的网络流量。默认情况下，每个pod都可以相互通信。当你想要阻止某些微服务相互通信时，网络策略就会派上用场，特别是当你与其他团队在共享集群中工作时。这使您的微服务在多租户环境中更具有隔离性。&lt;br&gt;
+关于Networkpolicy的一些基础知识，可以参照文章：&lt;a href=&#34;http://open-native.com/article/networkpolicy/&#34;&gt;Kubernetes NetworkPolicy实践指南&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Centos 7.x内核版本升级实践</title>
+      <link>https://open-native.com/article/kernel-upgrade/</link>
+      <pubDate>Sun, 19 Mar 2023 16:26:38 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/kernel-upgrade/</guid>
+      <description>&lt;p&gt;默认情况下，Centos7.X的内核版本是3.10，如何去升级内核呢？&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;查看一下当前的系统版本&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;~ uname -r
+3.10.0-1160.el7.x86_64
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes NetworkPolicy实践指南</title>
+      <link>https://open-native.com/article/networkpolicy/</link>
+      <pubDate>Fri, 17 Mar 2023 21:35:04 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/networkpolicy/</guid>
+      <description>&lt;p&gt;根据Kubernetes的网络模型，集群中的所有pod都可以直接相互通信，不管它们存在于哪个节点上，或存在于哪个命名空间中，通信过程不需要NAT。从可用性的角度来看，这是非常便捷的，但从安全性来看，这貌似有一点问题。假设攻击者侵入了一个不受网络限制地pod，他就可以连接到同一集群中的任何一个pod，甚至是有权限访问敏感信息的pod。&lt;br&gt;
+使用NetworkPolicy，可以在IP地址或端口级别上限制Kubernetes集群中pod之间的网络流量。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在Kubernetes中，如何设置CPU的requests和limits</title>
+      <link>https://open-native.com/article/r-l/</link>
+      <pubDate>Tue, 07 Mar 2023 19:06:49 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/r-l/</guid>
+      <description>&lt;p&gt;在Kubernetes集群中，该如何设置CPU的requests和limits呢？&lt;/p&gt;
+&lt;p&gt;可供选择的策略包含：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只使用limits&lt;/li&gt;
+&lt;li&gt;从来不用limits，只是设置requests&lt;/li&gt;
+&lt;li&gt;或者，两者哪一个都不用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;该作何选择呢？&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>深入理解Sidecar Injection</title>
+      <link>https://open-native.com/article/k8s-injection/</link>
+      <pubDate>Wed, 08 Feb 2023 23:14:58 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/k8s-injection/</guid>
+      <description>&lt;p&gt;在云原生生态愈加成熟的加持下，微服务架构体系服务治理能力下沉，基础设施的服务能力和计算能力进一步抽象，以达到进一步实现应用程序和基础服务更加细化的垂直分工和运行时解耦，已经成为越来越容易被大家 所追求的新趋势。&lt;br&gt;
+而被社区广泛使用的Sidecar模式，通过部署独立进程的Sidecar实现与应用程序松耦合，大大降低了构建高可用、高度弹性和高度可扩展微服务架构体系的复杂度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>深入学习kubernetes联邦</title>
+      <link>https://open-native.com/article/k8s-fed/</link>
+      <pubDate>Wed, 08 Feb 2023 23:14:58 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/k8s-fed/</guid>
+      <description>&lt;p&gt;Kubernetes从1.8版本起就声称单集群最多可支持5000个节点和15万个Pod，这个规模对于腰部以下团队来讲已经足够应对业务膨胀。但是总会出于混合云、可扩展性、降低网络延迟或者跨可用区故障隔离等各种各样因素考量去部署多集群。Kubernetes Cluster Federation 又名 KubeFed 或 Federation v2，Federation将使管理多个集群变得简单，打破各个集群边界，使之不再是一个个孤岛。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <script type="application/ld+json">
+
+{  
+  "@context":"http://schema.org",
+  "@type":"Website",
+  "@id":"https:\/\/open-native.com",
+  "author": {
+    "@type": "Person",
+    "name": "闲散工程师笔记",
+    
+    "image": "https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png"
+    
+  },
+  "name":"闲散工程师笔记",
+  "description":"1. Advanced object oriented concepts 1.1 What is polymorphism Polymorphism is a fundamental concept in object-oriented programming (OOP) and refers to the ability of an object to take on multiple forms or behaviors. In Java, polymorphism allows an object to be treated as if it is of any type in its inheritance hierarchy.\nJava supports two types of polymorphism: static polymorphism (also known as method overloading) and dynamic polymorphism (also known as method overriding).",
+  "url":"https:\/\/open-native.com\/java\/interview-question-4\/",
+  "keywords":"[]"
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="闲散工程师笔记">
+<meta name="keywords" content="">
+<meta name="description" content="1. Advanced object oriented concepts 1.1 What is polymorphism Polymorphism is a fundamental concept in object-oriented programming (OOP) and refers to the ability of an object to take on multiple forms or behaviors. In Java, polymorphism allows an object to be treated as if it is of any type in its inheritance hierarchy.
+Java supports two types of polymorphism: static polymorphism (also known as method overloading) and dynamic polymorphism (also known as method overriding).">
+
+
+<meta property="og:description" content="1. Advanced object oriented concepts 1.1 What is polymorphism Polymorphism is a fundamental concept in object-oriented programming (OOP) and refers to the ability of an object to take on multiple forms or behaviors. In Java, polymorphism allows an object to be treated as if it is of any type in its inheritance hierarchy.
+Java supports two types of polymorphism: static polymorphism (also known as method overloading) and dynamic polymorphism (also known as method overriding).">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 面试题汇编 (五)">
+<meta name="twitter:title" content="Java 面试题汇编 (五)">
+<meta property="og:url" content="https://open-native.com/java/interview-question-4/">
+<meta property="twitter:url" content="https://open-native.com/java/interview-question-4/">
+<meta property="og:site_name" content="闲散工程师笔记">
+<meta property="og:description" content="1. Advanced object oriented concepts 1.1 What is polymorphism Polymorphism is a fundamental concept in object-oriented programming (OOP) and refers to the ability of an object to take on multiple forms or behaviors. In Java, polymorphism allows an object to be treated as if it is of any type in its inheritance hierarchy.
+Java supports two types of polymorphism: static polymorphism (also known as method overloading) and dynamic polymorphism (also known as method overriding).">
+<meta name="twitter:description" content="1. Advanced object oriented concepts 1.1 What is polymorphism Polymorphism is a fundamental concept in object-oriented programming (OOP) and refers to the ability of an object to take on multiple forms or behaviors. In Java, polymorphism allows an object to be treated as if it is of any type in its inheritance hierarchy.
+Java supports two types of polymorphism: static polymorphism (also known as method overloading) and dynamic polymorphism (also known as method overriding).">
+<meta property="og:locale" content="zh-cn">
+
+  
+    <meta property="article:published_time" content="2021-06-25T17:23:19">
+  
+  
+    <meta property="article:modified_time" content="2021-06-25T17:23:19">
+  
+  
+  
+    
+      <meta property="article:section" content="java">
+    
+  
+  
+    
+      <meta property="article:tag" content="java">
+    
+      <meta property="article:tag" content="Interview">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+  <meta property="twitter:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+
+
+
+
+
+
+    <title>Java 面试题汇编 (五)</title>
+
+    <link rel="icon" href="https://open-native.com/images/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://open-native.com/java/interview-question-4/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="https://open-native.com/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="1">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://open-native.com/" aria-label="去首页">闲散工程师笔记</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://open-native.com/#about" aria-label="打开链接: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="1">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://open-native.com/#about" aria-label="阅读有关作者的更多信息">
+          <img class="sidebar-profile-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">闲散工程师笔记</h4>
+        
+          <h5 class="sidebar-profile-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/java" title="Java">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-info" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Java</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/RcXu" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/21171872/black-mr" target="_blank" rel="noopener" title="Stack Overflow">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/index.xml" title="RSS">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="1"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      Java 面试题汇编 (五)
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2021-06-25T17:23:19&#43;08:00">
+        
+  六月 25, 2021
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/java">java</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <h3 id="1-advanced-object-oriented-concepts">1. Advanced object oriented concepts</h3>
+<h4 id="11-what-is-polymorphism">1.1 What is polymorphism</h4>
+<p>Polymorphism is a fundamental concept in object-oriented programming (OOP) and refers to the ability of an object to take on multiple forms or behaviors. In Java, polymorphism allows an object to be treated as if it is of any type in its inheritance hierarchy.</p>
+<p>Java supports two types of polymorphism: static polymorphism (also known as method overloading) and dynamic polymorphism (also known as method overriding).</p>
+<p>Static polymorphism is achieved by defining multiple methods with the same name in a class, but with different parameters. The Java compiler will determine which method to call at compile-time based on the number and types of arguments passed to the method.</p>
+<p>Dynamic polymorphism is achieved by defining a method in a subclass that has the same signature (name, return type, and parameters) as a method in its superclass. When an object of the subclass is used to call the method, the Java runtime system determines which implementation of the method to call based on the actual type of the object at runtime.</p>
+<p>Polymorphism is an important concept in Java and OOP in general because it allows for greater flexibility and modularity in designing and implementing software systems.</p>
+<h4 id="12--what-is-the-use-of-instanceof-operator-in-java">1.2  What is the use of instanceof operator in Java</h4>
+<p>The <code>instanceof</code> operator in Java is used to check if an object is an instance of a particular class or implements a particular interface. It is a binary operator that returns a boolean value: true if the object is an instance of the specified class or implements the specified interface, and false otherwise.</p>
+<p>The <code>instanceof</code> operator is commonly used in Java for two main purposes:</p>
+<ul>
+<li>Type checking: It allows you to check the type of an object at runtime. This is useful when you have a reference to an object of unknown type and you want to perform some operations or method calls on it that are specific to a particular class or interface. By using the <code>instanceof</code> operator, you can first check the type of the object and then safely cast it to the appropriate type.</li>
+<li>Polymorphism: It allows you to check if an object is an instance of a superclass or interface, which is useful for implementing polymorphic behavior in Java. For example, if you have a list of objects that implement a common interface, you can use the <code>instanceof</code> operator to determine the type of each object in the list and then perform different operations or method calls based on their specific type.</li>
+</ul>
+<p>Here&rsquo;s an example that illustrates the use of the <code>instanceof</code> operator in Java:</p>
+<pre tabindex="0"><code>Object obj = &#34;Hello World&#34;;
+if (obj instanceof String) {
+    String str = (String) obj;
+    System.out.println(&#34;Length of string: &#34; + str.length());
+} else {
+    System.out.println(&#34;Not a string object&#34;);
+}
+</code></pre><h4 id="13-what-is-coupling">1.3 What is coupling</h4>
+<p>coupling refers to the degree of interdependence between classes or components in a software system. It is a measure of how closely two or more classes are connected or dependent on each other.</p>
+<p>Java offers several mechanisms for interclass communication, including method calls, inheritance, composition, and interface implementation. The way these mechanisms are used can affect the level of coupling between classes.</p>
+<p>Low coupling is generally considered desirable in Java because it leads to more modular, flexible, and reusable code that is easier to test and maintain. High coupling, on the other hand, can make the code harder to modify, debug, and optimize.</p>
+<p>Here are some examples of different types of coupling in Java:</p>
+<ul>
+<li>Tight coupling: Occurs when two or more classes are highly interdependent and communicate with each other directly or through a shared data structure. For example, if a class relies on the internal implementation details of another class, it creates a tight coupling between them.</li>
+<li>Loose coupling: Occurs when two or more classes are relatively independent and communicate with each other through well-defined interfaces. For example, if a class only relies on the public methods of another class, it creates a loose coupling between them.</li>
+<li>Content coupling: Occurs when one class accesses or modifies the internal data or methods of another class, creating a strong dependency between them.</li>
+<li>Common coupling: Occurs when multiple classes access or modify the same global data or resource, which can lead to conflicts and synchronization issues.</li>
+<li>Control coupling: Occurs when one class controls the behavior or flow of another class, creating a complex and tightly coupled system.</li>
+</ul>
+<h4 id="14-what-is-cohesion">1.4 What is cohesion</h4>
+<p>In Java, cohesion refers to the degree to which the methods and fields within a class are related and work together towards a common purpose. In other words, it&rsquo;s a measure of how well a class&rsquo;s members are organized and how focused they are on performing a specific set of tasks.</p>
+<p>High cohesion is generally considered a good design principle, as it leads to code that is more modular, easier to maintain, and less prone to bugs. This is because highly cohesive classes tend to have methods and fields that are closely related and tightly focused on a single responsibility or purpose.</p>
+<p>On the other hand, low cohesion can lead to code that is more difficult to understand and modify, since the class&rsquo;s members are not well-organized and may perform multiple, unrelated tasks. This can make it harder to identify and fix bugs, and can also make the code more difficult to reuse in other contexts.</p>
+<p>To improve cohesion in Java, it&rsquo;s important to ensure that each class has a clear and well-defined purpose, and that its methods and fields are organized in a logical and coherent way. This can be achieved through techniques such as abstraction, encapsulation, and modular design.</p>
+<h4 id="15-what-is-encapsulation">1.5 What is encapsulation</h4>
+<p>Encapsulation is a fundamental principle in object-oriented programming (OOP) that refers to the practice of hiding internal implementation details of an object from the outside world and providing a well-defined interface for interacting with the object. In other words, it involves bundling the data and methods that operate on the data within a single unit, and restricting access to the data from outside the unit.</p>
+<p>Encapsulation provides several benefits to software development, such as increased security, modularity, and flexibility. By encapsulating the implementation details of an object, it becomes easier to maintain and update the object&rsquo;s behavior without affecting other parts of the code. Additionally, encapsulation allows developers to control access to the object&rsquo;s data, ensuring that it is only modified in a controlled and safe manner.</p>
+<p>In Java, encapsulation is typically achieved through the use of access modifiers, such as private, public, and protected, to control the visibility of variables and methods. Private variables and methods are only accessible within the class itself, while public variables and methods can be accessed from any other class. Protected variables and methods are accessible within the class and its subclasses.</p>
+<p>Encapsulation is a key concept in OOP, and is essential to writing clean, maintainable, and extensible code. By encapsulating implementation details and providing well-defined interfaces, developers can create software that is easier to understand, maintain, and extend over time.</p>
+<h4 id="16-what-is-an-inner-class">1.6 What is an inner class</h4>
+<p>An inner class in Java is a class that is defined inside another class. Inner classes are also known as nested classes, as they are defined within another class&rsquo;s scope. There are four types of inner classes in Java: static nested classes, non-static nested classes (also known as inner classes), local classes, and anonymous classes.</p>
+<p>Static nested classes are declared as static and do not have access to the enclosing class&rsquo;s instance variables. Non-static nested classes, or inner classes, have access to the enclosing class&rsquo;s instance variables and can be declared as public, private, protected, or package-private. Local classes are defined inside a method and have access to the method&rsquo;s local variables. Anonymous classes are a special type of local class that does not have a name and is declared inline, typically used for event handling and callbacks.</p>
+<p>Inner classes provide several benefits in Java programming, including encapsulation, code organization, and improved modularity. Inner classes can be used to group related code together and hide implementation details, making the code easier to read and maintain. Inner classes can also be used to implement interfaces, abstract classes, and inheritance hierarchies.</p>
+<p>Here is an example of a non-static nested class in Java:</p>
+<pre tabindex="0"><code>public class OuterClass {
+
+    private int outerVar;
+
+    public class InnerClass {
+        private int innerVar;
+
+        public void setInnerVar(int value) {
+            innerVar = value;
+        }
+
+        public void printVars() {
+            System.out.println(&#34;Outer var: &#34; + outerVar);
+            System.out.println(&#34;Inner var: &#34; + innerVar);
+        }
+    }
+
+    public void testInnerClass() {
+        InnerClass innerObj = new InnerClass();
+        innerObj.setInnerVar(10);
+        innerObj.printVars();
+    }
+}
+</code></pre><p>In this example, we have an outer class OuterClass with an instance variable outerVar. Inside OuterClass, we define an inner class InnerClass that has its own instance variable innerVar. The testInnerClass method creates an instance of InnerClass and sets the value of innerVar, then calls the printVars method to print both outerVar and innerVar. The inner class InnerClass has access to the instance variable outerVar of the enclosing class OuterClass.</p>
+<h4 id="17-what-is-a-static-inner-class">1.7 What is a static inner class</h4>
+<p>A static inner class in Java is a nested class that is declared with the static keyword. Unlike non-static inner classes, static inner classes do not have access to the instance variables of the enclosing class.</p>
+<p>Static inner classes are often used to group related classes together and can be used to encapsulate implementation details. They are also useful when you want to create an object that does not depend on the state of its outer class.</p>
+<p>Here is an example of a static inner class in Java:</p>
+<pre tabindex="0"><code>public class OuterClass {
+    private static int outerVar;
+
+    public static class InnerClass {
+        private int innerVar;
+
+        public void setInnerVar(int value) {
+            innerVar = value;
+        }
+
+        public void printVars() {
+            System.out.println(&#34;Outer var: &#34; + outerVar);
+            System.out.println(&#34;Inner var: &#34; + innerVar);
+        }
+    }
+
+    public static void testInnerClass() {
+        InnerClass innerObj = new InnerClass();
+        innerObj.setInnerVar(10);
+        innerObj.printVars();
+    }
+}
+</code></pre><p>In this example, we have an outer class <code>OuterClass</code> with a static instance variable <code>outerVar</code>. Inside <code>OuterClass</code>, we define a static inner class <code>InnerClass</code> that has its own instance variable innerVar. The <code>testInnerClass</code> method creates an instance of <code>InnerClass</code> and sets the value of <code>innerVar</code>, then calls the printVars method to print both <code>outerVar</code> and <code>innerVar</code>. Note that <code>InnerClass</code> has access to the static <code>outerVar</code> of the enclosing class <code>OuterClass</code>, but not to any instance variables.</p>
+<h4 id="18-can-you-create-an-inner-class-inside-a-method">1.8 Can you create an inner class inside a method</h4>
+<p>Yes, you can create an inner class inside a method in Java. This type of inner class is called a local inner class, and it is defined within the scope of a method. Local inner classes are similar to other inner classes in Java, but they have some restrictions, such as access to only final or effectively final variables from the enclosing method.</p>
+<p>Here is an example of a local inner class in Java:</p>
+<pre tabindex="0"><code>public class OuterClass {
+    private int outerVar = 10;
+
+    public void testLocalInnerClass() {
+        final int localVar = 20;
+
+        class LocalInnerClass {
+            public void printVars() {
+                System.out.println(&#34;Outer var: &#34; + outerVar);
+                System.out.println(&#34;Local var: &#34; + localVar);
+            }
+        }
+
+        LocalInnerClass innerObj = new LocalInnerClass();
+        innerObj.printVars();
+    }
+}
+</code></pre><p>In this example, we have an outer class <code>OuterClass</code> with an instance variable <code>outerVar</code>. Inside the <code>testLocalInnerClass</code> method, we define a local inner class <code>LocalInnerClass</code> that has access to the method&rsquo;s local variable <code>localVar</code> and the instance variable <code>outerVar</code>. The <code>printVars</code> method of <code>LocalInnerClass</code> prints both <code>outerVar</code> and <code>localVar</code>. The <code>testLocalInnerClass</code> method creates an instance of <code>LocalInnerClass</code> and calls the <code>printVars</code> method to print both variables.</p>
+<p>Note that the localVar variable is declared as final in the example because local inner classes can only access local variables that are effectively final. An effectively final variable is a variable that is not explicitly declared as final, but whose value does not change after it is initialized.</p>
+<h4 id="19-what-is-an-anonymous-class">1.9 What is an anonymous class</h4>
+<p>In Java, an anonymous class is a local class without a name that is defined and instantiated in a single expression. Anonymous classes are often used to create simple implementations of abstract classes or interfaces.</p>
+<p>Here is an example of an anonymous class in Java:</p>
+<pre tabindex="0"><code>public class AnonymousClassDemo {
+    public static void main(String[] args) {
+        // create an anonymous class that implements the Runnable interface
+        Runnable runnable = new Runnable() {
+            public void run() {
+                System.out.println(&#34;Hello from anonymous class!&#34;);
+            }
+        };
+
+        // create a thread using the anonymous class
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+}
+</code></pre><p>In this example, we create an anonymous class that implements the <code>Runnable</code> interface, which has a single method <code>run()</code>. We define the implementation of the <code>run()</code> method in the anonymous class using curly braces, and then we create an instance of the anonymous class and pass it to a Thread constructor. Finally, we start the thread using the <code>start()</code> method.</p>
+<p>Anonymous classes can also be used to override methods of a superclass or implement methods of an interface, as shown in the following example:</p>
+<pre tabindex="0"><code>public class AnonymousClassDemo {
+    public static void main(String[] args) {
+        // create an anonymous class that extends the Thread class
+        Thread thread = new Thread() {
+            public void run() {
+                System.out.println(&#34;Hello from anonymous class!&#34;);
+            }
+        };
+
+        // start the thread
+        thread.start();
+    }
+}
+</code></pre><p>In this example, we create an anonymous class that extends the <code>Thread</code> class and overrides its <code>run()</code> method to print a message. We create an instance of the anonymous class and start the thread using the <code>start()</code> method.</p>
+<h3 id="2-modifiers">2. Modifiers</h3>
+<h4 id="21-what-is-default-class-modifier">2.1 What is default class modifier</h4>
+<p>In Java, the default class modifier is also known as package-private access or default access. This means that if a class is declared with no access modifier, it is accessible only within the same package. Classes with default access are not accessible outside the package in which they are defined.</p>
+<p>Here is an example of a class with default access in Java:</p>
+<pre tabindex="0"><code>package com.example.myapp;
+
+class MyClass {
+    // class members and methods go here
+}
+</code></pre><p>In this example, we define a class <code>MyClass</code> in the package <code>com.example.myapp</code> without specifying an access modifier. This means that the class has default access and is accessible only within the same package.</p>
+<p>Default access is often used for classes that are intended to be used only within a particular package and are not part of the public API of a library or application. For example, utility classes, data access objects, or internal implementation classes may use default access to restrict access to their members and methods.</p>
+<p>It is important to note that classes with default access can be accessed by other classes within the same package, even if they are in different source files. However, classes in different packages cannot access them directly, unless they are extended by a public class or implemented by a public interface.</p>
+<h4 id="22-what-access-types-of-variables-can-be-accessed-from-a-class-in-same-package">2.2 What access types of variables can be accessed from a class in same package</h4>
+<p>In Java, a class in the same package can access all members (variables and methods) of another class in the same package that have default (package-private) or public access modifiers. This means that the following access types of variables can be accessed from a class in the same package:</p>
+<ol>
+<li>
+<p>Default (package-private) access: If a class member is declared with no access modifier, it has default access and can be accessed by any class in the same package. For example:</p>
+<pre tabindex="0"><code>package com.example.myapp;
+
+class MyClass {
+    int defaultVar; // default access
+
+    // other class members and methods go here
+}
+</code></pre><p>In this example, <code>defaultVar</code> has default access, which means that it can be accessed by any class in the <code>com.example.myapp</code> package.</p>
+</li>
+<li>
+<p>Public access: If a class member is declared with the <code>public</code> access modifier, it can be accessed by any class, regardless of the package it belongs to. For example:</p>
+<pre tabindex="0"><code>package com.example.myapp;
+
+class MyClass {
+    public int publicVar; // public access
+
+    // other class members and methods go here
+}
+</code></pre><p>In this example, <code>publicVar</code> has public access, which means that it can be accessed by any class, including those outside of the <code>com.example.myapp</code> package.</p>
+</li>
+</ol>
+<p>It is important to note that members declared with private or protected access modifiers cannot be accessed by other classes in the same package, unless they are declared within a nested or inner class.</p>
+<h4 id="23--what-access-types-of-variables-can-be-accessed-from-a-class-in-different-package">2.3  What access types of variables can be accessed from a class in different package</h4>
+<p>In Java, a class in a different package can access only those members (variables and methods) of another class that have public access modifier. This means that the following access types of variables can be accessed from a class in a different package:</p>
+<ol>
+<li>Public access: If a class member is declared with the public access modifier, it can be accessed by any class, regardless of the package it belongs to. For example:
+<pre tabindex="0"><code>package com.example.myapp;
+
+ public class MyClass {
+     public int publicVar; // public access
+
+     // other class members and methods go here
+ }
+</code></pre>In this example, <code>publicVar</code> has public access, which means that it can be accessed by any class, including those outside of the <code>com.example.myapp</code> package.</li>
+<li>Protected access: If a class member is declared with the protected access modifier, it can be accessed by any subclass, including those in a different package. For example:
+<pre tabindex="0"><code> package com.example.myapp;
+
+ public class MyClass {
+     protected int protectedVar; // protected access
+
+     // other class members and methods go here
+ }
+</code></pre>In this example, <code>protectedVar</code> has protected access, which means that it can be accessed by any subclass, even if it is in a different package.</li>
+</ol>
+<p>It is important to note that members declared with <code>default</code> (package-private) or <code>private</code> access modifiers cannot be accessed by classes in a different package. In order to access these members, you would need to either make them <code>public</code> or create a <code>public</code> method that provides access to them.</p>
+<h4 id="24-what-access-types-of-variables-can-be-accessed-from-a-sub-class-in-same-package">2.4 What access types of variables can be accessed from a sub class in same package</h4>
+<p>In Java, a subclass in the same package can access all members (variables and methods) of its superclass that have default (package-private), protected, or public access modifiers. This means that the following access types of variables can be accessed from a subclass in the same package:</p>
+<ol>
+<li>Default (package-private) access: If a superclass member is declared with no access modifier, it has default access and can be accessed by any subclass in the same package. For example:
+<pre tabindex="0"><code>package com.example.myapp;
+
+ class SuperClass {
+     int defaultVar; // default access
+
+     // other class members and methods go here
+ }
+
+ class SubClass extends SuperClass {
+     void myMethod() {
+         defaultVar = 42; // can access defaultVar in superclass
+     }
+ }
+ In this example, defaultVar has default access in SuperClass, which means that it can be accessed by any subclass in the same package, such as SubClass.
+</code></pre></li>
+<li>Protected access: If a superclass member is declared with the protected access modifier, it can be accessed by any subclass, including those in the same package. For example:
+<pre tabindex="0"><code>package com.example.myapp;
+
+ class SuperClass {
+     protected int protectedVar; // protected access
+
+     // other class members and methods go here
+ }
+
+ class SubClass extends SuperClass {
+     void myMethod() {
+         protectedVar = 42; // can access protectedVar in superclass
+     }
+ }
+</code></pre>In this example, protectedVar has protected access in SuperClass, which means that it can be accessed by any subclass, including those in the same package, such as SubClass.</li>
+<li>Public access: If a superclass member is declared with the public access modifier, it can be accessed by any class, including subclasses in the same package. For example:
+<pre tabindex="0"><code>package com.example.myapp;
+
+ public class SuperClass {
+     public int publicVar; // public access
+
+     // other class members and methods go here
+ }
+
+ class SubClass extends SuperClass {
+     void myMethod() {
+         publicVar = 42; // can access publicVar in superclass
+     }
+ }
+</code></pre>In this example, publicVar has public access in SuperClass, which means that it can be accessed by any class, including subclasses in the same package, such as SubClass.</li>
+</ol>
+<h4 id="25-what-is-the-use-of-a-final-modifier-on-a-class">2.5 What is the use of a final modifier on a class</h4>
+<p>In Java, the <code>final</code> keyword can be used to modify the declaration of a class, indicating that the class cannot be subclassed or extended by any other class.</p>
+<p>Declaring a class as <code>final</code> has several implications:</p>
+<ul>
+<li>Inheritance: A <code>final</code> class cannot be subclassed, which means that it cannot be extended by any other class. This is useful when you have a class that should not be modified or extended in any way.</li>
+<li>Polymorphism: Since a <code>final</code> class cannot be subclassed, it cannot be used polymorphically. This means that you cannot create an object of a subclass and assign it to a reference variable of the <code>final</code> class.</li>
+<li>Method Overriding: Any method in a final class is automatically considered final as well, which means that it cannot be overridden by any subclass.</li>
+</ul>
+<p>In summary, marking a class as <code>final</code> provides an additional level of control over the class and its subclasses, making it useful in situations where you want to ensure that a class cannot be modified or extended in any way.</p>
+<h4 id="26-what-is-the-use-of-a-final-modifier-on-a-method">2.6 What is the use of a final modifier on a method</h4>
+<p>In Java, the <code>final</code> keyword can also be used to modify the declaration of a method, indicating that the method cannot be overridden by any subclass.</p>
+<p>Declaring a method as <code>final</code> has several implications:</p>
+<ul>
+<li>Inheritance: A <code>final</code> method cannot be overridden by any subclass. This means that the behavior of the method is fixed and cannot be changed by any subclass.</li>
+<li>Security: By marking a method as <code>final</code>, you can ensure that critical methods in a class cannot be modified or overridden by any malicious subclass.</li>
+<li>Efficiency: Since a <code>final</code> method cannot be overridden, the Java Virtual Machine (JVM) can optimize the method at compile time, leading to better performance.</li>
+</ul>
+<p>In summary, marking a method as <code>final</code> provides an additional level of control over the behavior of a class and its subclasses, making it useful in situations where you want to ensure that a method cannot be modified or overridden by any subclass.</p>
+<h4 id="27-what-is-a-final-variable">2.7 What is a final variable</h4>
+<p>In Java, a final variable is a variable whose value cannot be changed once it has been initialized.</p>
+<p>Declaring a variable as final has several implications:</p>
+<ul>
+<li>Immutability: Once a final variable has been assigned a value, it cannot be changed. This makes the variable immutable, meaning that its value cannot be modified or reassigned.</li>
+<li>Thread Safety: Since a final variable is immutable, it can be safely accessed by multiple threads without the need for synchronization.</li>
+<li>Performance: The Java Virtual Machine (JVM) can optimize access to final variables, which can lead to better performance.</li>
+</ul>
+<p>Declaring a variable as <code>final</code> is useful when you have a value that should not be changed during the execution of a program, such as constants or configuration settings. It can also be used to ensure that a variable is initialized only once, preventing accidental changes to its value later in the program.</p>
+<h4 id="28-how-jvm-to-optimize-access-to-final-variables">2.8 how jvm to optimize access to final variables</h4>
+<p>In Java, the final keyword can be used to declare a variable whose value cannot be changed once it has been initialized. This allows the Java Virtual Machine (JVM) to perform certain optimizations that can lead to better performance.</p>
+<p>One optimization that the JVM can perform on final variables is called &ldquo;constant folding&rdquo;. This means that the JVM can replace references to the final variable with the actual value of the variable at compile time. This eliminates the need to access the variable at runtime, which can improve performance.</p>
+<p>Another optimization that the JVM can perform on final variables is called &ldquo;inlining&rdquo;. This means that the JVM can replace a method call that uses a final variable with the actual value of the variable. This eliminates the overhead of the method call, which can improve performance.</p>
+<p>In addition to these optimizations, the use of final variables can also help the JVM perform other optimizations, such as escape analysis and lock elision.</p>
+<p>Overall, the use of final variables can help the JVM optimize the performance of Java programs by reducing the need for runtime access to variables and enabling other optimizations that are not possible with mutable variables.</p>
+<h4 id="29-how-jvm-to-optimize-access-to-final-method">2.9 how jvm to optimize access to final method</h4>
+<p>In Java, the final keyword can be used to declare a method that cannot be overridden by any subclass. This allows the Java Virtual Machine (JVM) to perform certain optimizations that can lead to better performance.</p>
+<p>One optimization that the JVM can perform on final methods is called &ldquo;inlining&rdquo;. This means that the JVM can replace a method call that uses a final method with the actual code of the method at compile time. This eliminates the overhead of the method call, which can improve performance.</p>
+<p>Another optimization that the JVM can perform on final methods is called &ldquo;static binding&rdquo;. This means that the JVM can determine at compile time which method to call based on the declared type of the reference variable, rather than having to determine the actual type of the object at runtime. This eliminates the need for runtime method resolution, which can improve performance.</p>
+<p>In addition to these optimizations, the use of final methods can also help the JVM perform other optimizations, such as escape analysis and lock elision.</p>
+<p>Overall, the use of final methods can help the JVM optimize the performance of Java programs by reducing the need for runtime method resolution and enabling other optimizations that are not possible with non-final methods.</p>
+<h4 id="210-what-is-a-final-argument">2.10 What is a final argument</h4>
+<p>In Java, a <code>final</code> argument is a method argument that is declared as <code>final</code>. This means that the value of the argument cannot be changed within the method.</p>
+<p>Declaring a method argument as <code>final</code> has several implications:</p>
+<ul>
+<li>Immutability: Once a <code>final</code> argument has been assigned a value, it cannot be changed within the method. This makes the argument immutable, meaning that its value cannot be modified or reassigned.</li>
+<li>Safety: Since a <code>final</code> argument is immutable, it can be safely accessed by multiple threads without the need for synchronization.</li>
+<li>Clarity: By declaring a method argument as <code>final</code>, you indicate that the value of the argument should not be changed within the method. This can make the code easier to read and understand.</li>
+</ul>
+<p>Declaring a method argument as <code>final</code> is useful when you have a value that should not be changed within a method, such as method parameters or local variables. It can also be used to prevent accidental changes to the value of the argument within the method, which can help improve the safety and clarity of the code.</p>
+<h4 id="211-what-happens-when-a-variable-is-marked-as-volatile">2.11 What happens when a variable is marked as volatile</h4>
+<p>In Java, the <code>volatile</code> keyword can be used to mark a variable as <code>volatile</code>. This has several implications for how the variable is accessed and modified by different threads.</p>
+<p>When a variable is marked as <code>volatile</code>, it means that:</p>
+<ul>
+<li>Visibility: Any changes made to the variable by one thread are immediately visible to all other threads. This ensures that all threads have a consistent view of the variable&rsquo;s value.</li>
+<li>Atomicity: Accesses to the variable are atomic, meaning that they are indivisible and cannot be interrupted by other threads. This ensures that all threads see a consistent value for the variable.</li>
+<li>Ordering: Accesses to the variable are ordered, meaning that they occur in a predictable sequence. This ensures that all threads see a consistent order of operations.</li>
+</ul>
+<p>Using the <code>volatile</code> keyword is useful when you have a variable that is accessed by multiple threads and its value needs to be shared between them. Examples of such variables include flags, counters, and status variables.</p>
+<p>Note that the <code>volatile</code> keyword does not provide synchronization or mutual exclusion. If you need to perform compound operations on a <code>volatile</code> variable, you still need to use synchronization or other concurrency mechanisms to ensure that the operations are performed atomically and in the correct order.</p>
+<h4 id="212-what-is-a-static-variable">2.12 What is a static variable</h4>
+<p>In Java, a static variable is a class-level variable that is shared by all instances of the class. This means that if you change the value of a static variable in one instance of the class, the change will be reflected in all other instances of the class.</p>
+<p>Declaring a variable as static has several implications:</p>
+<ul>
+<li>Memory allocation: The variable is allocated memory space in the class area of the JVM, rather than in the instance area. This means that the variable exists independently of any instances of the class.</li>
+<li>Initialization: Static variables are initialized only once, when the class is loaded by the JVM. This means that all instances of the class share the same initial value for the static variable.</li>
+<li>Accessibility: Static variables are accessible from any static method of the class, as well as from any instance method of the class.</li>
+</ul>
+<p>Static variables can be useful for storing information that is common to all instances of a class, such as a counter that keeps track of the number of instances created, or a constant value that is used by all instances of the class. However, you should use static variables judiciously, as they can also create problems such as hidden dependencies and thread safety issues.</p>
+<h3 id="3-exception-handling">3. Exception handling</h3>
+<h4 id="31-what-is-the-need-for-finally-block">3.1 What is the need for finally block</h4>
+<p>The <code>finally</code> block in Java is used to contain code that should be executed regardless of whether an exception occurs or not. Here are some reasons why the <code>finally</code> block is needed:</p>
+<ul>
+<li>Resource cleanup: The <code>finally</code> block can be used to release resources that were acquired in the <code>try</code> block, such as file handles or database connections. This ensures that the resources are always properly released, even if an exception is thrown.</li>
+<li>Error recovery: The <code>finally</code> block can be used to perform error recovery operations, such as logging errors or notifying the user of an error condition. This can help to improve the reliability of the program and provide a better user experience.</li>
+<li>Control flow: The <code>finally</code> block can be used to modify the control flow of the program, for example, by changing the value of a variable or throwing a new exception. This can be useful in certain situations where it&rsquo;s necessary to perform cleanup or recovery operations before exiting a block of code.</li>
+<li>Consistency: The <code>finally</code> block helps to ensure that the program behaves consistently, regardless of whether an exception is thrown or not. This can help to avoid unexpected behavior and make the program more robust and reliable.</li>
+</ul>
+<p>Overall, the <code>finally</code> block is an important part of exception handling in Java, as it helps to ensure that resources are properly released, errors are handled correctly, and the program behaves consistently in all situations.</p>
+<h4 id="32-in-what-scenarios-is-code-in-finally-not-executed">3.2 In what scenarios is code in finally not executed</h4>
+<p>The <code>finally</code> block in Java is designed to contain code that should be executed regardless of whether an exception occurs or not. However, there are some scenarios in which the code in the <code>finally</code> block may not be executed. Here are some examples:</p>
+<ul>
+<li>If the JVM exits: If the JVM exits while the <code>try</code> or <code>catch</code> blocks are executing (for example, due to a call to <code>System.exit()</code>), the code in the finally block will not be executed.</li>
+<li>If the thread executing the <code>try</code> or <code>catch</code> blocks is interrupted: If the thread executing the <code>try</code> or <code>catch</code> blocks is interrupted (for example, by a call to <code>Thread.interrupt()</code>), the code in the <code>finally</code> block may not be executed.</li>
+<li>If an error occurs that is not caught by the <code>try-catch</code> statement: If an error occurs that is not caught by the <code>try-catch</code> statement (for example, an <code>Error</code> or a <code>Throwable</code>), the JVM may terminate abruptly without executing the code in the <code>finally</code> block.</li>
+<li>If the JVM crashes: If the JVM crashes (for example, due to a segmentation fault or a stack overflow), the code in the <code>finally</code> block may not be executed.</li>
+</ul>
+<p>It&rsquo;s worth noting that in most cases, the <code>finally</code> block will be executed as expected, and the scenarios where it is not executed are relatively rare. However, it&rsquo;s important for developers to be aware of these scenarios and design their code accordingly.</p>
+<h4 id="33-is-try-without-a-catch-is-allowed">3.3 Is try without a catch is allowed</h4>
+<p>In Java, a <code>try</code> block can be used without a <code>catch</code> block, but only if it is followed by a <code>finally</code> block. This is known as a try-finally block. The <code>finally</code> block will always be executed, regardless of whether an exception is thrown or not.</p>
+<p>Here is an example of a try-finally block in Java:</p>
+<pre tabindex="0"><code>try {
+    // code that may throw an exception
+} finally {
+    // code that should be executed regardless of whether an exception occurs or not
+}
+</code></pre><p>In this example, the <code>try</code> block contains code that may throw an exception. If an exception is thrown, it will not be caught by a <code>catch</code> block, but the <code>finally</code> block will still be executed. If no exception is thrown, the <code>finally</code> block will also be executed.</p>
+<p>Using a try-finally block without a catch block can be useful in situations where you need to perform cleanup operations, such as closing a file or releasing a resource, regardless of whether an exception occurs or not. However, if you need to handle exceptions, you should use a try-catch block instead.</p>
+<h4 id="34-is-try-without-catch-and-finally-allowed">3.4 Is try without catch and finally allowed</h4>
+<p>No, a <code>try</code> block must have either a <code>catch</code> block or a <code>finally</code> block in Java. If you try to use a <code>try</code> block without either of these blocks, the Java compiler will generate a compilation error.</p>
+<h4 id="35-can-you-explain-the-hierarchy-of-exception-handling-classes">3.5 Can you explain the hierarchy of exception handling classes</h4>
+<p>In Java, all exception classes are part of a hierarchy that is rooted at the <code>Throwable</code> class. The <code>Throwable</code> class is the base class for all exceptions and errors in Java, and it has two immediate subclasses: <code>Error</code> and <code>Exception</code>.</p>
+<ol>
+<li><code>Error</code> class: The <code>Error</code> class represents serious problems that are beyond the control of the program, such as system crashes, out-of-memory errors, and stack overflow errors. Errors are typically not recoverable, and the program should terminate when an error occurs.</li>
+<li><code>Exception</code> class: The <code>Exception</code> class represents less serious problems that can be handled by the program, such as input/output errors, arithmetic errors, and null pointer errors. Exceptions are recoverable, and the program can continue executing after an exception is thrown.</li>
+</ol>
+<p>The <code>Exception</code> class has several subclasses, including:</p>
+<ul>
+<li><code>RuntimeException</code> class: The <code>RuntimeException</code> class represents runtime errors that can occur anywhere in a program, such as division by zero, array index out of bounds, and null pointer references. These errors are usually caused by programming errors and can be avoided by proper coding practices.</li>
+<li>Checked exceptions: These are exceptions that are checked at compile time, and the compiler forces you to handle or declare them in the method signature. Examples include <code>IOException</code>, <code>ClassNotFoundException</code>, and <code>SQLException</code>.</li>
+<li>Unchecked exceptions: These are exceptions that are not checked at compile time, and the compiler does not force you to handle or declare them in the method signature. Examples include <code>NullPointerException</code>, <code>IndexOutOfBoundsException</code>, and <code>IllegalArgumentException</code>.</li>
+</ul>
+<p>By understanding the hierarchy of exception handling classes, you can write better code that handles exceptions appropriately and gracefully.</p>
+<h4 id="36-what-happens-when-you-throw-a-checked-exception-from-a-method">3.6 What happens when you throw a checked exception from a method</h4>
+<p>When a checked exception is thrown from a method in Java, the method must either catch the exception or declare that it throws the exception. A checked exception is a subclass of the <code>Exception</code> class (excluding <code>RuntimeException</code> and its subclasses), and the Java compiler enforces the rule that a checked exception must be caught or declared.</p>
+<p>Here&rsquo;s an example:</p>
+<pre tabindex="0"><code>public void readFile() throws IOException {
+    BufferedReader reader = null;
+    try {
+        reader = new BufferedReader(new FileReader(&#34;file.txt&#34;));
+        // Code to read the file
+    } catch (IOException e) {
+        // Handle the exception
+    } finally {
+        if (reader != null) {
+            reader.close();
+        }
+    }
+}
+</code></pre><p>In the example above, the <code>readFile()</code> method declares that it throws an <code>IOException</code>, which is a checked exception that can be thrown by the <code>FileReader</code> constructor or the close() method. The method either needs to catch the <code>IOException</code> or declare that it throws it to satisfy the compiler.</p>
+<p>When a checked exception is thrown from a method, the exception propagates up the call stack until it is caught by a catch block that can handle it or until it reaches the top level of the program, in which case the program terminates with an error message.</p>
+<p>By throwing checked exceptions, a method can signal to the caller that something went wrong and give them the opportunity to handle the exception appropriately.</p>
+<h4 id="37-what-are-the-options-you-have-to-eliminate-compilation-errors-when-handling-checked-exceptions">3.7 What are the options you have to eliminate compilation errors when handling checked exceptions</h4>
+<p>When handling checked exceptions, you have several options to eliminate compilation errors:</p>
+<ul>
+<li>Handle the exception using a try-catch block: You can use a try-catch block to catch the exception and handle it appropriately.</li>
+<li>Declare the exception using the throws keyword: You can declare the exception using the throws keyword in the method signature. This will pass the responsibility of handling the exception to the calling method.</li>
+<li>Use a combination of try-catch block and throws keyword: You can also use a combination of try-catch block and throws keyword. This allows you to catch the exception and handle it within the method, and also pass the responsibility of handling the exception to the calling method.</li>
+<li>Use a custom exception: You can create your own custom exception and throw it instead of the checked exception. This can be useful when you want to provide more information about the exception or when you want to wrap the checked exception in a custom exception.</li>
+<li>Modify the method to not throw the exception: Finally, you can modify the method to not throw the exception by either handling the exception within the method or by changing the code to avoid the exception altogether. However, this option should only be used if it makes sense in the context of the application logic.</li>
+</ul>
+<h4 id="38-how-do-you-handle-multiple-exception-types-with-same-exception-handling-block">3.8 How do you handle multiple exception types with same exception handling block</h4>
+<p>To handle multiple exception types with the same exception handling block in Java, you can use a multi-catch block. A multi-catch block allows you to catch multiple exceptions in a single catch block.</p>
+<p>Here is an example:</p>
+<pre tabindex="0"><code>try {
+    // some code that may throw exceptions
+} catch (IOException | SQLException e) {
+    // handle the exception
+}
+</code></pre><p>In this example, we are catching both <code>IOException</code> and <code>SQLException</code> exceptions in the same catch block using the pipe (<code>|</code>) operator to separate the exception types.</p>
+<p>When a catch block catches multiple exception types, the exception parameter (<code>e</code> in the above example) is implicitly declared as final. This means that you cannot modify it within the catch block.</p>
+<p>You can also catch all exceptions by using the <code>Exception</code> class:</p>
+<pre tabindex="0"><code>try {
+    // some code that may throw exceptions
+} catch (Exception e) {
+    // handle the exception
+}
+</code></pre><p>However, catching all exceptions like this is generally not recommended, as it can make it harder to diagnose and fix specific problems in your code. It&rsquo;s better to catch only the exceptions that you expect to occur and handle them appropriately.</p>
+<h4 id="39-can-you-explain-about-try-with-resources">3.9 Can you explain about try with resources</h4>
+<p>&ldquo;Try with resources&rdquo; is a language feature introduced in Java 7 that provides an elegant way to handle resources such as files, network connections, and database connections.</p>
+<p>Prior to Java 7, programmers had to manually close resources such as file streams and database connections in the finally block of a try-catch block. This was cumbersome and error-prone, as developers had to ensure that every resource was properly closed, even if an exception was thrown during execution.</p>
+<p>With &ldquo;try with resources&rdquo;, developers can declare one or more resources in the parentheses of the try statement, separated by semicolons. These resources are automatically closed when the try block is exited, regardless of whether an exception was thrown.</p>
+<p>Here&rsquo;s an example:</p>
+<pre tabindex="0"><code>try (FileInputStream fis = new FileInputStream(&#34;file.txt&#34;);
+     BufferedReader br = new BufferedReader(new InputStreamReader(fis))) {
+    String line;
+    while ((line = br.readLine()) != null) {
+        System.out.println(line);
+    }
+} catch (IOException e) {
+    System.err.println(&#34;Error: &#34; + e.getMessage());
+}
+</code></pre><p>In this example, the <code>FileInputStream</code> and <code>BufferedReader</code> are declared inside the parentheses of the <code>try</code> statement. The <code>FileInputStream</code> is used to read from a file, and the <code>BufferedReader</code> is used to read the lines from the input stream. When the <code>try</code> block is exited, both the <code>FileInputStream</code> and <code>BufferedReader</code> are automatically closed.</p>
+<p>Using &ldquo;try with resources&rdquo; eliminates the need for a <code>finally</code> block to close the resources, and reduces the chance of errors due to improperly closed resources.</p>
+<h4 id="310-how-does-try-with-resources-work-in-java">3.10 How does try with resources work in java</h4>
+<p>When you use &ldquo;try with resources&rdquo; in Java, the resources that you declare in the parentheses of the try statement are automatically closed when the block is exited, whether normally or due to an exception being thrown. This is done by the Java runtime environment calling the close() method of each resource in the opposite order in which they were declared.</p>
+<p>The syntax for using &ldquo;try with resources&rdquo; is as follows:</p>
+<pre tabindex="0"><code>try (Resource1 r1 = new Resource1(); Resource2 r2 = new Resource2(); ...) {
+    // use the resources
+} catch (Exception e) {
+    // handle the exception
+}
+</code></pre><p>The resources are declared in the parentheses following the <code>try</code> keyword, separated by semicolons. In this example, <code>Resource1</code> and <code>Resource2</code> are two classes that implement the <code>AutoCloseable</code> interface. The <code>AutoCloseable</code> interface requires the implementation of a <code>close()</code> method, which is called when the resource is no longer needed.</p>
+<p>When the <code>try</code> block is exited, either normally or due to an exception being thrown, the Java runtime environment calls the <code>close()</code> method of each resource in the opposite order in which they were declared. This ensures that all resources are properly closed, even if an exception occurs during the execution of the block.</p>
+<p>If an exception is thrown during the execution of the <code>try</code> block, the catch block is executed, and the exception can be handled as needed. After the catch block is executed, the resources are automatically closed.</p>
+<p>Using &ldquo;try with resources&rdquo; in Java is a convenient way to manage resources such as file streams and database connections, as it eliminates the need for explicit <code>finally</code> blocks to close the resources. It also reduces the chance of errors due to improperly closed resources.</p>
+<h3 id="4-miscellaneous-topics">4. Miscellaneous topics</h3>
+<h4 id="41-what-are-the-default-values-in-an-array-in-java">4.1 What are the default values in an array in java</h4>
+<p>In Java, the default values for arrays are determined by the type of the array.</p>
+<p>For arrays of primitive data types, such as <code>int</code>, <code>double</code>, <code>char</code>, etc., the default value is always zero (<code>0</code> or <code>0.0</code> for numeric types, <code>false</code> for <code>boolean</code>, and <code>'\u0000'</code> for <code>char</code>).</p>
+<p>For arrays of object types, the default value is <code>null</code>. This means that when you create an array of objects, all elements of the array are initially set to <code>null</code>.</p>
+<p>Here&rsquo;s an example:</p>
+<pre tabindex="0"><code>int[] intArray = new int[5];
+System.out.println(Arrays.toString(intArray));
+</code></pre><p>The output of this code will be:</p>
+<pre tabindex="0"><code>[0, 0, 0, 0, 0]
+</code></pre><p>Similarly, for an array of <code>String</code> objects:</p>
+<pre tabindex="0"><code>String[] strArray = new String[3];
+System.out.println(Arrays.toString(strArray));
+</code></pre><p>The output of this code will be:</p>
+<pre tabindex="0"><code>[null, null, null]
+</code></pre><h4 id="42-how-do-you-print-the-content-of-an-array">4.2 How do you print the content of an array</h4>
+<p>In Java, you can print the contents of an array using the <code>Arrays.toString()</code> method. Here&rsquo;s an example:</p>
+<pre tabindex="0"><code>int[] numbers = {1, 2, 3, 4, 5};
+System.out.println(Arrays.toString(numbers));
+</code></pre><p>In this example, we have an array of integers called <code>numbers</code>. We can print the contents of the array using the <code>Arrays.toString()</code> method, which takes the array as an argument and returns a string representation of the array.</p>
+<p>The output of this code will be:</p>
+<pre tabindex="0"><code>[1, 2, 3, 4, 5]
+</code></pre><p>Note that <code>Arrays.toString()</code> is useful for debugging and printing the contents of an array to the console. If you need more control over the output or want to print the array to a file, you may want to use a loop to iterate through the array and print each element individually.</p>
+<h4 id="43-how-do-you-compare-two-arrays">4.3 How do you compare two arrays</h4>
+<p>In Java, you can compare two arrays for equality using the <code>Arrays.equals()</code> method. Here&rsquo;s an example:</p>
+<pre tabindex="0"><code>int[] array1 = {1, 2, 3};
+int[] array2 = {1, 2, 3};
+boolean equalArrays = Arrays.equals(array1, array2);
+System.out.println(&#34;Are the arrays equal? &#34; + equalArrays);
+</code></pre><p>in this example, we have two arrays of integers, <code>array1</code> and <code>array2</code>. We can compare the arrays for equality using the <code>Arrays.equals()</code> method, which takes two arrays as arguments and returns <code>true</code> if they are equal, i.e., if they have the same length and the same elements in the same order.</p>
+<p>The output of this code will be:</p>
+<pre tabindex="0"><code>Are the arrays equal? true
+</code></pre><p>Note that <code>Arrays.equals()</code> compares the contents of the arrays, not the array objects themselves. If you need to compare two array objects for reference equality, you can use the <code>==</code> operator. However, this will only return <code>true</code> if the two arrays are the same object in memory, not if they have the same contents.</p>
+<h4 id="44-what-are-variable-arguments-or-varargs">4.4 What are variable arguments or varargs</h4>
+<p>Variable arguments, also known as &ldquo;varargs&rdquo; in Java, is a feature that allows you to pass a variable number of arguments to a method. In other words, you can define a method with a parameter that takes zero or more arguments of a specified type.</p>
+<p>Varargs are denoted by an ellipsis (<code>...</code>) after the parameter type. Here&rsquo;s an example:</p>
+<pre tabindex="0"><code>public void printValues(String... values) {
+    for (String value : values) {
+        System.out.println(value);
+    }
+}
+</code></pre><p>In this example, we have defined a method called <code>printValues</code> that takes a variable number of <code>String</code> arguments. Inside the method, we use a for-each loop to iterate over the <code>values</code> array and print out each value.</p>
+<p>Here&rsquo;s how you could call this method:</p>
+<pre tabindex="0"><code>printValues(&#34;hello&#34;, &#34;world&#34;);
+printValues(&#34;one&#34;, &#34;two&#34;, &#34;three&#34;, &#34;four&#34;);
+</code></pre><p>Varargs can be useful when you want to provide flexibility to a method by allowing the caller to pass in any number of arguments. Varargs can be used with any data type, not just <code>String</code>.</p>
+<h4 id="45-what-are-asserts-used-for">4.5 What are asserts used for</h4>
+<p>Asserts in Java are used for debugging and testing purposes to verify that certain conditions are true. An assertion is a statement that specifies a condition that you expect to be true at a certain point in your code.</p>
+<p>In Java, the <code>assert</code> keyword is used to define an assertion. Here&rsquo;s an example:</p>
+<pre tabindex="0"><code>int x = 5;
+assert x == 5 : &#34;x should be 5&#34;;
+</code></pre><p>In this example, we define an integer variable <code>x</code> with a value of <code>5</code>. We then use an assert statement to verify that <code>x</code> is indeed equal to <code>5</code>. If the assertion fails (i.e., if <code>x</code> is not equal to <code>5</code>), an <code>AssertionError</code> will be thrown with the message <code>&quot;x should be 5&quot;</code>.</p>
+<p>Asserts are typically used during development and testing to catch programming errors and other unexpected behavior. If an assert fails during testing, it indicates that there is a problem with the code that needs to be fixed. In production code, asserts are usually disabled, since they can have a negative impact on performance.</p>
+<p>To enable or disable asserts, you can use the <code>-ea</code> (enable assertions) or <code>-da</code> (disable assertions) command-line options when running your Java program. For example:</p>
+<pre tabindex="0"><code>java -ea MyProgram
+</code></pre><p>This will enable asserts for the <code>MyProgram</code> class. If you don&rsquo;t specify any options, asserts will be disabled by default.</p>
+<h4 id="46-when-is-garbage-collection-run">4.6 When is garbage collection run</h4>
+<p>Garbage collection in Java is run automatically in the background by the Java Virtual Machine (JVM), and the exact timing of garbage collection depends on several factors, including the amount of memory allocated to the Java process, the current memory usage of the Java process, and the garbage collection algorithm being used.</p>
+<p>In general, the JVM will run garbage collection when it determines that there is not enough memory available to continue running the program. Specifically, when the heap memory usage exceeds a certain threshold, the JVM will initiate the garbage collection process to reclaim unused memory.</p>
+<p>The garbage collector in Java runs periodically to free up unused memory. The exact timing and frequency of garbage collection depends on several factors, including the JVM implementation, the garbage collector algorithm used, and the memory usage patterns of the application.</p>
+<p>In addition to periodic garbage collection, the JVM may also initiate garbage collection in response to certain events, such as a request from the application, or when the program requests a new object and there is not enough free memory available to allocate it.</p>
+<p>Overall, the JVM and garbage collector are designed to automatically manage memory usage in Java programs, allowing programmers to focus on writing code rather than worrying about memory allocation and deallocation.</p>
+<h4 id="47-what-are-best-practices-on-garbage-collection">4.7 What are best practices on garbage collection</h4>
+<p>Here are some best practices for garbage collection in Java:</p>
+<ol>
+<li>Minimize object creation: Creating and destroying objects frequently can result in increased garbage collection activity, which can negatively impact performance. To minimize object creation, consider using object pooling or reusing existing objects where possible.</li>
+<li>Avoid unnecessary object references: Holding onto references to objects that are no longer needed can prevent them from being garbage collected, which can lead to increased memory usage and degraded performance. To avoid this, make sure to release references to objects when they are no longer needed.</li>
+<li>Tune garbage collection settings: The default garbage collection settings in Java may not be optimal for all applications. To improve performance, consider tuning the garbage collection settings based on the memory requirements and usage patterns of your application.</li>
+<li>Use finalizers sparingly: Finalizers are methods that are invoked by the garbage collector before an object is destroyed. However, finalizers can add overhead to the garbage collection process, and should be used sparingly.</li>
+<li>Monitor memory usage: To ensure that your application is not experiencing memory-related performance issues, it is important to monitor memory usage. Java provides several tools for monitoring memory usage, including the Java VisualVM and JConsole tools.</li>
+<li>Consider using a modern garbage collector: Java provides several different garbage collection algorithms, including the default mark-and-sweep algorithm, as well as more modern algorithms like G1 and ZGC. Depending on the requirements of your application, using a modern garbage collector may provide better performance and scalability.</li>
+</ol>
+<h4 id="48-what-are-initialization-blocks">4.8 What are initialization blocks</h4>
+<p>Initialization blocks are a feature in Java that allow you to execute code when an object is initialized. There are two types of initialization blocks in Java: static initialization blocks and instance initialization blocks.</p>
+<p>Static initialization blocks are executed when the class is loaded into memory, before any objects of the class are created. Static initialization blocks are typically used to initialize static variables or perform other one-time initialization tasks.</p>
+<p>Instance initialization blocks are executed when an object of the class is created, after any explicit constructor calls. Instance initialization blocks are typically used to initialize instance variables or perform other initialization tasks that cannot be done in a constructor.</p>
+<p>Here is an example of a static initialization block and an instance initialization block in Java:</p>
+<pre tabindex="0"><code>public class MyClass {
+    static {
+        // Code to be executed during static initialization
+    }
+    
+    {
+        // Code to be executed during instance initialization
+    }
+    
+    public MyClass() {
+        // Constructor code
+    }
+}
+</code></pre><p>In this example, the static initialization block is denoted by the <code>static</code> keyword, and the instance initialization block is denoted by curly braces with no keyword. When an object of the <code>MyClass</code> class is created, the instance initialization block will be executed after any explicit constructor calls.</p>
+<h4 id="49-what-is-tokenizing">4.9 What is tokenizing</h4>
+<p>In Java, tokenizing refers to the process of breaking down a string or text into smaller parts called tokens, based on a set of rules or delimiters. Java provides several built-in classes and methods for tokenizing, including <code>StringTokenizer</code> and the <code>split()</code> method of the <code>String</code> class.</p>
+<p>The <code>StringTokenizer</code> class is a legacy class that has been part of Java since the early versions of the language. It allows you to break down a string into tokens based on a set of delimiters specified in the constructor. Here&rsquo;s an example of how to use the <code>StringTokenizer</code> class:</p>
+<pre tabindex="0"><code>String str = &#34;The quick brown fox jumps over the lazy dog&#34;;
+StringTokenizer tokenizer = new StringTokenizer(str, &#34; &#34;);
+while (tokenizer.hasMoreTokens()) {
+    System.out.println(tokenizer.nextToken());
+}
+</code></pre><p>In this example, we create a <code>StringTokenizer</code> object with the string <code>str</code> and the delimiter <code>&quot; &quot;</code>, which specifies that we want to split the string into tokens based on spaces. We then use a <code>while</code> loop and the <code>hasMoreTokens()</code> and <code>nextToken()</code> methods to iterate through the tokens and print them out.</p>
+<p>The <code>split()</code> method of the <code>String</code> class is another way to tokenize a string in Java. It allows you to split a string into tokens based on a regular expression pattern specified as an argument. Here&rsquo;s an example of how to use the <code>split()</code> method:</p>
+<pre tabindex="0"><code>String str = &#34;The quick brown fox jumps over the lazy dog&#34;;
+String[] tokens = str.split(&#34; &#34;);
+for (String token : tokens) {
+    System.out.println(token);
+}
+</code></pre><p>In this example, we use the <code>split()</code> method to split the string <code>str</code> into tokens based on spaces. The resulting tokens are stored in an array, which we then iterate through using a <code>for</code> loop and print out each token.</p>
+<p>Tokenizing is a useful technique for processing text and data in Java, and can be used in a variety of applications, such as parsing input from users or files, analyzing text data, and building search algorithms.</p>
+<h4 id="410-what-is-serialization-in-java">4.10 What is serialization in java</h4>
+<p>Serialization in Java refers to the process of converting an object into a stream of bytes, which can then be written to a file or transmitted over a network. The opposite process, which involves reading a stream of bytes and converting it back into an object, is called deserialization.</p>
+<p>Serialization is commonly used in Java for two main purposes:</p>
+<ol>
+<li>Persistence: Serialization allows you to save the state of an object to a file, which can then be loaded back into memory at a later time. This is often used for storing application data or for implementing undo/redo functionality.</li>
+<li>Communication: Serialization also allows you to transmit objects across a network or between processes. This is commonly used in client-server applications and distributed systems.</li>
+</ol>
+<p>In Java, serialization is implemented using the <code>Serializable</code> interface. Any class that implements this interface can be serialized and deserialized using the <code>ObjectOutputStream</code> and <code>ObjectInputStream</code> classes, respectively.</p>
+<p>Here&rsquo;s an example of how to serialize an object to a file in Java:</p>
+<pre tabindex="0"><code>public class Person implements Serializable {
+    private String name;
+    private int age;
+    
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    // getters and setters
+    
+    public static void main(String[] args) {
+        Person person = new Person(&#34;John Doe&#34;, 30);
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(&#34;person.ser&#34;))) {
+            out.writeObject(person);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre><p>In this example, we define a <code>Person</code> class that implements the <code>Serializable</code> interface. We then create a <code>Person</code> object and write it to a file using an <code>ObjectOutputStream</code> wrapped in a <code>FileOutputStream</code>. The <code>try-with-resources</code> statement ensures that the <code>ObjectOutputStream</code> is closed properly after use.</p>
+<p>Deserializing an object is similar, but uses an <code>ObjectInputStream</code> and a <code>FileInputStream</code> instead:</p>
+<pre tabindex="0"><code>public static void main(String[] args) {
+    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(&#34;person.ser&#34;))) {
+        Person person = (Person) in.readObject();
+        System.out.println(person.getName());
+        System.out.println(person.getAge());
+    } catch (IOException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+}
+</code></pre><p>In this example, we read the <code>Person</code> object from the file using an <code>ObjectInputStream</code> wrapped in a <code>FileInputStream</code>. The <code>readObject()</code> method returns an <code>Object</code>, which we cast to a <code>Person</code> object. We can then access the object&rsquo;s properties and methods as usual.</p>
+<p>Serialization is a powerful feature of Java that allows you to easily save and transmit objects. However, it is important to be aware of potential security risks and to properly handle versioning and compatibility issues.</p>
+<h4 id="411-what-do-you-do-if-only-parts-of-the-object-have-to-be-serialized">4.11 What do you do if only parts of the object have to be serialized</h4>
+<p>If only parts of an object need to be serialized, you can mark those fields as <code>transient</code>. When an object is serialized, any fields marked as <code>transient</code> are ignored by the serialization process.</p>
+<p>Here&rsquo;s an example of how to use <code>transient</code> to exclude a field from serialization:</p>
+<pre tabindex="0"><code>import java.io.*;
+
+public class Person implements Serializable {
+    private String name;
+    private transient int age; // This field won&#39;t be serialized
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        // Write the age field separately
+        out.writeInt(age);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // Read the age field separately
+        age = in.readInt();
+    }
+}
+</code></pre><p>In this example, we mark the age field as transient, which means it won&rsquo;t be serialized when an object of Person class is written to a file using an ObjectOutputStream.</p>
+<p>We also define two methods, writeObject() and readObject(), which allow us to customize the serialization and deserialization process. In writeObject(), we call out.defaultWriteObject() to write the non-transient fields using the default serialization process, and then we write the age field separately. In readObject(), we call in.defaultReadObject() to read the non-transient fields using the default deserialization process, and then we read the age field separately.</p>
+<p>By using transient and custom serialization methods, we can control exactly which fields are serialized and how they are serialized.</p>
+<h4 id="412-how-do-you-serialize-a-hierarchy-of-objects">4.12 How do you serialize a hierarchy of objects</h4>
+<p>When serializing a hierarchy of objects in Java, each class in the hierarchy must implement the Serializable interface. The serialization process will automatically serialize all the fields of the object, including any fields that reference other objects.</p>
+<p>Here&rsquo;s an example of how to serialize a hierarchy of objects in Java:</p>
+<pre tabindex="0"><code>import java.io.*;
+
+public class HierarchySerializationDemo {
+    public static void main(String[] args) {
+        try {
+            // Serialize an instance of the Derived class
+            Derived derived = new Derived(42, &#34;Hello, world!&#34;, 3.14);
+            FileOutputStream fileOut = new FileOutputStream(&#34;hierarchy.ser&#34;);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(derived);
+            out.close();
+            fileOut.close();
+            System.out.println(&#34;Object serialized to hierarchy.ser&#34;);
+            
+            // Deserialize the object
+            FileInputStream fileIn = new FileInputStream(&#34;hierarchy.ser&#34;);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            Derived deserializedDerived = (Derived) in.readObject();
+            in.close();
+            fileIn.close();
+            System.out.println(&#34;Deserialized data:&#34;);
+            System.out.println(&#34;Base field: &#34; + deserializedDerived.baseField);
+            System.out.println(&#34;Derived field: &#34; + deserializedDerived.derivedField);
+            System.out.println(&#34;Another field: &#34; + deserializedDerived.anotherField);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class Base implements Serializable {
+    int baseField;
+}
+
+class Derived extends Base implements Serializable {
+    String derivedField;
+    double anotherField;
+
+    public Derived(int baseField, String derivedField, double anotherField) {
+        this.baseField = baseField;
+        this.derivedField = derivedField;
+        this.anotherField = anotherField;
+    }
+}
+</code></pre><p>In this example, we define two classes, Base and Derived, both of which implement the Serializable interface. The Derived class extends the Base class.</p>
+<p>We create an instance of the Derived class and serialize it to a file using an ObjectOutputStream. We then deserialize the object from the file using an ObjectInputStream and cast the returned object to a Derived object.</p>
+<p>When we deserialize the object, the serialization process automatically constructs the object hierarchy by first constructing the Base object, and then constructing the Derived object and setting its fields, including the inherited baseField.</p>
+<p>Note that in this example, we don&rsquo;t need to define any custom serialization or deserialization methods because the default serialization process is sufficient.</p>
+<h4 id="413-are-the-constructors-in-an-object-invoked-when-it-is-de-serialized">4.13 Are the constructors in an object invoked when it is de-serialized</h4>
+<p>When an object is deserialized in Java, its constructors are not invoked. Instead, the object is reconstructed from the serialized data, using either the default constructor (if the class has one) or the no-argument constructor (if the class does not have a default constructor).</p>
+<p>If the class has instance variables that are not serialized, their values will be initialized to their default values (0 for numeric types, false for boolean, and null for reference types).</p>
+<p>If you need to perform any initialization of the object&rsquo;s state after it has been deserialized, you can define the readObject method in the class. This method is automatically called by the serialization process after the object has been deserialized, and can be used to perform any additional initialization that is needed.</p>
+<h4 id="414-are-the-values-of-static-variables-stored-when-an-object-is-serialized">4.14 Are the values of static variables stored when an object is serialized</h4>
+<p>The values of static variables are not stored when an object is serialized in Java.</p>
+<p>Static variables are not part of an object&rsquo;s state because they belong to the class, not to any individual instance of the class. Therefore, when an object is serialized, only its instance variables are saved, along with the state of any objects that it references.</p>
+<p>When the object is deserialized, any static variables will be initialized to their default values or the values specified in their initializers in the class definition.</p>
+<p>If you need to save the state of a static variable, you can do so explicitly by writing it to the stream in the writeObject method or reading it from the stream in the readObject method. However, keep in mind that this can lead to unexpected behavior if different instances of the object have different values for the static variable. In general, it&rsquo;s best to avoid serializing static variables unless you have a specific reason to do so.</p>
+
+              
+
+
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/java/">java</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/interview/">Interview</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/interview-question-5/" data-tooltip="Java 面试题汇编 (六)" aria-label="下一篇: Java 面试题汇编 (六)">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/interview-question-3/" data-tooltip="Java 面试题汇编 (四)" aria-label="上一篇: Java 面试题汇编 (四)">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/java/interview-question-4/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/java/interview-question-4/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/java/interview-question-4/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function() {
+        this.page.url = 'https:\/\/open-native.com\/java\/interview-question-4\/';
+        
+          this.page.identifier = '\/java\/interview-question-4\/'
+        
+      };
+      (function() {
+        
+        
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+          document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+          return;
+        }
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'tranquilpeak';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2023 闲散工程师笔记. All Rights Reserved
+  </span>
+  <span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span id="busuanzi_container_site_uv">
+    本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  </span>
+  <span id="busuanzi_container_page_pv">
+    本文访问量：<span id="busuanzi_value_page_pv"></span>
+  </span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/interview-question-5/" data-tooltip="Java 面试题汇编 (六)" aria-label="下一篇: Java 面试题汇编 (六)">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/interview-question-3/" data-tooltip="Java 面试题汇编 (四)" aria-label="上一篇: Java 面试题汇编 (四)">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/java/interview-question-4/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/java/interview-question-4/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/java/interview-question-4/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="1">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Fjava%2Finterview-question-4%2F" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Fjava%2Finterview-question-4%2F" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Fjava%2Finterview-question-4%2F" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+    
+    <h4 id="about-card-name">闲散工程师笔记</h4>
+    
+      <div id="about-card-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        云原生.盐酒猿
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        CHINA🇨🇳
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://open-native.com/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://open-native.com/js/script-yqzy9wdlzix4lbbwdnzvwx3egsne77earqmn73v9uno8aupuph8wfguccut.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

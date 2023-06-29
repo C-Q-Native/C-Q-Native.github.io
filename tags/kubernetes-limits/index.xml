@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubernetes limits on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/kubernetes-limits/</link>
+    <description>Recent content in kubernetes limits on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 07 Mar 2023 19:06:49 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/kubernetes-limits/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在Kubernetes中，如何设置CPU的requests和limits</title>
+      <link>https://open-native.com/article/r-l/</link>
+      <pubDate>Tue, 07 Mar 2023 19:06:49 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/r-l/</guid>
+      <description>&lt;p&gt;在Kubernetes集群中，该如何设置CPU的requests和limits呢？&lt;/p&gt;
+&lt;p&gt;可供选择的策略包含：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只使用limits&lt;/li&gt;
+&lt;li&gt;从来不用limits，只是设置requests&lt;/li&gt;
+&lt;li&gt;或者，两者哪一个都不用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;该作何选择呢？&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Istio on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/istio/</link>
+    <description>Recent content in Istio on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 08 Apr 2023 21:29:24 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/istio/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ISTIO Mixer 组件架构详解</title>
+      <link>https://open-native.com/article/mixer-intro/</link>
+      <pubDate>Sat, 08 Apr 2023 21:29:24 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/mixer-intro/</guid>
+      <description>&lt;p&gt;Mixer是Istio另一个非常重要的组件，主要职责就是负责提供策略控制和遥测统计。&lt;/p&gt;
+&lt;h3 id=&#34;1-mixer整体架构详解&#34;&gt;1. Mixer整体架构详解&lt;/h3&gt;
+&lt;p&gt;Mixer整体架构：
+&lt;img src=&#34;https://open-native.obs.cn-north-4.myhuaweicloud.com/1383365-20200114204447477-84964089.png&#34; alt=&#34;Mixer架构图&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在服务间进行请求转发时，Envoy对Mixer发起Check、Report这两次请求，即在转发请求前请求Mixer执行访问策略的管理配额，并在请求转发后上报要遥测数据。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>ISTIO Pilot 组件架构详解</title>
+      <link>https://open-native.com/article/pilot-intro/</link>
+      <pubDate>Mon, 27 Mar 2023 21:29:24 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/pilot-intro/</guid>
+      <description>&lt;p&gt;Pilot是Istio控制平面的核心组件，是管理和配置Istio服务网格中所有Envoy代理实例的司令官。&lt;/p&gt;
+&lt;h3 id=&#34;pilot架构详解&#34;&gt;Pilot架构详解&lt;/h3&gt;
+&lt;p&gt;Pilot架构图：&lt;br&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/servicemesher/website/master/content/blog/lightweight-service-mesh-practice-in-ucloud/00704eQkgy1fsaijtidnzj30hs0edq67.jpg&#34; alt=&#34;Pilot架构图&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

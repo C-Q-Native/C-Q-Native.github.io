@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DDD on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/ddd/</link>
+    <description>Recent content in DDD on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 02 Mar 2022 23:29:33 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/ddd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>浅析领域驱动设计</title>
+      <link>https://open-native.com/article/ddd-intro/</link>
+      <pubDate>Wed, 02 Mar 2022 23:29:33 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/ddd-intro/</guid>
+      <description>&lt;p&gt;领域驱动设计（Domain Driven Design，简称DDD）是一种软件设计方法论，它的目标是通过深入理解业务领域，将该领域的知识转化为软件模型和实现，以实现高效、可维护、可扩展和易于理解的软件系统。&lt;/p&gt;
+&lt;p&gt;领域驱动设计的核心理念是将业务领域的知识与软件开发过程紧密结合。在DDD中，业务领域被视为软件系统中最重要的部分，因为它提供了系统的核心价值。因此，DDD将业务领域作为软件设计的中心，将其抽象为一个领域模型。领域模型是业务领域知识的表达，它描述了业务领域中的实体、值对象、聚合和业务规则等概念，并将它们组织成一个有机的整体。通过领域模型，DDD可以将业务知识转化为软件设计中的实体和类，使得开发人员可以更好地理解业务需求，更加高效地实现软件系统。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

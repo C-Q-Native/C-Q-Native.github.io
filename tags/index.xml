@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/</link>
+    <description>Recent content in Tags on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 29 May 2023 11:36:26 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Interview</title>
+      <link>https://open-native.com/tags/interview/</link>
+      <pubDate>Mon, 29 May 2023 11:36:26 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/interview/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>java</title>
+      <link>https://open-native.com/tags/java/</link>
+      <pubDate>Mon, 29 May 2023 11:36:26 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cloud-native</title>
+      <link>https://open-native.com/tags/cloud-native/</link>
+      <pubDate>Mon, 24 Apr 2023 22:27:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/cloud-native/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes</title>
+      <link>https://open-native.com/tags/kubernetes/</link>
+      <pubDate>Mon, 24 Apr 2023 22:27:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes Labels</title>
+      <link>https://open-native.com/tags/kubernetes-labels/</link>
+      <pubDate>Mon, 24 Apr 2023 22:27:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/kubernetes-labels/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes security</title>
+      <link>https://open-native.com/tags/kubernetes-security/</link>
+      <pubDate>Sat, 22 Apr 2023 21:51:31 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/kubernetes-security/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Istio</title>
+      <link>https://open-native.com/tags/istio/</link>
+      <pubDate>Sat, 08 Apr 2023 21:29:24 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/istio/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>service-mesh</title>
+      <link>https://open-native.com/tags/service-mesh/</link>
+      <pubDate>Sat, 08 Apr 2023 21:29:24 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/service-mesh/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cilium</title>
+      <link>https://open-native.com/tags/cilium/</link>
+      <pubDate>Thu, 06 Apr 2023 15:55:09 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/cilium/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes NetworkPolicy</title>
+      <link>https://open-native.com/tags/kubernetes-networkpolicy/</link>
+      <pubDate>Thu, 06 Apr 2023 15:55:09 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/kubernetes-networkpolicy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>centos</title>
+      <link>https://open-native.com/tags/centos/</link>
+      <pubDate>Sun, 19 Mar 2023 16:26:38 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/centos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kernel Upgrade</title>
+      <link>https://open-native.com/tags/kernel-upgrade/</link>
+      <pubDate>Sun, 19 Mar 2023 16:26:38 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/kernel-upgrade/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>架构</title>
+      <link>https://open-native.com/tags/%E6%9E%B6%E6%9E%84/</link>
+      <pubDate>Sun, 12 Mar 2023 00:24:55 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/%E6%9E%B6%E6%9E%84/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>微服务</title>
+      <link>https://open-native.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Sun, 12 Mar 2023 00:24:55 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes limits</title>
+      <link>https://open-native.com/tags/kubernetes-limits/</link>
+      <pubDate>Tue, 07 Mar 2023 19:06:49 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/kubernetes-limits/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes requests</title>
+      <link>https://open-native.com/tags/kubernetes-requests/</link>
+      <pubDate>Tue, 07 Mar 2023 19:06:49 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/kubernetes-requests/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>architecture</title>
+      <link>https://open-native.com/tags/architecture/</link>
+      <pubDate>Mon, 27 Feb 2023 21:17:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/architecture/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>eBPF</title>
+      <link>https://open-native.com/tags/ebpf/</link>
+      <pubDate>Mon, 27 Feb 2023 21:17:50 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/ebpf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>injector</title>
+      <link>https://open-native.com/tags/injector/</link>
+      <pubDate>Wed, 08 Feb 2023 23:14:58 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/injector/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes Federation</title>
+      <link>https://open-native.com/tags/kubernetes-federation/</link>
+      <pubDate>Wed, 08 Feb 2023 23:14:58 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/kubernetes-federation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sidecar</title>
+      <link>https://open-native.com/tags/sidecar/</link>
+      <pubDate>Wed, 08 Feb 2023 23:14:58 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/sidecar/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Dapr</title>
+      <link>https://open-native.com/tags/dapr/</link>
+      <pubDate>Thu, 02 Feb 2023 22:43:18 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/dapr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DDD</title>
+      <link>https://open-native.com/tags/ddd/</link>
+      <pubDate>Wed, 02 Mar 2022 23:29:33 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/ddd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>领域驱动设计</title>
+      <link>https://open-native.com/tags/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1/</link>
+      <pubDate>Wed, 02 Mar 2022 23:29:33 +0800</pubDate>
+      
+      <guid>https://open-native.com/tags/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

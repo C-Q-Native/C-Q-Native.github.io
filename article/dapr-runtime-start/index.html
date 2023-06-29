@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <script type="application/ld+json">
+
+{  
+  "@context":"http://schema.org",
+  "@type":"Website",
+  "@id":"https:\/\/open-native.com",
+  "author": {
+    "@type": "Person",
+    "name": "闲散工程师笔记",
+    
+    "image": "https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png"
+    
+  },
+  "name":"闲散工程师笔记",
+  "description":"\u003ch4 id=\u0022日志\u0022\u003e日志\u003c\/h4\u003e\n\u003cp\u003e首先，我们来整体观察一下在kubernetes集群环境下dapr服务的启动日志，以便对启动过程的时间线有一个整体的印象。\u003c\/p\u003e",
+  "url":"https:\/\/open-native.com\/article\/dapr-runtime-start\/",
+  "keywords":"[Dapr, cloud native, kubernetes, source code]"
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="闲散工程师笔记">
+<meta name="keywords" content="Dapr, cloud native, kubernetes, source code">
+<meta name="description" content="日志
+首先，我们来整体观察一下在kubernetes集群环境下dapr服务的启动日志，以便对启动过程的时间线有一个整体的印象。">
+
+
+<meta property="og:description" content="日志
+首先，我们来整体观察一下在kubernetes集群环境下dapr服务的启动日志，以便对启动过程的时间线有一个整体的印象。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从日志来探究Dapr源码-Dapr runtime的启动过程">
+<meta name="twitter:title" content="从日志来探究Dapr源码-Dapr runtime的启动过程">
+<meta property="og:url" content="https://open-native.com/article/dapr-runtime-start/">
+<meta property="twitter:url" content="https://open-native.com/article/dapr-runtime-start/">
+<meta property="og:site_name" content="闲散工程师笔记">
+<meta property="og:description" content="日志
+首先，我们来整体观察一下在kubernetes集群环境下dapr服务的启动日志，以便对启动过程的时间线有一个整体的印象。">
+<meta name="twitter:description" content="日志
+首先，我们来整体观察一下在kubernetes集群环境下dapr服务的启动日志，以便对启动过程的时间线有一个整体的印象。">
+<meta property="og:locale" content="zh-cn">
+
+  
+    <meta property="article:published_time" content="2023-01-13T23:02:40">
+  
+  
+    <meta property="article:modified_time" content="2023-01-13T23:02:40">
+  
+  
+  
+    
+      <meta property="article:section" content="Dapr">
+    
+  
+  
+    
+      <meta property="article:tag" content="Dapr">
+    
+      <meta property="article:tag" content="cloud-native">
+    
+      <meta property="article:tag" content="kubernetes">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+  <meta property="twitter:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+
+
+
+
+
+
+    <title>从日志来探究Dapr源码-Dapr runtime的启动过程</title>
+
+    <link rel="icon" href="https://open-native.com/images/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://open-native.com/article/dapr-runtime-start/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="https://open-native.com/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://open-native.com/" aria-label="去首页">闲散工程师笔记</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://open-native.com/#about" aria-label="打开链接: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://open-native.com/#about" aria-label="阅读有关作者的更多信息">
+          <img class="sidebar-profile-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">闲散工程师笔记</h4>
+        
+          <h5 class="sidebar-profile-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/java" title="Java">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-info" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Java</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/RcXu" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/21171872/black-mr" target="_blank" rel="noopener" title="Stack Overflow">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/index.xml" title="RSS">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      从日志来探究Dapr源码-Dapr runtime的启动过程
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2023-01-13T23:02:40&#43;08:00">
+        
+  一月 13, 2023
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/dapr">Dapr</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <h4 id="日志">日志</h4>
+<p>首先，我们来整体观察一下在kubernetes集群环境下dapr服务的启动日志，以便对启动过程的时间线有一个整体的印象。</p>
+<pre tabindex="0"><code>time=&#34;2022-05-12T01:51:07.584216594Z&#34; level=info msg=&#34;starting Dapr Runtime -- version 1.7.1 -- commit 5fd38aeaaa9cf58f3f00f6f9bfc6c58d8cd82b87&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.584279407Z&#34; level=info msg=&#34;log level set to: debug&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.585832265Z&#34; level=info msg=&#34;metrics server started on :9090/&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.metrics type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.585962686Z&#34; level=info msg=&#34;loading default configuration&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.585982324Z&#34; level=debug msg=&#34;Resiliency is not enabled.&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.586012006Z&#34; level=info msg=&#34;kubernetes mode configured&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.586025078Z&#34; level=info msg=&#34;app id: nodeapp&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.586393412Z&#34; level=info msg=&#34;mTLS enabled. creating sidecar authenticator&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.588174923Z&#34; level=info msg=&#34;trust anchors and cert chain extracted successfully&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.security type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.588201977Z&#34; level=info msg=&#34;authenticator created&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.594025729Z&#34; level=info msg=&#34;Initialized name resolution to kubernetes&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.597683105Z&#34; level=debug msg=&#34;loading component. name: kubernetes, type: secretstores.kubernetes/v1&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.599609839Z&#34; level=info msg=&#34;component loaded. name: kubernetes, type: secretstores.kubernetes/v1&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:07.599642778Z&#34; level=info msg=&#34;loading components&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.571722227Z&#34; level=debug msg=&#34;found component. name: statestore, type: state.redis/v1&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.575529535Z&#34; level=info msg=&#34;waiting for all outstanding components to be processed&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.575745717Z&#34; level=debug msg=&#34;loading component. name: statestore, type: state.redis/v1&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.599485999Z&#34; level=info msg=&#34;component loaded. name: statestore, type: state.redis/v1&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.599538024Z&#34; level=info msg=&#34;all outstanding components processed&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.599558821Z&#34; level=info msg=&#34;gRPC proxy enabled&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.599651105Z&#34; level=warning msg=&#34;Failed to listen on [::1]:50001 with error: listen tcp [::1]:50001: bind: cannot assign requested address&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.grpc.api type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.599707846Z&#34; level=info msg=&#34;enabled gRPC tracing middleware&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.grpc.api type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.599733291Z&#34; level=info msg=&#34;enabled gRPC metrics middleware&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.grpc.api type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.604608235Z&#34; level=info msg=&#34;API gRPC server is running on port 50001&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.604983466Z&#34; level=info msg=&#34;enabled metrics http middleware&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.http type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.605010379Z&#34; level=info msg=&#34;enabled tracing http middleware&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.http type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.605067197Z&#34; level=warning msg=&#34;Failed to listen on [::1]:3500 with error: listen tcp [::1]:3500: bind: cannot assign requested address&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.http type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.605171418Z&#34; level=info msg=&#34;enabled metrics http middleware&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.http type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.605187231Z&#34; level=info msg=&#34;enabled tracing http middleware&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.http type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.605217462Z&#34; level=info msg=&#34;http server is running on port 3500&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.605226165Z&#34; level=info msg=&#34;The request body size parameter is: 4&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.605254349Z&#34; level=info msg=&#34;enabled gRPC tracing middleware&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.grpc.internal type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.605270933Z&#34; level=info msg=&#34;enabled gRPC metrics middleware&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.grpc.internal type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.605285517Z&#34; level=info msg=&#34;sending workload csr request to sentry&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.grpc.internal type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.693861196Z&#34; level=info msg=&#34;certificate signed successfully&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.grpc.internal type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.694073123Z&#34; level=info msg=&#34;internal gRPC server is running on port 50002&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.694093279Z&#34; level=info msg=&#34;application protocol: http. waiting on port 3000.  This will block until the app is listening on that port.&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.694812954Z&#34; level=info msg=&#34;starting workload cert expiry watcher. current cert expires on: 2022-05-13 02:06:10 +0000 UTC&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime.grpc.internal type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.696089494Z&#34; level=info msg=&#34;application discovered on port 3000&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.696129066Z&#34; level=warning msg=&#34;[DEPRECATION NOTICE] Adding a default content type to incoming service invocation requests is deprecated and will be removed in the future. See https://docs.dapr.io/operations/support/support-preview-features/ for more details. You can opt into the new behavior today by setting the configuration option `ServiceInvocation.NoDefaultContentType` to true.&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.82914006Z&#34; level=info msg=&#34;application configuration loaded&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.82927049Z&#34; level=warning msg=&#34;failed to init actors: no actor state store defined&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+time=&#34;2022-05-12T01:51:10.829303428Z&#34; level=info msg=&#34;dapr initialized. Status: Running. Init Elapsed 3243.280519ms&#34; app_id=nodeapp instance=nodeapp-967854b66-vdcwt scope=dapr.runtime type=log ver=1.7.1
+</code></pre><p>（如何在k8s集群初始化dapr，如何跑demo，请<a href="https://github.com/dapr/quickstarts/tree/master/tutorials/hello-kubernetes">参照文档</a>）
+以上，即为demo镜像完整的启动日志。接下来，我们来尝试根据启动日志，逐步分析dapr runtime在启动过程中都做了哪些工作。</p>
+<h4 id="sidecar注入">Sidecar注入</h4>
+<p>在demo构建模板yaml文件里有这样几行代码：</p>
+<pre tabindex="0"><code>annotations:
+   dapr.io/enabled: &#34;true&#34;
+   dapr.io/app-id: &#34;nodeapp&#34;
+   dapr.io/app-port: &#34;3000&#34;
+   dapr.io/enable-api-logging: &#34;true&#34;
+</code></pre><p>服务在构建时，Dapr控制面板会根据以上配置项在宿主pod中自动注入sidecar。</p>
+<h4 id="启动前准备">启动前准备</h4>
+<p>dapr启动入口代码在<code>dapr/pkg/runtime/cli.go</code>文件中实现：</p>
+<p><strong>开端</strong></p>
+<pre tabindex="0"><code>msg=&#34;starting Dapr Runtime&#34;
+msg=&#34;log level set to: debug&#34;
+</code></pre><p>这两行日志预示着dapr runtime正式开始启动，在FromFlags()方法中开启了runtime启动的漫长过程。</p>
+<pre tabindex="0"><code>func FromFlags() (*DaprRuntime, error) {
+...
+	解析启动配置参数，为runtime启动初始化做准备
+	log.Infof(&#34;starting Dapr Runtime -- version %s -- commit %s&#34;, version.Version(), version.Commit())
+	log.Infof(&#34;log level set to: %s&#34;, loggerOptions.OutputLevel)
+
+	#初始化dapr metrics
+	if err := metricsExporter.Init(); err != nil {
+		log.Fatal(err)
+	}
+	
+	#加载resiliency配置
+	if resiliencyEnabled {
+		
+	} else {
+		log.Debug(&#34;Resiliency is not enabled.&#34;)
+	}
+...
+}
+</code></pre><p><strong>Metrics</strong></p>
+<pre tabindex="0"><code>msg=&#34;metrics server started&#34;
+</code></pre><p>在文件<code>pkg/metrics/exporter.go</code>中实现了metrics server启动的全部过程：</p>
+<pre tabindex="0"><code>#初始化opencensus exporter
+func (m *promMetricsExporter) Init() error {	
+	...
+	// start metrics server
+	return m.startMetricServer()
+}
+
+#启动metrics server
+func (m *promMetricsExporter) startMetricServer() error {
+
+  addr := fmt.Sprintf(&#34;:%d&#34;, m.options.MetricsPort())
+
+  m.exporter.logger.Infof(&#34;metrics server started on %s%s&#34;, addr, defaultMetricsPath)
+  
+  go func() {
+    mux := http.NewServeMux()
+    mux.Handle(defaultMetricsPath, m.ocExporter)
+
+    if err := http.ListenAndServe(addr, mux); err != nil {
+      m.exporter.logger.Fatalf(&#34;failed to start metrics server: %v&#34;, err)
+    }
+  }()
+
+  return nil
+}
+</code></pre><p><strong>Resiliency</strong></p>
+<pre tabindex="0"><code>msg=&#34;Resiliency is not enabled.&#34;
+</code></pre><p>Resiliency为1.7版本的新特性，低版本的代码中没有这部分处理逻辑。验证是否在spec中声明支持resiliency特性，并且根据mode加载resiliency配置。</p>
+<pre tabindex="0"><code>func FromFlags() (*DaprRuntime, error) {
+...
+	if resiliencyEnabled {
+		#加载配置
+	} else {
+		log.Debug(&#34;Resiliency is not enabled.&#34;)
+	}
+...
+}
+</code></pre><p><strong>runtime实例</strong>
+根据传入的runtime配置参数和全局的默认参数创建一个runtime实例。</p>
+<pre tabindex="0"><code>func FromFlags() (*DaprRuntime, error) {
+...
+	return NewDaprRuntime(runtimeConfig, globalConfig, accessControlList, resiliencyProvider), nil
+}
+
+func NewDaprRuntime(runtimeConfig *Config, globalConfig *config.Configuration, accessControlList *config.AccessControlList, resiliencyProvider resiliency.Provider) *DaprRuntime {
+	return &amp;DaprRuntime{
+...
+	}
+}
+</code></pre><h4 id="启动">启动</h4>
+<pre tabindex="0"><code>msg=&#34;kubernetes mode configured&#34; 
+msg=&#34;app id: nodeapp&#34; 
+</code></pre><p>经过前置的准备工作，runtime实例拿到了所有启动需要的配置参数，正式进入启动阶段。dapr 启动函数在<code>pkg/runtime/runtime.go</code>中实现，根据选择的运行模式开始启动。</p>
+<pre tabindex="0"><code>func (a *DaprRuntime) Run(opts ...Option) error {
+	log.Infof(&#34;%s mode configured&#34;, a.runtimeConfig.Mode)
+	log.Infof(&#34;app id: %s&#34;, a.runtimeConfig.ID)
+	err := a.initRuntime(&amp;o)
+	...
+}
+
+func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+	#如果显示声明了MetricSpec，则会初始化默认的服务监控、GRPC、HTTP和组件特性的监控指标
+	if a.globalConfig.Spec.MetricSpec.Enabled {
+		diag.InitMetrics(a.runtimeConfig.ID, a.namespace);
+	}
+	
+	#建立mTLS安全认证
+    err := a.establishSecurity(a.runtimeConfig.SentryServiceAddress)
+    
+	#为服务发现向注册表中注册和实例化名字解析组件
+	#目前支持三种解析器：mdns，kubernetes，consul
+	a.nameResolutionRegistry.Register(opts.nameResolutions...)
+	err = a.initNameResolution()
+}
+</code></pre><p><strong>安全认证</strong></p>
+<pre tabindex="0"><code>msg=&#34;mTLS enabled. creating sidecar authenticator&#34;
+msg=&#34;trust anchors and cert chain extracted successfully&#34;
+msg=&#34;authenticator created&#34;
+</code></pre><p>在方法establishSecurity()中完成了一系列的安全认证初始化操作</p>
+<pre tabindex="0"><code>func (a *DaprRuntime) establishSecurity(sentryAddress string) error {
+    log.Info(&#34;mTLS enabled. creating sidecar authenticator&#34;)
+	#根据配置的证书创建Authenticator实例
+	auth, err := security.GetSidecarAuthenticator(sentryAddress, a.runtimeConfig.CertChain)
+	#注册runtime认证器
+	a.authenticator = auth
+	a.grpc.SetAuthenticator(auth)
+	log.Info(&#34;authenticator created&#34;)
+	diag.DefaultMonitoring.MTLSInitCompleted()
+	return nil
+}
+</code></pre><p><strong>名称解析</strong></p>
+<pre tabindex="0"><code>msg=&#34;Initialized name resolution to kubernetes&#34;
+</code></pre><pre tabindex="0"><code>func (a *DaprRuntime) initNameResolution() error {
+	if resolverName == &#34;&#34; {
+		switch a.runtimeConfig.Mode {
+		case modes.KubernetesMode:
+			resolverName = &#34;kubernetes&#34;
+		case modes.StandaloneMode:
+			resolverName = &#34;mdns&#34;
+		default:
+			return errors.Errorf(&#34;unable to determine name resolver for %s mode&#34;, string(a.runtimeConfig.Mode))
+		}
+	}
+	#根据解析器类型和版本创建解析器实例
+	resolver, err = a.nameResolutionRegistry.Create(resolverName, resolverVersion)
+	#初始化解析器实例
+	if err = resolver.Init(resolverMetadata); err != nil {
+		log.Errorf(&#34;failed to initialize name resolution resolver %s: %s&#34;, resolverName, err)
+		return err
+	}
+	log.Infof(&#34;Initialized name resolution to %s&#34;, resolverName)
+	return nil
+}
+</code></pre><p><strong>组件</strong></p>
+<pre tabindex="0"><code>msg=&#34;loading component. name: kubernetes, type: secretstores.kubernetes/v1&#34;
+msg=&#34;component loaded. name: kubernetes, type: secretstores.kubernetes/v1&#34;
+msg=&#34;loading components&#34;
+msg=&#34;found component. name: statestore, type: state.redis/v1&#34;
+msg=&#34;waiting for all outstanding components to be processed&#34;
+msg=&#34;loading component. name: statestore, type: state.redis/v1&#34;
+msg=&#34;component loaded. name: statestore, type: state.redis/v1&#34;
+msg=&#34;all outstanding components processed&#34; 
+</code></pre><p>将启动入口声明的组件注册到runtime 实例中。</p>
+<pre tabindex="0"><code>func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+	...
+	#向注册表中注册各种组件
+	a.pubSubRegistry.Register(opts.pubsubs...)
+	a.secretStoresRegistry.Register(opts.secretStores...)
+	a.stateStoreRegistry.Register(opts.states...)
+	a.configurationStoreRegistry.Register(opts.configurations...)
+	a.bindingsRegistry.RegisterInputBindings(opts.inputBindings...)
+	a.bindingsRegistry.RegisterOutputBindings(opts.outputBindings...)
+	a.httpMiddlewareRegistry.Register(opts.httpMiddleware...)
+	
+	#加载处理各种组件
+	go a.processComponents()
+
+	if _, ok := os.LookupEnv(hotReloadingEnvVar); ok {
+		log.Debug(&#34;starting to watch component updates&#34;)
+		err = a.beginComponentsUpdates()
+		if err != nil {
+			log.Warnf(&#34;failed to watch component updates: %s&#34;, err)
+		}
+	}
+
+	a.appendBuiltinSecretStore()
+	#加载组件
+	err = a.loadComponents(opts)
+	#将未就绪组件刷新进管道
+	a.flushOutstandingComponents()
+	...
+}
+
+func (a *DaprRuntime) processComponents() {
+	for comp := range a.pendingComponents {
+		if comp.Name == &#34;&#34; {
+			continue
+		}
+
+		err := a.processComponentAndDependents(comp)
+		if err != nil {
+			e := fmt.Sprintf(&#34;process component %s error: %s&#34;, comp.Name, err.Error())
+			if !comp.Spec.IgnoreErrors {
+				log.Warnf(&#34;process component error daprd process will exited, gracefully to stop&#34;)
+				a.Shutdown(a.runtimeConfig.GracefulShutdownDuration)
+				log.Fatalf(e)
+			}
+			log.Errorf(e)
+		}
+	}
+}
+
+func (a *DaprRuntime) processComponentAndDependents(comp components_v1alpha1.Component) error {
+	log.Debugf(&#34;loading component. name: %s, type: %s/%s&#34;, comp.ObjectMeta.Name, comp.Spec.Type, comp.Spec.Version)
+	res := a.preprocessOneComponent(&amp;comp)
+	if res.unreadyDependency != &#34;&#34; {
+		a.pendingComponentDependents[res.unreadyDependency] = append(a.pendingComponentDependents[res.unreadyDependency], comp)
+		return nil
+	}
+	compCategory := a.extractComponentCategory(comp)
+	ch := make(chan error, 1)
+
+	timeout, err := time.ParseDuration(comp.Spec.InitTimeout)
+	if err != nil {
+		timeout = defaultComponentInitTimeout
+	}
+
+	go func() {
+		ch &lt;- a.doProcessOneComponent(compCategory, comp)
+	}()
+
+	select {
+	case err := &lt;-ch:
+		if err != nil {
+			return err
+		}
+	case &lt;-time.After(timeout):
+		return fmt.Errorf(&#34;init timeout for component %s exceeded after %s&#34;, comp.Name, timeout.String())
+	}
+
+	log.Infof(&#34;component loaded. name: %s, type: %s/%s&#34;, comp.ObjectMeta.Name, comp.Spec.Type, comp.Spec.Version)
+	a.appendOrReplaceComponents(comp)
+	diag.DefaultMonitoring.ComponentLoaded()
+
+	dependency := componentDependency(compCategory, comp.Name)
+	if deps, ok := a.pendingComponentDependents[dependency]; ok {
+		delete(a.pendingComponentDependents, dependency)
+		for _, dependent := range deps {
+			if err := a.processComponentAndDependents(dependent); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+#加载组件
+func (a *DaprRuntime) loadComponents(opts *runtimeOpts) error {
+	var loader components.ComponentLoader
+
+	switch a.runtimeConfig.Mode {
+	case modes.KubernetesMode:
+		loader = components.NewKubernetesComponents(a.runtimeConfig.Kubernetes, a.namespace, a.operatorClient, a.podName)
+	case modes.StandaloneMode:
+		loader = components.NewStandaloneComponents(a.runtimeConfig.Standalone)
+	default:
+		return errors.Errorf(&#34;components loader for mode %s not found&#34;, a.runtimeConfig.Mode)
+	}
+
+	log.Info(&#34;loading components&#34;)
+	comps, err := loader.LoadComponents()
+	if err != nil {
+		return err
+	}
+	for _, comp := range comps {
+		log.Debugf(&#34;found component. name: %s, type: %s/%s&#34;, comp.ObjectMeta.Name, comp.Spec.Type, comp.Spec.Version)
+	}
+
+	authorizedComps := a.getAuthorizedComponents(comps)
+
+	a.componentsLock.Lock()
+	a.components = make([]components_v1alpha1.Component, len(authorizedComps))
+	copy(a.components, authorizedComps)
+	a.componentsLock.Unlock()
+
+	for _, comp := range authorizedComps {
+		a.pendingComponents &lt;- comp
+	}
+
+	return nil
+}
+</code></pre><p><strong>GRPC Server</strong></p>
+<pre tabindex="0"><code>msg=&#34;gRPC proxy enabled&#34;
+msg=&#34;enabled gRPC tracing middleware&#34; 
+msg=&#34;enabled gRPC metrics middleware&#34;
+msg=&#34;API gRPC server is running on port 50001&#34;
+</code></pre><p>Dapr runtime提供了Dapr HTTP API 和 Dapr gRPC API两套API。Dapr gRPC API的初始化和启动：</p>
+<pre tabindex="0"><code>func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+...
+	// Start proxy，为服务调用信息投递建立GRPC代理连接
+	a.initProxy()
+    // Create and start internal and external gRPC servers
+	grpcAPI := a.getGRPCAPI()
+
+	err = a.startGRPCAPIServer(grpcAPI, a.runtimeConfig.APIGRPCPort)
+...
+}
+
+func (a *DaprRuntime) initProxy() {
+	a.proxy = messaging.NewProxy(a.grpc.GetGRPCConnection, a.runtimeConfig.ID,
+		fmt.Sprintf(&#34;%s:%d&#34;, channel.DefaultChannelAddress, a.runtimeConfig.ApplicationPort), a.runtimeConfig.InternalGRPCPort, a.accessControlList, a.runtimeConfig.AppSSL, a.resiliency)
+
+	log.Info(&#34;gRPC proxy enabled&#34;)
+}
+
+func (a *DaprRuntime) getGRPCAPI() grpc.API {
+	return grpc.NewAPI(a.runtimeConfig.ID, a.appChannel, a.resiliency, a.stateStores, a.secretStores, a.secretsConfiguration, a.configurationStores,
+		a.getPublishAdapter(), a.directMessaging, a.actor,
+		a.sendToOutputBinding, a.globalConfig.Spec.TracingSpec, a.accessControlList, string(a.runtimeConfig.ApplicationProtocol), a.getComponents, a.ShutdownWithWait)
+}
+
+func (a *DaprRuntime) startGRPCAPIServer(api grpc.API, port int) error {
+	serverConf := a.getNewServerConfig(a.runtimeConfig.APIListenAddresses, port)
+	
+	#获取一个面向用户侧的gRPC API server 对象
+	server := grpc.NewAPIServer(api, serverConf, a.globalConfig.Spec.TracingSpec, a.globalConfig.Spec.MetricSpec, a.globalConfig.Spec.APISpec, a.proxy)
+	if err := server.StartNonBlocking(); err != nil {
+		return err
+	}
+	a.apiClosers = append(a.apiClosers, server)
+
+	return nil
+}
+</code></pre><p><strong>HTTP Server</strong></p>
+<pre tabindex="0"><code>msg=&#34;enabled metrics http middleware&#34;
+msg=&#34;enabled tracing http middleware&#34;
+msg=&#34;http server is running on port 3500&#34;
+msg=&#34;The request body size parameter is: 4&#34;
+</code></pre><p>Dapr HTTP API初始化和启动过程：</p>
+<pre tabindex="0"><code>func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+...
+	// Start HTTP Server
+	err = a.startHTTPServer(a.runtimeConfig.HTTPPort, a.runtimeConfig.PublicPort, a.runtimeConfig.ProfilePort, a.runtimeConfig.AllowedOrigins, pipeline)
+	
+...
+}
+
+func (a *DaprRuntime) startHTTPServer(port int, publicPort *int, profilePort int, allowedOrigins string, pipeline http_middleware.Pipeline) error {
+	//注册http接口以及handler
+	a.daprHTTPAPI = http.NewAPI(a.runtimeConfig.ID,
+		a.appChannel,
+		a.directMessaging,
+		a.getComponents,
+		a.resiliency,
+		a.stateStores,
+		a.secretStores,
+		a.secretsConfiguration,
+		a.getPublishAdapter(),
+		a.actor,
+		a.sendToOutputBinding,
+		a.globalConfig.Spec.TracingSpec,
+		a.ShutdownWithWait,
+	)
+...
+	server := http.NewServer(a.daprHTTPAPI,
+		serverConf, a.globalConfig.Spec.TracingSpec, a.globalConfig.Spec.MetricSpec, pipeline, a.globalConfig.Spec.APISpec)
+	if err := server.StartNonBlocking(); err != nil {
+		return err
+	}
+	a.apiClosers = append(a.apiClosers, server)
+
+	return nil
+}
+</code></pre><p>API对象实例方法在<code>github.com/dapr/dapr/pkg/http/api.go</code>文件NewAPI()方法实现</p>
+<pre tabindex="0"><code>// NewAPI returns a new API.
+func NewAPI(
+	appID string,
+	appChannel channel.AppChannel,
+	directMessaging messaging.DirectMessaging,
+	getComponentsFn func() []components_v1alpha1.Component,
+	resiliency resiliency.Provider,
+	stateStores map[string]state.Store,
+	secretStores map[string]secretstores.SecretStore,
+	secretsConfiguration map[string]config.SecretsScope,
+	pubsubAdapter runtime_pubsub.Adapter,
+	actor actors.Actors,
+	sendToOutputBindingFn func(name string, req *bindings.InvokeRequest) (*bindings.InvokeResponse, error),
+	tracingSpec config.TracingSpec,
+	shutdown func(),
+) API {
+	transactionalStateStores := map[string]state.TransactionalStore{}
+	for key, store := range stateStores {
+		if state.FeatureTransactional.IsPresent(store.Features()) {
+			transactionalStateStores[key] = store.(state.TransactionalStore)
+		}
+	}
+...
+
+	metadataEndpoints := api.constructMetadataEndpoints()
+	healthEndpoints := api.constructHealthzEndpoints()
+
+	api.endpoints = append(api.endpoints, api.constructStateEndpoints()...)
+	api.endpoints = append(api.endpoints, api.constructSecretEndpoints()...)
+	api.endpoints = append(api.endpoints, api.constructPubSubEndpoints()...)
+	api.endpoints = append(api.endpoints, api.constructActorEndpoints()...)
+	api.endpoints = append(api.endpoints, api.constructDirectMessagingEndpoints()...)
+	api.endpoints = append(api.endpoints, metadataEndpoints...)
+	api.endpoints = append(api.endpoints, api.constructShutdownEndpoints()...)
+	api.endpoints = append(api.endpoints, api.constructBindingsEndpoints()...)
+	api.endpoints = append(api.endpoints, healthEndpoints...)
+
+	api.publicEndpoints = append(api.publicEndpoints, metadataEndpoints...)
+	api.publicEndpoints = append(api.publicEndpoints, healthEndpoints...)
+
+	return api
+}
+
+//部分state 端点示例
+func (a *api) constructStateEndpoints() []Endpoint {
+	return []Endpoint{
+		{
+			Methods: []string{fasthttp.MethodGet},
+			Route:   &#34;state/{storeName}/{key}&#34;,
+			Version: apiVersionV1,
+			Handler: a.onGetState,
+		},
+...
+}
+
+// NewServer returns a new HTTP server.
+func NewServer(api API, config ServerConfig, tracingSpec config.TracingSpec, metricSpec config.MetricSpec, pipeline http_middleware.Pipeline, apiSpec config.APISpec) Server {
+	return &amp;server{
+		api:         api,
+		config:      config,
+		tracingSpec: tracingSpec,
+		metricSpec:  metricSpec,
+		pipeline:    pipeline,
+		apiSpec:     apiSpec,
+	}
+}
+</code></pre><p><strong>GRPC Internal Server</strong></p>
+<pre tabindex="0"><code>msg=&#34;enabled gRPC tracing middleware&#34; 
+msg=&#34;enabled gRPC metrics middleware&#34;
+msg=&#34;sending workload csr request to sentry&#34;
+msg=&#34;certificate signed successfully&#34;
+msg=&#34;internal gRPC server is running on port 50002&#34;
+msg=&#34;starting workload cert expiry watcher. current cert expires on: 2022-05-13 02:06:10 +0000 UTC&#34;
+</code></pre><p>Dapr HTTP API 和 Dapr gRPC API主要用来处理上游服务的接口调用。GRPC Internal Server则主要是用来处理Dapr runtime之间的服务调用。</p>
+<pre tabindex="0"><code>func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+...
+	err = a.startGRPCInternalServer(grpcAPI, a.runtimeConfig.InternalGRPCPort)
+	log.Infof(&#34;internal gRPC server is running on port %v&#34;, a.runtimeConfig.InternalGRPCPort)
+	
+...
+}
+
+func (a *DaprRuntime) startGRPCInternalServer(api grpc.API, port int) error {
+	// Since GRPCInteralServer is encrypted &amp; authenticated, it is safe to listen on *
+	serverConf := a.getNewServerConfig([]string{&#34;&#34;}, port)
+	server := grpc.NewInternalServer(api, serverConf, a.globalConfig.Spec.TracingSpec, a.globalConfig.Spec.MetricSpec, a.authenticator, a.proxy)
+	if err := server.StartNonBlocking(); err != nil {
+		return err
+	}
+	a.apiClosers = append(a.apiClosers, server)
+
+	return nil
+}
+
+// NewInternalServer returns a new gRPC server for Dapr to Dapr communications.
+func NewInternalServer(api API, config ServerConfig, tracingSpec config.TracingSpec, metricSpec config.MetricSpec, authenticator auth.Authenticator, proxy messaging.Proxy) Server {
+	return &amp;server{
+		api:              api,
+		config:           config,
+		tracingSpec:      tracingSpec,
+		metricSpec:       metricSpec,
+		authenticator:    authenticator,
+		renewMutex:       &amp;sync.Mutex{},
+		kind:             internalServer,
+		logger:           internalServerLogger,
+		maxConnectionAge: getDefaultMaxAgeDuration(),
+		proxy:            proxy,
+	}
+}
+</code></pre><p><strong>阻塞直至Dapr runtime启动</strong></p>
+<pre tabindex="0"><code>msg=&#34;application discovered on port 3000&#34;
+</code></pre><pre tabindex="0"><code>func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+...
+	a.blockUntilAppIsReady()
+	
+...
+}
+
+func (a *DaprRuntime) blockUntilAppIsReady() {
+	for {
+		conn, _ := net.DialTimeout(&#34;tcp&#34;, net.JoinHostPort(&#34;localhost&#34;, fmt.Sprintf(&#34;%v&#34;, a.runtimeConfig.ApplicationPort)), time.Millisecond*500)
+		if conn != nil {
+			conn.Close()
+			break
+		}
+		// prevents overwhelming the OS with open connections
+		time.Sleep(time.Millisecond * 50)
+	}
+
+	log.Infof(&#34;application discovered on port %v&#34;, a.runtimeConfig.ApplicationPort)
+}
+</code></pre><p><strong>创建AppChannel</strong></p>
+<pre tabindex="0"><code>msg=&#34;[DEPRECATION NOTICE] Adding a default content type to incoming service invocation requests is deprecated and will be removed in the future. See https://docs.dapr.io/operations/support/support-preview-features/ for more details. You can opt into the new behavior today by setting the configuration option `ServiceInvocation.NoDefaultContentType` to true.&#34; 
+</code></pre><pre tabindex="0"><code>func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+...
+	err = a.createAppChannel()
+	a.daprHTTPAPI.SetAppChannel(a.appChannel)
+	grpcAPI.SetAppChannel(a.appChannel)
+...
+}
+
+func (a *DaprRuntime) createAppChannel() error {
+	if a.runtimeConfig.ApplicationPort &gt; 0 {
+		var channelCreatorFn func(port, maxConcurrency int, spec config.TracingSpec, sslEnabled bool, maxRequestBodySize int, readBufferSize int) (channel.AppChannel, error)
+
+		switch a.runtimeConfig.ApplicationProtocol {
+		case GRPCProtocol:
+			channelCreatorFn = a.grpc.CreateLocalChannel
+		case HTTPProtocol:
+			channelCreatorFn = http_channel.CreateLocalChannel
+		default:
+			return errors.Errorf(&#34;cannot create app channel for protocol %s&#34;, string(a.runtimeConfig.ApplicationProtocol))
+		}
+
+		ch, err := channelCreatorFn(a.runtimeConfig.ApplicationPort, a.runtimeConfig.MaxConcurrency, a.globalConfig.Spec.TracingSpec, a.runtimeConfig.AppSSL, a.runtimeConfig.MaxRequestBodySize, a.runtimeConfig.ReadBufferSize)
+		if err != nil {
+			log.Infof(&#34;app max concurrency set to %v&#34;, a.runtimeConfig.MaxConcurrency)
+		}
+
+		// TODO: Remove once feature is finalized
+		if a.runtimeConfig.ApplicationProtocol == HTTPProtocol &amp;&amp; !config.GetNoDefaultContentType() {
+			log.Warn(&#34;[DEPRECATION NOTICE] Adding a default content type to incoming service invocation requests is deprecated and will be removed in the future. See https://docs.dapr.io/operations/support/support-preview-features/ for more details. You can opt into the new behavior today by setting the configuration option `ServiceInvocation.NoDefaultContentType` to true.&#34;)
+		}
+		a.appChannel = ch
+	} else {
+		log.Warn(&#34;app channel is not initialized. did you make sure to configure an app-port?&#34;)
+	}
+
+	return nil
+}
+</code></pre><p><strong>初始化消息转发API</strong></p>
+<pre tabindex="0"><code>func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+...
+	a.initDirectMessaging(a.nameResolver)
+	a.daprHTTPAPI.SetDirectMessaging(a.directMessaging)
+	grpcAPI.SetDirectMessaging(a.directMessaging)
+...
+}
+
+func (a *DaprRuntime) initDirectMessaging(resolver nr.Resolver) {
+	a.directMessaging = messaging.NewDirectMessaging(
+		a.runtimeConfig.ID,
+		a.namespace,
+		a.runtimeConfig.InternalGRPCPort,
+		a.runtimeConfig.Mode,
+		a.appChannel,
+		a.grpc.GetGRPCConnection,
+		resolver,
+		a.globalConfig.Spec.TracingSpec,
+		a.runtimeConfig.MaxRequestBodySize,
+		a.proxy,
+		a.runtimeConfig.ReadBufferSize,
+		a.runtimeConfig.StreamRequestBody,
+	)
+}
+</code></pre><p>direct messaging api在文件<code>github.com/dapr/dapr/pkg/messaging/direct_messaging.go</code>的NewDirectMessaging方法中被实现</p>
+<pre tabindex="0"><code>func NewDirectMessaging(
+	appID, namespace string,
+	port int, mode modes.DaprMode,
+	appChannel channel.AppChannel,
+	clientConnFn messageClientConnection,
+	resolver nr.Resolver,
+	tracingSpec config.TracingSpec, maxRequestBodySize int, proxy Proxy, readBufferSize int, streamRequestBody bool,
+) DirectMessaging {
+	hAddr, _ := utils.GetHostAddress()
+	hName, _ := os.Hostname()
+
+	dm := &amp;directMessaging{
+		appChannel:          appChannel,
+		connectionCreatorFn: clientConnFn,
+		appID:               appID,
+		mode:                mode,
+		grpcPort:            port,
+		namespace:           namespace,
+		resolver:            resolver,
+		tracingSpec:         tracingSpec,
+		hostAddress:         hAddr,
+		hostName:            hName,
+		maxRequestBodySize:  maxRequestBodySize,
+		proxy:               proxy,
+		readBufferSize:      readBufferSize,
+	}
+
+	if proxy != nil {
+		proxy.SetRemoteAppFn(dm.getRemoteApp)
+		proxy.SetTelemetryFn(dm.setContextSpan)
+	}
+
+	return dm
+}
+</code></pre><p><strong>开始监听订阅</strong></p>
+<pre tabindex="0"><code>func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+...
+	a.startSubscribing()
+...
+}
+
+func (a *DaprRuntime) startSubscribing() {
+	for name, pubsub := range a.pubSubs {
+		if err := a.beginPubSub(name, pubsub); err != nil {
+			log.Errorf(&#34;error occurred while beginning pubsub %s: %s&#34;, name, err)
+		}
+	}
+}
+</code></pre><p><strong>开始监听绑定</strong></p>
+<pre tabindex="0"><code>func (a *DaprRuntime) initRuntime(opts *runtimeOpts) error {
+...
+	a.startReadingFromBindings()
+...
+}
+
+func (a *DaprRuntime) startReadingFromBindings() error {
+	if a.appChannel == nil {
+		return errors.New(&#34;app channel not initialized&#34;)
+	}
+	for name, binding := range a.inputBindings {
+		go func(name string, binding bindings.InputBinding) {
+			if !a.isAppSubscribedToBinding(name) {
+				log.Infof(&#34;app has not subscribed to binding %s.&#34;, name)
+				return
+			}
+
+			err := a.readFromBinding(name, binding)
+			if err != nil {
+				log.Errorf(&#34;error reading from input binding %s: %s&#34;, name, err)
+			}
+		}(name, binding)
+	}
+	return nil
+}
+</code></pre><p><strong>Ending</strong></p>
+<pre tabindex="0"><code>msg=&#34;dapr initialized. Status: Running. Init Elapsed 3243.280519ms&#34;
+</code></pre><p>Dapr runtime初始化启动完成！</p>
+              
+
+
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/dapr/">Dapr</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/cloud-native/">cloud-native</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/kubernetes/">kubernetes</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/dapr-intro/" data-tooltip="Dapr助力异构语言系统的事件驱动架构设计" aria-label="下一篇: Dapr助力异构语言系统的事件驱动架构设计">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/istio-proxy-503/" data-tooltip="关于 istio-proxy 503/504等5xx问题排查" aria-label="上一篇: 关于 istio-proxy 503/504等5xx问题排查">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/dapr-runtime-start/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/dapr-runtime-start/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/dapr-runtime-start/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function() {
+        this.page.url = 'https:\/\/open-native.com\/article\/dapr-runtime-start\/';
+        
+          this.page.identifier = '\/article\/dapr-runtime-start\/'
+        
+      };
+      (function() {
+        
+        
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+          document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+          return;
+        }
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'tranquilpeak';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2023 闲散工程师笔记. All Rights Reserved
+  </span>
+  <span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span id="busuanzi_container_site_uv">
+    本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  </span>
+  <span id="busuanzi_container_page_pv">
+    本文访问量：<span id="busuanzi_value_page_pv"></span>
+  </span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/dapr-intro/" data-tooltip="Dapr助力异构语言系统的事件驱动架构设计" aria-label="下一篇: Dapr助力异构语言系统的事件驱动架构设计">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/istio-proxy-503/" data-tooltip="关于 istio-proxy 503/504等5xx问题排查" aria-label="上一篇: 关于 istio-proxy 503/504等5xx问题排查">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/dapr-runtime-start/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/dapr-runtime-start/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/dapr-runtime-start/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Farticle%2Fdapr-runtime-start%2F" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Farticle%2Fdapr-runtime-start%2F" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Farticle%2Fdapr-runtime-start%2F" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+    
+    <h4 id="about-card-name">闲散工程师笔记</h4>
+    
+      <div id="about-card-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        云原生.盐酒猿
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        CHINA🇨🇳
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://open-native.com/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://open-native.com/js/script-yqzy9wdlzix4lbbwdnzvwx3egsne77earqmn73v9uno8aupuph8wfguccut.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

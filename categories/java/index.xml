@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>java on 闲散工程师笔记</title>
+    <link>https://open-native.com/categories/java/</link>
+    <description>Recent content in java on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 29 May 2023 11:36:26 +0800</lastBuildDate><atom:link href="https://open-native.com/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>各种设计模式如何用java代码体现？</title>
+      <link>https://open-native.com/java/design-pattern/</link>
+      <pubDate>Mon, 29 May 2023 11:36:26 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/design-pattern/</guid>
+      <description>&lt;h3 id=&#34;设计原则&#34;&gt;设计原则&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;多用组合少用继承。&lt;/li&gt;
+&lt;li&gt;找出应用中可能需要变化之处，把他们独立出来，不要和那些不需要变化的代码混合在一起。&lt;/li&gt;
+&lt;li&gt;针对接口编程，而不是针对实现编程。&lt;/li&gt;
+&lt;li&gt;为了交互对象之间的松耦合设计而努力。&lt;/li&gt;
+&lt;li&gt;类应该对扩展开放，对修改关闭。&lt;/li&gt;
+&lt;li&gt;要依赖抽象，不要依赖具体类。&lt;/li&gt;
+&lt;li&gt;最少知识原则：只和你的密友谈话。（相当于类间交互适当封装，减少耦合，只让必要部分交互）&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>How to setup Request timeout in Spring Boot REST API</title>
+      <link>https://open-native.com/java/srpint-boot-timeout/</link>
+      <pubDate>Sun, 27 Jun 2021 18:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/srpint-boot-timeout/</guid>
+      <description>&lt;h4 id=&#34;timeout-using-transactional-annotation&#34;&gt;Timeout using @Transactional annotation&lt;/h4&gt;
+&lt;p&gt;To set request timeout on database queries or calls by using Spring&amp;rsquo;s @Transactional annotation. We may set the timeout attribute that it has. It has a default value of -1, which is the same as having no timeout at all.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s say we have set this timeout to 50 seconds. An exception will be raised if the annotated method takes longer than this amount of time to execute. This approach is quite handy for time-consuming database searches or long-running SQL queries.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Java 面试题汇编 (七)</title>
+      <link>https://open-native.com/java/interview-question-6/</link>
+      <pubDate>Sun, 27 Jun 2021 17:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/interview-question-6/</guid>
+      <description>1. Multi threading 1.1 How do you create a thread In Java, there are two main ways to create a thread: by extending the Thread class, or by implementing the Runnable interface.
+Extending the Thread class:
+To create a thread by extending the Thread class, you need to create a new class that extends Thread and overrides its run() method. The run() method contains the code that will be executed in the new thread.</description>
+    </item>
+    
+    <item>
+      <title>Java 面试题汇编 (六)</title>
+      <link>https://open-native.com/java/interview-question-5/</link>
+      <pubDate>Sat, 26 Jun 2021 17:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/interview-question-5/</guid>
+      <description>1. Collections 1.1 Why do we need collections in Java Collections in Java are a way to store and manipulate groups of objects. They are essential because they provide a way to manage data in a flexible and dynamic manner.
+Here are some of the key reasons why we need collections in Java:
+Dynamic storage: Collections allow us to store and manipulate a large number of objects dynamically, without requiring us to know the exact number of objects in advance.</description>
+    </item>
+    
+    <item>
+      <title>Java 面试题汇编 (五)</title>
+      <link>https://open-native.com/java/interview-question-4/</link>
+      <pubDate>Fri, 25 Jun 2021 17:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/interview-question-4/</guid>
+      <description>1. Advanced object oriented concepts 1.1 What is polymorphism Polymorphism is a fundamental concept in object-oriented programming (OOP) and refers to the ability of an object to take on multiple forms or behaviors. In Java, polymorphism allows an object to be treated as if it is of any type in its inheritance hierarchy.
+Java supports two types of polymorphism: static polymorphism (also known as method overloading) and dynamic polymorphism (also known as method overriding).</description>
+    </item>
+    
+    <item>
+      <title>Java 面试题汇编 (四)</title>
+      <link>https://open-native.com/java/interview-question-3/</link>
+      <pubDate>Thu, 24 Jun 2021 17:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/interview-question-3/</guid>
+      <description>&lt;h3 id=&#34;1-wrapper-classes&#34;&gt;1. Wrapper Classes&lt;/h3&gt;
+&lt;h4 id=&#34;11-what-are-wrapper-classes&#34;&gt;1.1 What are Wrapper classes&lt;/h4&gt;
+&lt;p&gt;Wrapper classes are classes in object-oriented programming that are used to wrap or encapsulate primitive data types so that they can be treated as objects. In Java, for example, there are several wrapper classes such as Integer, Double, and Boolean that correspond to the primitive data types int, double, and boolean, respectively.&lt;/p&gt;
+&lt;p&gt;Wrapper classes provide a way to represent primitive data types as objects, which allows them to be used in situations where objects are required, such as in collections or as method arguments. They also provide additional functionality, such as methods for converting between the wrapped value and other data types.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>8 Object-Oriented Design Principle and pattern</title>
+      <link>https://open-native.com/java/8-oop-design-principle/</link>
+      <pubDate>Thu, 24 Jun 2021 16:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/8-oop-design-principle/</guid>
+      <description>&lt;h4 id=&#34;1-what-problem-is-solved-by-the-strategy-pattern-in-java&#34;&gt;1. What problem is solved by the Strategy pattern in Java?&lt;/h4&gt;
+&lt;p&gt;Strategy pattern allows you to introduce a new algorithm or new strategy without changing the code which uses that algorithm. For example, the Collections.sort() method which sorts the list of the object uses the Strategy pattern to compare objects. Since every object uses a different comparison strategy you can compare various objects differently without changing the sort method.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Java 面试题汇编 (三)</title>
+      <link>https://open-native.com/java/top-30-oop/</link>
+      <pubDate>Thu, 24 Jun 2021 16:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/top-30-oop/</guid>
+      <description>&lt;h4 id=&#34;1-what-is-method-overloading-in-oop-or-java&#34;&gt;1. What is method overloading in OOP or Java?&lt;/h4&gt;
+&lt;p&gt;Method overloading in Java is an object-oriented programming concept that allows a programmer to declare two methods of the same name but with different method signatures, like a change in the argument list or a change in the type of argument.
+Original method :&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public void  show(String message){
+      System.out.println(message);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Overloaded method: number of arguments is different:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Java 面试题汇编 (二)</title>
+      <link>https://open-native.com/java/interview-question-2/</link>
+      <pubDate>Mon, 21 Jun 2021 16:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/interview-question-2/</guid>
+      <description>&lt;h4 id=&#34;1-difference-between-string-stringbuffer-and-stringbuilder-in-java&#34;&gt;1. Difference between String, StringBuffer, and StringBuilder in Java?&lt;/h4&gt;
+&lt;p&gt;String is immutable while both StringBuffer and StringBuilder are mutable, which means any change e.g. converting String to upper case or trimming white space will produce another instance rather than changing the same instance. In later two, StringBuffer is synchronized while StringBuilder is not, in fact, it&amp;rsquo;s a ditto replacement of StringBuffer added in Java 1.5.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Java 面试题汇编 (一)</title>
+      <link>https://open-native.com/java/interview-question/</link>
+      <pubDate>Fri, 18 Jun 2021 16:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/interview-question/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;1. map里，hashmap无序的，想要有序的该怎么办？&lt;/strong&gt;&lt;br&gt;
+HashMap&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Map存储过程：计算key的hashCode值，确定位置；如果位置上有元素，用equals判断是否一致，如果一致，不存，如果不一致，遍历下一个节点继续判断equals。注：添加是添加到链表的尾部。
+加载因子（扩容条件）：默认0.75，空间存储75%后扩容。&lt;/li&gt;
+&lt;li&gt;扩容：将原来的元素重新计算位置再存入；计算需要时间，因此不可以频繁扩容，扩容是成倍的。&lt;/li&gt;
+&lt;li&gt;HashMap根据键可以很快找到他的值，因此具有很快的访问速度，遍历时，取得数据的顺序是完全随机的。&lt;/li&gt;
+&lt;li&gt;HashMap不支持线程的同步，即任一时刻可以有多个线程同时写HashMap;可能会导致数据的不一致。&lt;/li&gt;
+&lt;li&gt;HashMap的键只允许一条为null，值可以多个为null&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Spring Bean 的生命周期</title>
+      <link>https://open-native.com/java/bean-lifetime/</link>
+      <pubDate>Thu, 22 Apr 2021 11:36:26 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/bean-lifetime/</guid>
+      <description>&lt;h3 id=&#34;生命周期的主要流程&#34;&gt;生命周期的主要流程&lt;/h3&gt;
+&lt;p&gt;Bean 的生命周期概括起来就是 4 个阶段：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;实例化（Instantiation）&lt;/li&gt;
+&lt;li&gt;属性赋值（Populate）&lt;/li&gt;
+&lt;li&gt;初始化（Initialization）&lt;/li&gt;
+&lt;li&gt;销毁（Destruction）&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+    <item>
+      <title>Java 问题排查</title>
+      <link>https://open-native.com/java/java-trouble-shoot/</link>
+      <pubDate>Mon, 10 Sep 2018 16:23:19 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/java-trouble-shoot/</guid>
+      <description>&lt;h3 id=&#34;运行参数&#34;&gt;运行参数&lt;/h3&gt;
+&lt;p&gt;关于java启动参数配置，大家可以参阅：&lt;a href=&#34;https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html&#34;&gt;官方文档&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;查看jvm参数&#34;&gt;查看JVM参数&lt;/h4&gt;
+&lt;p&gt;使用命令 &lt;code&gt;jps -l&lt;/code&gt; 查看所有正在运行的Java程序，同时显示启动类类名，获取到PID&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;4706 org.apache.catalina.startup.Bootstrap
+5023 sun.tools.jps.Jps
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubernetes security on 闲散工程师笔记</title>
+    <link>https://open-native.com/tags/kubernetes-security/</link>
+    <description>Recent content in kubernetes security on 闲散工程师笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 22 Apr 2023 21:51:31 +0800</lastBuildDate><atom:link href="https://open-native.com/tags/kubernetes-security/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes Security Pratices</title>
+      <link>https://open-native.com/article/kubernetes-security-pratices/</link>
+      <pubDate>Sat, 22 Apr 2023 21:51:31 +0800</pubDate>
+      
+      <guid>https://open-native.com/article/kubernetes-security-pratices/</guid>
+      <description>In this video I talk about a super important topic, which is security in Kubernetes and what are some of the best practices for securing your Kubernetes cluster.
+The big challenge that we see in terms of Kubernetes security is that it&amp;rsquo;s already so challenging to set up a Kubernetes cluster and to configure it to deploy the applications in it, that security often becomes the afterthought, adding on top of that already complex configuration.</description>
+    </item>
+    
+  </channel>
+</rss>

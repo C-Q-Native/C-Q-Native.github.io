@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <script type="application/ld+json">
+
+{  
+  "@context":"http://schema.org",
+  "@type":"Website",
+  "@id":"https:\/\/open-native.com",
+  "author": {
+    "@type": "Person",
+    "name": "闲散工程师笔记",
+    
+    "image": "https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png"
+    
+  },
+  "name":"闲散工程师笔记",
+  "description":"1. Collections 1.1 Why do we need collections in Java Collections in Java are a way to store and manipulate groups of objects. They are essential because they provide a way to manage data in a flexible and dynamic manner.\nHere are some of the key reasons why we need collections in Java:\nDynamic storage: Collections allow us to store and manipulate a large number of objects dynamically, without requiring us to know the exact number of objects in advance.",
+  "url":"https:\/\/open-native.com\/java\/interview-question-5\/",
+  "keywords":"[]"
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="闲散工程师笔记">
+<meta name="keywords" content="">
+<meta name="description" content="1. Collections 1.1 Why do we need collections in Java Collections in Java are a way to store and manipulate groups of objects. They are essential because they provide a way to manage data in a flexible and dynamic manner.
+Here are some of the key reasons why we need collections in Java:
+Dynamic storage: Collections allow us to store and manipulate a large number of objects dynamically, without requiring us to know the exact number of objects in advance.">
+
+
+<meta property="og:description" content="1. Collections 1.1 Why do we need collections in Java Collections in Java are a way to store and manipulate groups of objects. They are essential because they provide a way to manage data in a flexible and dynamic manner.
+Here are some of the key reasons why we need collections in Java:
+Dynamic storage: Collections allow us to store and manipulate a large number of objects dynamically, without requiring us to know the exact number of objects in advance.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 面试题汇编 (六)">
+<meta name="twitter:title" content="Java 面试题汇编 (六)">
+<meta property="og:url" content="https://open-native.com/java/interview-question-5/">
+<meta property="twitter:url" content="https://open-native.com/java/interview-question-5/">
+<meta property="og:site_name" content="闲散工程师笔记">
+<meta property="og:description" content="1. Collections 1.1 Why do we need collections in Java Collections in Java are a way to store and manipulate groups of objects. They are essential because they provide a way to manage data in a flexible and dynamic manner.
+Here are some of the key reasons why we need collections in Java:
+Dynamic storage: Collections allow us to store and manipulate a large number of objects dynamically, without requiring us to know the exact number of objects in advance.">
+<meta name="twitter:description" content="1. Collections 1.1 Why do we need collections in Java Collections in Java are a way to store and manipulate groups of objects. They are essential because they provide a way to manage data in a flexible and dynamic manner.
+Here are some of the key reasons why we need collections in Java:
+Dynamic storage: Collections allow us to store and manipulate a large number of objects dynamically, without requiring us to know the exact number of objects in advance.">
+<meta property="og:locale" content="zh-cn">
+
+  
+    <meta property="article:published_time" content="2021-06-26T17:23:19">
+  
+  
+    <meta property="article:modified_time" content="2021-06-26T17:23:19">
+  
+  
+  
+    
+      <meta property="article:section" content="java">
+    
+  
+  
+    
+      <meta property="article:tag" content="java">
+    
+      <meta property="article:tag" content="Interview">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+  <meta property="twitter:image" content="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png">
+
+
+
+
+
+
+    <title>Java 面试题汇编 (六)</title>
+
+    <link rel="icon" href="https://open-native.com/images/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://open-native.com/java/interview-question-5/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="https://open-native.com/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="1">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://open-native.com/" aria-label="去首页">闲散工程师笔记</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://open-native.com/#about" aria-label="打开链接: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="1">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://open-native.com/#about" aria-label="阅读有关作者的更多信息">
+          <img class="sidebar-profile-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">闲散工程师笔记</h4>
+        
+          <h5 class="sidebar-profile-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/java" title="Java">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-info" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Java</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/RcXu" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://stackoverflow.com/users/21171872/black-mr" target="_blank" rel="noopener" title="Stack Overflow">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Stack Overflow</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://open-native.com/index.xml" title="RSS">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="1"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      Java 面试题汇编 (六)
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2021-06-26T17:23:19&#43;08:00">
+        
+  六月 26, 2021
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/java">java</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <h3 id="1-collections">1. Collections</h3>
+<h4 id="11-why-do-we-need-collections-in-java">1.1 Why do we need collections in Java</h4>
+<p>Collections in Java are a way to store and manipulate groups of objects. They are essential because they provide a way to manage data in a flexible and dynamic manner.</p>
+<p>Here are some of the key reasons why we need collections in Java:</p>
+<ul>
+<li>Dynamic storage: Collections allow us to store and manipulate a large number of objects dynamically, without requiring us to know the exact number of objects in advance.</li>
+<li>Flexibility: Collections provide a wide range of data structures with different properties, such as sets, lists, maps, and queues. This flexibility allows us to choose the most appropriate data structure for the specific needs of our program.</li>
+<li>Convenience: Collections provide a wide range of methods for manipulating and accessing data. This makes it easier to perform operations such as adding, removing, searching, and sorting elements.</li>
+<li>Efficiency: Collections are optimized for performance, providing fast access and manipulation of data.</li>
+<li>Standardization: Collections are part of the Java Standard Library, making them widely used and accepted. This means that Java developers can rely on them and have a shared understanding of how they work.</li>
+</ul>
+<p>Overall, collections are an essential part of Java programming because they provide a flexible, efficient, and standardized way to store and manipulate groups of objects.</p>
+<h4 id="12-what-are-the-important-interfaces-in-the-collection-hierarchy">1.2 What are the important interfaces in the collection hierarchy</h4>
+<p>In Java, the collection hierarchy is composed of several important interfaces that define how collections should behave and provide a common API for working with them. Some of the most important interfaces in the collection hierarchy include:</p>
+<ol>
+<li>Collection Interface: This interface is at the top of the collection hierarchy and defines the basic operations that all collections should support. These operations include adding, removing, and querying elements from the collection.</li>
+<li>List Interface: This interface extends the Collection interface and defines operations for working with ordered collections, where elements can be accessed by their index.</li>
+<li>Set Interface: This interface extends the Collection interface and defines operations for working with collections that do not allow duplicate elements.</li>
+<li>Map Interface: This interface defines a mapping between keys and values and provides operations for working with key-value pairs.</li>
+<li>Queue Interface: This interface defines operations for working with collections that support adding elements at one end and removing them from the other end, such as a FIFO (first-in, first-out) queue.</li>
+<li>Deque Interface: This interface extends the Queue interface and defines operations for working with collections that support adding and removing elements at both ends, such as a double-ended queue.</li>
+</ol>
+<p>By implementing these interfaces and following their guidelines, developers can create collections that can be used interchangeably with other collections that implement the same interfaces, allowing for greater flexibility and ease of use in Java applications.</p>
+<h4 id="13-can-you-explain-briefly-about-the-list-interface">1.3 Can you explain briefly about the List interface</h4>
+<p>The <code>List</code> interface is one of the most commonly used interfaces in the Java Collections Framework. It extends the <code>Collection</code> interface and defines a collection that is ordered and allows duplicate elements. In other words, a <code>List</code> maintains the order of its elements and allows elements to be inserted or removed at any position.</p>
+<p>By implementing the <code>List</code> interface, developers can create collections that maintain the order of their elements and allow for efficient random access and insertion/deletion at any position. Some common implementations of the <code>List</code> interface include <code>ArrayList</code>, Lin<code>kedList, and </code>Vector`.</p>
+<h4 id="14-can-an-arraylist-have-duplicate-elements">1.4 Can an ArrayList have duplicate elements</h4>
+<p>Yes, an <code>ArrayList</code> can have duplicate elements. In fact, one of the defining characteristics of an <code>ArrayList</code> is that it allows duplicate elements and maintains their insertion order.</p>
+<p>For example, consider the following code:</p>
+<pre tabindex="0"><code>ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add(&#34;apple&#34;);
+list.add(&#34;banana&#34;);
+list.add(&#34;apple&#34;);
+</code></pre><h4 id="15-can-you-briefly-explain-about-the-set-interface">1.5 Can you briefly explain about the Set interface</h4>
+<p>In Java, the <code>Set</code> interface is a member of the Java Collections Framework and is used to store a collection of unique elements. It is similar to the <code>List</code> interface, but unlike a list, a set does not allow duplicate elements.</p>
+<p>The <code>Set</code> interface extends the <code>Collection</code> interface, and defines the following methods:</p>
+<ul>
+<li><code>add(E element)</code>: Adds the specified element to the set if it is not already present.</li>
+<li><code>addAll(Collection&lt;? extends E&gt; collection)</code>: Adds all of the elements in the specified collection to the set if they are not already present.</li>
+<li><code>clear()</code>: Removes all of the elements from the set.</li>
+<li><code>contains(Object element)</code>: Returns <code>true</code> if the set contains the specified element, and <code>false</code> otherwise.</li>
+<li><code>isEmpty()</code>: Returns <code>true</code> if the set contains no elements, and <code>false</code> otherwise.</li>
+<li><code>iterator()</code>: Returns an iterator over the elements in the set.</li>
+<li><code>remove(Object element)</code>: Removes the specified element from the set if it is present.</li>
+<li><code>size()</code>: Returns the number of elements in the set.</li>
+</ul>
+<p>The <code>Set</code> interface has several implementations in Java, including:</p>
+<ul>
+<li><code>HashSet</code>: Uses a hash table to store the elements in the set. This implementation offers constant-time performance for the basic operations (add, remove, contains, and size), assuming the hash function is well-distributed.</li>
+<li><code>TreeSet</code>: Uses a red-black tree to store the elements in the set. The elements are ordered using their natural ordering (i.e., they must implement the <code>Comparable</code> interface), or by a comparator provided at set creation time.</li>
+<li><code>LinkedHashSet</code>: Extends <code>HashSet</code> to maintain a linked list of the elements in the set, in the order in which they were inserted.</li>
+</ul>
+<p>Here&rsquo;s an example of how to create and use a <code>Set</code> in Java:</p>
+<pre tabindex="0"><code>import java.util.HashSet;
+import java.util.Set;
+
+public class ExampleSet {
+    public static void main(String[] args) {
+        // create a new HashSet
+        Set&lt;String&gt; set = new HashSet&lt;&gt;();
+
+        // add some elements to the set
+        set.add(&#34;Alice&#34;);
+        set.add(&#34;Bob&#34;);
+        set.add(&#34;Charlie&#34;);
+
+        // try to add a duplicate element
+        set.add(&#34;Bob&#34;);
+
+        // print the set
+        System.out.println(&#34;Set: &#34; + set);
+
+        // remove an element from the set
+        set.remove(&#34;Charlie&#34;);
+
+        // print the updated set
+        System.out.println(&#34;Updated Set: &#34; + set);
+    }
+}
+</code></pre><p>In this example, we create a new <code>HashSet</code> and add some elements to it using the <code>add()</code> method. We then try to add a duplicate element to the set, but because sets do not allow duplicates, the duplicate element is not added.</p>
+<p>We then print the set to the console using the <code>toString()</code> method, and remove an element from the set using the <code>remove()</code> method. Finally, we print the updated set to the console.</p>
+<p>The output of the above code would be:</p>
+<pre tabindex="0"><code>Set: [Bob, Alice, Charlie]
+Updated Set: [Bob, Alice]
+</code></pre><p>This shows that we have successfully created and manipulated a <code>Set</code> in Java.</p>
+<h4 id="16-what-are-the-important-interfaces-related-to-the-set-interface">1.6 What are the important interfaces related to the Set interface</h4>
+<p>There are two important interfaces related to the <code>Set</code> interface in Java:</p>
+<ul>
+<li><code>SortedSet</code>: This interface extends the <code>Set</code> interface and defines a set that is sorted in ascending order according to the natural ordering of its elements or by a <code>Comparator</code>. It adds methods for navigating the set in order, such as <code>first()</code>, <code>last()</code>, <code>headSet(E toElement)</code>, and <code>tailSet(E fromElement)</code>. The <code>TreeSet</code> class implements this interface.</li>
+<li><code>NavigableSet</code>: This interface extends the <code>SortedSet</code> interface and adds methods for navigating the set in both ascending and descending order, such as <code>lower(E e)</code>, <code>floor(E e)</code>, <code>ceiling(E e)</code>, <code>higher(E e)</code>, and <code>descendingSet()</code>. The <code>TreeSet</code> class also implements this interface.</li>
+</ul>
+<p>Both of these interfaces provide additional functionality for working with sets that are sorted in a particular order, beyond what is provided by the basic <code>Set</code> interface.</p>
+<h4 id="17-what-is-a-hashset">1.7 What is a HashSet</h4>
+<p>A HashSet is a collection class in programming that stores a set of unique objects. It is a part of the Java Collections Framework and is used to implement the set interface. In a HashSet, the order of the elements is not guaranteed, and duplicate elements are not allowed.</p>
+<p>The HashSet class is implemented using a hash table data structure, which provides fast access and insertion of elements. It uses the hash code of an object to determine its position in the hash table. This allows for fast searching and retrieval of elements.</p>
+<p>HashSet is commonly used in situations where uniqueness is required, such as checking if a list of items contains duplicates or in implementing a dictionary with unique keys.</p>
+<p>In summary, a HashSet is a data structure that stores a unique set of objects using a hash table, and it is commonly used for fast and efficient operations on unique elements.</p>
+<h4 id="18-what-is-a-linkedhashset-how-is-different-from-a-hashset">1.8 What is a linkedHashSet? How is different from a HashSet?</h4>
+<p>A LinkedHashSet is another collection class in Java that extends the HashSet class and implements the Set interface. The primary difference between a HashSet and a LinkedHashSet is that the LinkedHashSet maintains the insertion order of the elements, while the HashSet does not.</p>
+<p>In a LinkedHashSet, the order in which the elements are added to the set is preserved. When iterating over the elements of a LinkedHashSet, they will be returned in the same order in which they were added. This can be useful in situations where you need to maintain the order of elements, such as when implementing a cache or maintaining a list of recent items.</p>
+<p>Like the HashSet, the LinkedHashSet uses a hash table to store its elements, but it also maintains a doubly linked list to maintain the order of the elements. This can make the LinkedHashSet slightly slower than the HashSet for certain operations, but it provides the benefit of maintaining the insertion order.</p>
+<p>In summary, the LinkedHashSet is similar to the HashSet in that it stores a unique set of objects, but it also maintains the order in which the elements were added. This can be useful in certain situations where the order of elements is important.</p>
+<h4 id="19-what-is-a-treeset-how-is-different-from-a-hashset">1.9 What is a TreeSet? How is different from a HashSet?</h4>
+<p>A TreeSet is another collection class in Java that implements the SortedSet interface, which extends the Set interface. The primary difference between a TreeSet and a HashSet is that the TreeSet maintains the elements in sorted order, while the HashSet does not.</p>
+<p>In a TreeSet, the elements are stored in a sorted tree structure. The order is determined by the natural ordering of the elements, or by a Comparator that is specified when the TreeSet is created. This means that when iterating over the elements of a TreeSet, they will be returned in sorted order, which can be useful in certain situations.</p>
+<p>In contrast, a HashSet uses a hash table to store its elements, which provides faster access and insertion time but does not maintain any order of the elements.</p>
+<p>Another difference between the two is that the TreeSet does not allow null elements, whereas the HashSet can contain at most one null element.</p>
+<p>TreeSet provides a number of additional methods for finding elements based on their position in the sorted order, such as first(), last(), and subSet(). These methods can be useful in certain situations where you need to work with elements in a specific order.</p>
+<p>In summary, the TreeSet is similar to the HashSet in that it stores a unique set of objects, but it also maintains the elements in sorted order. This can be useful in certain situations where you need to work with elements in a specific order, but it can also be slower for certain operations compared to the HashSet.</p>
+<h4 id="110-explain-briefly-about-queue-interface">1.10 Explain briefly about Queue interface</h4>
+<p>The Queue interface in Java is a part of the Java Collections Framework and defines a collection that is designed for holding elements prior to processing. It is an ordered list of elements that follows the &ldquo;first-in, first-out&rdquo; (FIFO) principle, meaning that the first element added to the queue will be the first one to be processed or removed.</p>
+<p>The Queue interface provides methods for adding elements to the end of the queue, removing elements from the front of the queue, and inspecting the elements at the front of the queue without removing them. The main methods of the Queue interface include:</p>
+<p>add(E e) - Adds the specified element to the end of the queue.
+offer(E e) - Adds the specified element to the end of the queue and returns true if the operation is successful.
+remove() - Removes and returns the element at the front of the queue.
+poll() - Removes and returns the element at the front of the queue, or returns null if the queue is empty.
+element() - Returns the element at the front of the queue without removing it.
+peek() - Returns the element at the front of the queue without removing it, or returns null if the queue is empty.
+The Queue interface also extends the Collection interface and inherits all of its methods, such as size(), isEmpty(), contains(), and iterator().</p>
+<p>There are several classes in Java that implement the Queue interface, such as LinkedList, PriorityQueue, and ArrayDeque. Each implementation has its own characteristics and performance trade-offs, so the choice of implementation will depend on the specific needs of your application.</p>
+<h4 id="111-what-are-the-important-interfaces-related-to-the-queue-interface">1.11 What are the important interfaces related to the Queue interface</h4>
+<p>There are several important interfaces related to the Queue interface in Java, including:</p>
+<ul>
+<li>Deque: The Deque interface, which stands for &ldquo;double-ended queue&rdquo;, extends the Queue interface and adds methods for inserting and removing elements from both ends of the queue. It provides additional methods such as addFirst(), addLast(), removeFirst(), removeLast(), and peekFirst().</li>
+<li>BlockingQueue: The BlockingQueue interface extends the Queue interface and provides methods that will block until the queue becomes non-empty when retrieving an element, or until space becomes available in the queue when adding an element. It is commonly used in concurrent programming to synchronize access to a shared resource.</li>
+<li>TransferQueue: The TransferQueue interface extends the BlockingQueue interface and adds methods that allow elements to be transferred between threads. It is used in concurrent programming when one thread needs to transfer data to another thread.</li>
+<li>PriorityQueue: The PriorityQueue class implements the Queue interface and maintains a priority queue of elements. The elements are ordered based on their natural ordering or a specified Comparator. The head of the queue is always the element with the highest priority.</li>
+<li>QueueIterator: The QueueIterator interface extends the Iterator interface and provides methods for iterating over the elements in a queue. It allows access to the elements in the queue in the order they will be removed.
+These interfaces provide additional functionality and flexibility when working with queues in Java, and can be useful in different scenarios depending on your specific requirements.</li>
+</ul>
+<h4 id="112-can-you-briefly-explain-about-the-map-interface">1.12 Can you briefly explain about the Map interface</h4>
+<p>The Map interface in Java is part of the Java Collections Framework and represents a collection of key-value pairs. It is used to store and retrieve data based on a key, where each key is associated with a value. The Map interface provides methods to add, remove, and retrieve elements from the collection, as well as to iterate over the keys, values, or key-value pairs.</p>
+<p>The main methods of the Map interface include:</p>
+<ul>
+<li>put(K key, V value) - Associates the specified value with the specified key in the map.</li>
+<li>get(Object key) - Returns the value associated with the specified key in the map, or null if the key is not present.</li>
+<li>remove(Object key) - Removes the key-value pair associated with the specified key from the map.</li>
+<li>containsKey(Object key) - Returns true if the map contains the specified key, false otherwise.</li>
+<li>containsValue(Object value) - Returns true if the map contains the specified value, false otherwise.</li>
+<li>keySet() - Returns a Set of all the keys in the map.</li>
+<li>values() - Returns a Collection of all the values in the map.</li>
+<li>entrySet() - Returns a Set of all the key-value pairs in the map.</li>
+</ul>
+<p>There are several classes in Java that implement the Map interface, including HashMap, TreeMap, LinkedHashMap, and ConcurrentHashMap. Each implementation has its own characteristics and performance trade-offs, so the choice of implementation will depend on the specific needs of your application.</p>
+<p>In general, the Map interface is useful for situations where you need to store and retrieve data based on a key. It is commonly used in a variety of applications, including databases, caching systems, and search algorithms.</p>
+<h4 id="113-what-is-a-treemap-how-is-different-from-a-hashmap">1.13 What is a TreeMap? How is different from a HashMap</h4>
+<p>A TreeMap is a class in Java that implements the Map interface and provides a sorted key-value mapping based on the natural ordering of the keys or a custom Comparator. It is implemented as a red-black tree and provides guaranteed log(n) time cost for the basic operations (put, get, and remove) where n is the size of the map.</p>
+<p>The main difference between a TreeMap and a HashMap is that the keys in a TreeMap are ordered, while the keys in a HashMap are not. This means that a TreeMap can be useful in situations where you need to maintain a specific order of the keys or where you need to quickly find the smallest or largest key in the map. On the other hand, a HashMap is generally faster for basic operations such as put, get, and remove, especially for larger maps, because it uses a hash table to store the key-value pairs.</p>
+<p>Another difference is that TreeMap does not allow null keys, while a HashMap can have one null key. However, both TreeMap and HashMap allow null values.</p>
+<p>In general, the choice between TreeMap and HashMap depends on your specific requirements. If you need to maintain a sorted order of keys, then TreeMap may be the better choice. If you need fast access to key-value pairs and order is not important, then HashMap may be a better choice.</p>
+<h3 id="2-advanced-collections">2. Advanced collections</h3>
+<h4 id="21-what-is-the-difference-between-synchronized-and-concurrent-collections-in-java">2.1 What is the difference between synchronized and concurrent collections in Java?</h4>
+<p>Synchronized collections and concurrent collections are two ways to provide thread-safe access to collections in Java.</p>
+<p>Synchronized collections are collections that are wrapped with synchronization code to make them thread-safe. This means that only one thread can access the collection at a time, which can lead to contention and performance issues in multi-threaded applications. Synchronized collections are typically used in situations where thread-safety is required but the collection is accessed infrequently or by a small number of threads.</p>
+<p>Concurrent collections, on the other hand, are designed to be used in multi-threaded applications and provide high-performance, thread-safe access to collections. They are implemented using techniques such as lock-striping and non-blocking algorithms, which allow multiple threads to access the collection simultaneously without contention. Concurrent collections are optimized for high concurrency and are typically used in situations where thread-safety is required and the collection is accessed frequently or by a large number of threads.</p>
+<p>In summary, synchronized collections provide thread-safety by wrapping collections with synchronization code, but can lead to contention and performance issues in multi-threaded applications. Concurrent collections provide high-performance, thread-safe access to collections by using specialized algorithms and techniques optimized for high concurrency.</p>
+<h4 id="22-explain-about-the-new-concurrent-collections-in-java">2.2 Explain about the new concurrent collections in Java?</h4>
+<p>Java provides a set of concurrent collections in the java.util.concurrent package that are designed to be used in multi-threaded applications and provide high-performance, thread-safe access to collections. These collections use specialized algorithms and techniques optimized for high concurrency, and are generally faster and more efficient than synchronized collections.</p>
+<p>Here are some examples of concurrent collections in Java:</p>
+<ul>
+<li>ConcurrentHashMap: A high-performance concurrent hash table that allows multiple threads to read and write concurrently without contention. It is designed to be used in situations where frequent updates are expected.</li>
+<li>ConcurrentSkipListMap: A concurrent map that maintains its entries in ascending key order. It uses a skip list data structure to provide high concurrency and efficient operations.</li>
+<li>ConcurrentSkipListSet: A concurrent set that maintains its elements in ascending order. It is implemented using a skip list data structure, and provides high concurrency and efficient operations.</li>
+<li>ConcurrentLinkedDeque: A concurrent deque (double-ended queue) that allows multiple threads to add and remove elements from both ends concurrently.</li>
+<li>ConcurrentLinkedQueue: A concurrent queue that allows multiple threads to add and remove elements concurrently.</li>
+<li>LinkedTransferQueue: A transfer queue that provides blocking operations and allows elements to be transferred between producers and consumers in a FIFO order. It is optimized for high throughput and low latency.</li>
+</ul>
+<p>These concurrent collections provide thread-safe access to collections without the performance overhead of synchronized collections. They are optimized for high concurrency and are designed to be used in multi-threaded applications.</p>
+<h4 id="23-explain-about-copyonwrite-concurrent-collections-approach">2.3 Explain about copyonwrite concurrent collections approach?</h4>
+<p>Copy-on-write (COW) is a concurrency strategy used in Java to provide high-performance, thread-safe access to collections. The basic idea behind COW is to make a copy of the collection every time a modification is made, instead of modifying the original collection in place. This means that readers can access the collection concurrently with writers without the need for synchronization, which can improve performance in certain situations.</p>
+<p>The copy-on-write approach is implemented in several concurrent collections in Java, such as <code>CopyOnWriteArrayList</code> and <code>CopyOnWriteArraySet</code>. These collections are implemented using an array that is copied every time a modification is made. Reads are performed on the current copy of the array, while writes are performed on a new copy of the array. This ensures that readers are always accessing a consistent view of the collection, even if writes are happening concurrently.</p>
+<p>One advantage of the copy-on-write approach is that it can improve performance in situations where reads are much more frequent than writes. In such cases, the overhead of copying the entire collection on each write may be outweighed by the benefits of providing concurrent read access without synchronization.</p>
+<p>However, the copy-on-write approach has some drawbacks as well. One of the main drawbacks is that it can be expensive in terms of memory usage, as multiple copies of the collection need to be maintained. Additionally, there is a delay between the time a modification is made and the time it becomes visible to readers, which can be problematic in certain situations.</p>
+<p>Overall, the copy-on-write approach is a useful concurrency strategy in Java that can provide high-performance, thread-safe access to collections in certain situations. However, it is important to carefully consider the trade-offs and choose the appropriate collection and concurrency strategy for your specific application requirements.</p>
+<h4 id="24-what-is-a-lock-how-is-it-different-from-using-synchronized-approach">2.4 What is a lock? How is it different from using synchronized approach</h4>
+<p>In Java, a lock is a low-level synchronization mechanism that can be used to control access to shared resources in a concurrent program. A lock provides a way for threads to coordinate their access to a shared resource, allowing only one thread to access the resource at a time. The java.util.concurrent.locks package provides a set of classes that implement locking mechanisms in Java.</p>
+<p>The synchronized keyword, on the other hand, is a high-level synchronization mechanism that is built into the Java language. It provides a simple and convenient way to synchronize access to shared resources by allowing only one thread to execute a block of code at a time.</p>
+<p>The main difference between using a lock and using synchronized is that a lock provides more fine-grained control over synchronization. With a lock, you can specify which threads can access the resource, and when they can access it. This can be useful in situations where you need more flexibility or control over synchronization, or where you need to implement more complex synchronization protocols.</p>
+<p>Another difference is that locks can be more efficient than synchronized in some situations. For example, the ReentrantLock class in the java.util.concurrent.locks package provides a more scalable and efficient locking mechanism than synchronized in situations where many threads are contending for access to a shared resource.</p>
+<p>However, using locks can be more complex and error-prone than using synchronized, as it requires more careful attention to locking protocols and error handling. Additionally, locks can be more prone to deadlock if they are not used correctly.</p>
+<p>In summary, locks and synchronized are both mechanisms for synchronizing access to shared resources in Java, but they have different characteristics and trade-offs. The choice between using a lock and using synchronized depends on the specific requirements and constraints of your application.</p>
+<h4 id="25-what-is-load-factor">2.5 What is load factor?</h4>
+<p>In Java, the load factor is a value that is used to control the re-sizing of a hash table-based collection, such as HashMap and HashSet. The load factor is a floating-point value that represents the percentage of the table&rsquo;s capacity that can be filled with elements before the table is resized.</p>
+<p>For example, a load factor of 0.75 indicates that the table can be filled up to 75% of its capacity before it needs to be resized. When the number of elements in the collection exceeds the load factor times the current capacity of the table, the table is resized to a larger size to accommodate more elements.</p>
+<p>Resizing the table is an expensive operation, as it requires allocating a new array and copying the elements from the old array to the new array. By setting an appropriate load factor, you can balance the trade-off between memory usage and performance. A higher load factor will use less memory but require more frequent resizing, while a lower load factor will use more memory but require less frequent resizing.</p>
+<p>The default load factor for HashMap and HashSet is 0.75, which is a reasonable value for most use cases. However, you can adjust the load factor by passing a second argument to the constructor when creating a new instance of the collection. For example, new HashMap&lt;&gt;(16, 0.5f) creates a new HashMap with an initial capacity of 16 and a load factor of 0.5.</p>
+<h4 id="26-when-does-a-java-collection-throw-unsupportedoperationexception">2.6 When does a Java collection throw UnsupportedOperationException?</h4>
+<p>A Java collection can throw <code>UnsupportedOperationException</code> when an unsupported operation is attempted on the collection. The <code>UnsupportedOperationException</code> is a runtime exception that is thrown by methods that are not implemented or supported by a particular collection.</p>
+<p>For example, the <code>add</code> and <code>remove</code> methods of an unmodifiable collection such as <code>Collections.unmodifiableList</code> or <code>Collections.unmodifiableSet</code> will throw <code>UnsupportedOperationException</code> if called, as the collection cannot be modified. Similarly, the <code>clear</code> method of an immutable collection such as <code>ImmutableList</code> from the Google Guava library will throw <code>UnsupportedOperationException</code>, as the collection cannot be cleared.</p>
+<p>Another example is when using a read-only view of a collection, such as with <code>Collections.singletonList</code> or <code>Collections.emptySet</code>, which do not support adding or removing elements, so calling any method that modifies the collection will throw an <code>UnsupportedOperationException</code>.</p>
+<p>It&rsquo;s important to check the documentation for a collection to see which operations are supported and which are not. If an operation is not supported by a collection, attempting to use that operation will result in an <code>UnsupportedOperationException</code> being thrown.</p>
+<h4 id="27-what-are-atomic-operations-in-java">2.7 What are atomic operations in Java?</h4>
+<p>In Java, atomic operations are operations that are executed as a single, indivisible unit of work, without the possibility of interruption or interference by other threads. Atomic operations are guaranteed to complete without any other thread modifying the shared data at the same time, ensuring that the result of the operation is always consistent and predictable.</p>
+<p>The <code>java.util.concurrent.atomic</code> package provides a set of classes that implement atomic operations on primitive data types, such as <code>AtomicInteger</code>, <code>AtomicLong</code>, and <code>AtomicBoolean</code>, as well as reference types such as <code>AtomicReference</code>.</p>
+<p>Some common atomic operations supported by these classes include:</p>
+<ul>
+<li><code>get</code>: retrieves the current value of the atomic variable.</li>
+<li><code>set</code>: sets the value of the atomic variable to a new value.</li>
+<li><code>compareAndSet</code>: compares the current value of the atomic variable with an expected value, and sets the value to a new value if the comparison is true.</li>
+<li><code>getAndIncrement</code>: increments the atomic variable and returns its previous value.</li>
+</ul>
+<p>Atomic operations are useful in multi-threaded environments where multiple threads may access and modify the same shared data. Using atomic operations can help avoid race conditions and other synchronization issues that can arise when multiple threads access the same data concurrently.</p>
+<h3 id="3-generics">3. Generics</h3>
+<h4 id="31-what-are-generics">3.1 What are Generics</h4>
+<p>Generics in Java are a language feature that allows classes and methods to be parameterized with one or more types. This enables developers to write more generic and reusable code that can work with different types of objects, without having to specify the exact type at compile time.</p>
+<p>Generics are implemented using type parameters, which are represented by one or more placeholder types enclosed in angle brackets (<code>&lt;</code> and <code>&gt;</code>). For example, the following code defines a generic class Box that can hold objects of any type:</p>
+<pre tabindex="0"><code>public class Box&lt;T&gt; {
+    private T object;
+
+    public void set(T object) {
+        this.object = object;
+    }
+
+    public T get() {
+        return object;
+    }
+}
+</code></pre><p>In this example, the type parameter <code>T</code> represents the type of object that the <code>Box</code> class can hold. The <code>set</code> and <code>get</code> methods use the type parameter <code>T</code> to specify the type of the object being set or retrieved.</p>
+<p>Generics provide several benefits, including:</p>
+<ul>
+<li>Type safety: The use of generics helps to ensure type safety at compile time, by allowing the compiler to detect and report errors if a type mismatch occurs.</li>
+<li>Reusability: Generics make it possible to write generic and reusable code that can work with different types of objects, without having to write separate code for each type.</li>
+<li>Abstraction: Generics provide a level of abstraction that allows developers to write code that is more generic and easier to understand.</li>
+</ul>
+<p>Generics are widely used in Java collections, as well as in other areas of the Java language such as streams, lambdas, and functional interfaces.</p>
+<h4 id="32-what-are-the-restrictions-in-using-generic-type-that-is-declared-in-a-class-declaration">3.2 What are the restrictions in using generic type that is declared in a class declaration?</h4>
+<p>When you declare a generic type in a class declaration in Java, there are certain restrictions on how you can use that type within the class. Here are some of the main restrictions:</p>
+<ul>
+<li>You cannot create an instance of the generic type directly: When you declare a generic class like <code>Box&lt;T&gt;</code>, you cannot create an instance of <code>T</code> directly using the <code>new</code> operator. Instead, you need to create an instance of <code>Box&lt;T&gt;</code> and specify the type argument for T when you create the instance.</li>
+<li>You cannot use primitive types as type arguments: In Java, you cannot use primitive types like <code>int</code> or <code>double</code> as type arguments for a generic class. Instead, you need to use the corresponding wrapper classes like <code>Integer</code> or <code>Double</code>.</li>
+<li>You cannot create arrays of the generic type: In Java, you cannot create an array of a generic type like <code>T[]</code>. Instead, you need to use a collection class like <code>ArrayList&lt;T&gt;</code>.</li>
+<li>You cannot create a static field of the generic type: In Java, you cannot create a static field of the generic type <code>T</code> in a generic class declaration. This is because the type <code>T</code> is associated with a specific instance of the class, and static fields are shared among all instances of the class.</li>
+<li>You cannot catch an exception of the generic type: In Java, you cannot catch an exception of the generic type <code>T</code> in a catch block. This is because the type <code>T</code> is erased at runtime, so the catch block would not be able to determine the actual type of the exception. Instead, you need to catch a specific type of exception or use a wildcard catch block.</li>
+</ul>
+<h4 id="33-how-can-we-restrict-generics-to-a-subclass-of-particular-class">3.3 How can we restrict Generics to a subclass of particular class?</h4>
+<p>In Java, you can restrict generics to a subclass of a particular class by using the <code>extends</code> keyword in the generic declaration. This is known as bounded type parameters.</p>
+<p>Here&rsquo;s an example:</p>
+<pre tabindex="0"><code>public class Box&lt;T extends Number&gt; {
+    private T value;
+
+    public Box(T value) {
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+}
+</code></pre><p>In this example, the generic type parameter <code>T</code> is restricted to be a subclass of the <code>Number</code> class. This means that when you create an instance of Box, you can only use <code>Number</code> or its subclasses as the type argument for <code>T</code>.</p>
+<p>For example, you can create an instance of <code>Box&lt;Integer&gt;</code> or <code>Box&lt;Double&gt;</code>, but you cannot create an instance of <code>Box&lt;String&gt;</code> because <code>String</code> is not a subclass of <code>Number</code>.</p>
+<p>By using bounded type parameters, you can ensure that the generic type parameter satisfies certain constraints and avoid errors at compile-time rather than runtime.</p>
+<h4 id="34-how-can-we-restrict-generics-to-a-super-class-of-particular-class">3.4 How can we restrict Generics to a super class of particular class</h4>
+<p>In Java, you can restrict generics to a superclass of a particular class by using the <code>super</code> keyword in the generic declaration. This is known as a lower bounded wildcard.</p>
+<p>Here&rsquo;s an example:</p>
+<pre tabindex="0"><code>public class Box&lt;T super Integer&gt; {
+    private T value;
+
+    public Box(T value) {
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+}
+</code></pre><p>In this example, the generic type parameter <code>T</code> is restricted to be a superclass of the <code>Integer</code> class or <code>Integer</code> itself. This means that when you create an instance of Box, you can only use Integer or its superclasses as the type argument for <code>T</code>.</p>
+<p>For example, you can create an instance of <code>Box&lt;Number&gt;</code>, <code>Box&lt;Object&gt;</code>, or <code>Box&lt;Integer&gt;,</code> but you cannot create an instance of <code>Box&lt;Double&gt;</code> because Double is not a superclass of Integer.</p>
+<p>By using a lower bounded wildcard, you can ensure that the generic type parameter satisfies certain constraints and allow more flexibility in the type argument.</p>
+
+              
+
+
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/java/">java</a>
+
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/interview/">Interview</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/interview-question-6/" data-tooltip="Java 面试题汇编 (七)" aria-label="下一篇: Java 面试题汇编 (七)">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/interview-question-4/" data-tooltip="Java 面试题汇编 (五)" aria-label="上一篇: Java 面试题汇编 (五)">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/java/interview-question-5/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/java/interview-question-5/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/java/interview-question-5/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function() {
+        this.page.url = 'https:\/\/open-native.com\/java\/interview-question-5\/';
+        
+          this.page.identifier = '\/java\/interview-question-5\/'
+        
+      };
+      (function() {
+        
+        
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+          document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+          return;
+        }
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'tranquilpeak';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2023 闲散工程师笔记. All Rights Reserved
+  </span>
+  <span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  <span id="busuanzi_container_site_uv">
+    本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  </span>
+  <span id="busuanzi_container_page_pv">
+    本文访问量：<span id="busuanzi_value_page_pv"></span>
+  </span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/interview-question-6/" data-tooltip="Java 面试题汇编 (七)" aria-label="下一篇: Java 面试题汇编 (七)">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/java/interview-question-4/" data-tooltip="Java 面试题汇编 (五)" aria-label="上一篇: Java 面试题汇编 (五)">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="分享这个帖子">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/java/interview-question-5/" title="分享到 Facebook" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/java/interview-question-5/" title="分享到 Twitter" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/java/interview-question-5/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+    <li class="post-action">
+      <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="发表评论">
+        <i class="far fa-comment"></i>
+      </a>
+    </li>
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="回到顶部">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="1">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Fjava%2Finterview-question-5%2F" aria-label="分享到 Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Fjava%2Finterview-question-5%2F" aria-label="分享到 Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Fjava%2Finterview-question-5%2F" aria-label="分享到 Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://open-native.obs.cn-north-4.myhuaweicloud.com/17242622.png" alt="作者的图片" />
+    
+    <h4 id="about-card-name">闲散工程师笔记</h4>
+    
+      <div id="about-card-bio">一名不断探索、坚持学习的<strong>闲散工程师</strong></div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        云原生.盐酒猿
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        CHINA🇨🇳
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://open-native.com/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://open-native.com/js/script-yqzy9wdlzix4lbbwdnzvwx3egsne77earqmn73v9uno8aupuph8wfguccut.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+
