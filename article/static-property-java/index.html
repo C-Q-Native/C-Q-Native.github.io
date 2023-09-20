@@ -16,9 +16,9 @@
     
   },
   "name":"闲散工程师笔记",
-  "description":"In Kubernetes, you can use labels to assign key-value pairs to any resources.\nLabels are ubiquitous and necessary to everyday operations such as creating services.\nHowever, how should you name and use those labels?\nLet\u0026rsquo;s start with the basics\nAny resource in Kubernetes can have labels\nSome labels are vital (e.g. service\u0026rsquo;s selector, operators, etc.), and others are useful to tag resources (e.g. labelling a deployment)\nKubectl offers a --show-labels flag to help you list resources and their labels",
-  "url":"https:\/\/open-native.com\/article\/kubernetes-labels\/",
-  "keywords":"[cloud-native, kubernetes, kubernetes Labels]"
+  "description":"问题描述 闲话少叙，先上代码。\npublic function main() { Util util = new Util(); util.print(); } public class Util { public static provider = new Provider(); public Util() { # do sth } public void print() { # print sth } } public function Provider() { public Provider() { loadData(); } private void loadData() { # load data } } 大概使用逻辑是这样，在调用入口，实例化Util对象并调用他的print方法。 这个时候，获取到了一个runtime exception：class Util not defined。\n类明明就摆在那里，为什么会报异常呢？ 大家如果了解了类静态成员变量的初始化过程，就一眼看出来问题。\n首先，provider是在Util类被加载的时候初始化的，要早于Util的实例化。\n其次，如果provider初始化失败，会导致Util类加载失败，在实例化的时候就会抛异常。\n问题的直接原因是在Provider的构造过程，由于构造函数执行了loadData的动作，这里就存在一些不确定因素，会导致错误的发生，从而影响到了Util的加载。\n改进思路 精简类初始化的过程，优先保证对象能实例化成功，从而再执行数据加载的逻辑。可以利用Spring的PostConstruct注解来实现实例化和数据加载动作的分离。",
+  "url":"https:\/\/open-native.com\/article\/static-property-java\/",
+  "keywords":"[分布式, architecture, JAVA]"
 }
 
 </script>
@@ -27,64 +27,60 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Hugo 0.110.0 with theme Tranquilpeak 0.5.3-BETA">
 <meta name="author" content="闲散工程师笔记">
-<meta name="keywords" content="cloud-native, kubernetes, kubernetes Labels">
-<meta name="description" content="In Kubernetes, you can use labels to assign key-value pairs to any resources.
-Labels are ubiquitous and necessary to everyday operations such as creating services.
-However, how should you name and use those labels?
-Let&rsquo;s start with the basics
-Any resource in Kubernetes can have labels
-Some labels are vital (e.g. service&rsquo;s selector, operators, etc.), and others are useful to tag resources (e.g. labelling a deployment)
-Kubectl offers a --show-labels flag to help you list resources and their labels">
+<meta name="keywords" content="分布式, architecture, JAVA">
+<meta name="description" content="问题描述 闲话少叙，先上代码。
+public function main() { Util util = new Util(); util.print(); } public class Util { public static provider = new Provider(); public Util() { # do sth } public void print() { # print sth } } public function Provider() { public Provider() { loadData(); } private void loadData() { # load data } } 大概使用逻辑是这样，在调用入口，实例化Util对象并调用他的print方法。 这个时候，获取到了一个runtime exception：class Util not defined。
+类明明就摆在那里，为什么会报异常呢？ 大家如果了解了类静态成员变量的初始化过程，就一眼看出来问题。
+首先，provider是在Util类被加载的时候初始化的，要早于Util的实例化。
+其次，如果provider初始化失败，会导致Util类加载失败，在实例化的时候就会抛异常。
+问题的直接原因是在Provider的构造过程，由于构造函数执行了loadData的动作，这里就存在一些不确定因素，会导致错误的发生，从而影响到了Util的加载。
+改进思路 精简类初始化的过程，优先保证对象能实例化成功，从而再执行数据加载的逻辑。可以利用Spring的PostConstruct注解来实现实例化和数据加载动作的分离。">
 
 
-<meta property="og:description" content="In Kubernetes, you can use labels to assign key-value pairs to any resources.
-Labels are ubiquitous and necessary to everyday operations such as creating services.
-However, how should you name and use those labels?
-Let&rsquo;s start with the basics
-Any resource in Kubernetes can have labels
-Some labels are vital (e.g. service&rsquo;s selector, operators, etc.), and others are useful to tag resources (e.g. labelling a deployment)
-Kubectl offers a --show-labels flag to help you list resources and their labels">
+<meta property="og:description" content="问题描述 闲话少叙，先上代码。
+public function main() { Util util = new Util(); util.print(); } public class Util { public static provider = new Provider(); public Util() { # do sth } public void print() { # print sth } } public function Provider() { public Provider() { loadData(); } private void loadData() { # load data } } 大概使用逻辑是这样，在调用入口，实例化Util对象并调用他的print方法。 这个时候，获取到了一个runtime exception：class Util not defined。
+类明明就摆在那里，为什么会报异常呢？ 大家如果了解了类静态成员变量的初始化过程，就一眼看出来问题。
+首先，provider是在Util类被加载的时候初始化的，要早于Util的实例化。
+其次，如果provider初始化失败，会导致Util类加载失败，在实例化的时候就会抛异常。
+问题的直接原因是在Provider的构造过程，由于构造函数执行了loadData的动作，这里就存在一些不确定因素，会导致错误的发生，从而影响到了Util的加载。
+改进思路 精简类初始化的过程，优先保证对象能实例化成功，从而再执行数据加载的逻辑。可以利用Spring的PostConstruct注解来实现实例化和数据加载动作的分离。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kubernetes Labels And Annotatios">
-<meta name="twitter:title" content="Kubernetes Labels And Annotatios">
-<meta property="og:url" content="https://open-native.com/article/kubernetes-labels/">
-<meta property="twitter:url" content="https://open-native.com/article/kubernetes-labels/">
+<meta property="og:title" content="关于类持有静态变量而引发的问题排查">
+<meta name="twitter:title" content="关于类持有静态变量而引发的问题排查">
+<meta property="og:url" content="https://open-native.com/article/static-property-java/">
+<meta property="twitter:url" content="https://open-native.com/article/static-property-java/">
 <meta property="og:site_name" content="闲散工程师笔记">
-<meta property="og:description" content="In Kubernetes, you can use labels to assign key-value pairs to any resources.
-Labels are ubiquitous and necessary to everyday operations such as creating services.
-However, how should you name and use those labels?
-Let&rsquo;s start with the basics
-Any resource in Kubernetes can have labels
-Some labels are vital (e.g. service&rsquo;s selector, operators, etc.), and others are useful to tag resources (e.g. labelling a deployment)
-Kubectl offers a --show-labels flag to help you list resources and their labels">
-<meta name="twitter:description" content="In Kubernetes, you can use labels to assign key-value pairs to any resources.
-Labels are ubiquitous and necessary to everyday operations such as creating services.
-However, how should you name and use those labels?
-Let&rsquo;s start with the basics
-Any resource in Kubernetes can have labels
-Some labels are vital (e.g. service&rsquo;s selector, operators, etc.), and others are useful to tag resources (e.g. labelling a deployment)
-Kubectl offers a --show-labels flag to help you list resources and their labels">
+<meta property="og:description" content="问题描述 闲话少叙，先上代码。
+public function main() { Util util = new Util(); util.print(); } public class Util { public static provider = new Provider(); public Util() { # do sth } public void print() { # print sth } } public function Provider() { public Provider() { loadData(); } private void loadData() { # load data } } 大概使用逻辑是这样，在调用入口，实例化Util对象并调用他的print方法。 这个时候，获取到了一个runtime exception：class Util not defined。
+类明明就摆在那里，为什么会报异常呢？ 大家如果了解了类静态成员变量的初始化过程，就一眼看出来问题。
+首先，provider是在Util类被加载的时候初始化的，要早于Util的实例化。
+其次，如果provider初始化失败，会导致Util类加载失败，在实例化的时候就会抛异常。
+问题的直接原因是在Provider的构造过程，由于构造函数执行了loadData的动作，这里就存在一些不确定因素，会导致错误的发生，从而影响到了Util的加载。
+改进思路 精简类初始化的过程，优先保证对象能实例化成功，从而再执行数据加载的逻辑。可以利用Spring的PostConstruct注解来实现实例化和数据加载动作的分离。">
+<meta name="twitter:description" content="问题描述 闲话少叙，先上代码。
+public function main() { Util util = new Util(); util.print(); } public class Util { public static provider = new Provider(); public Util() { # do sth } public void print() { # print sth } } public function Provider() { public Provider() { loadData(); } private void loadData() { # load data } } 大概使用逻辑是这样，在调用入口，实例化Util对象并调用他的print方法。 这个时候，获取到了一个runtime exception：class Util not defined。
+类明明就摆在那里，为什么会报异常呢？ 大家如果了解了类静态成员变量的初始化过程，就一眼看出来问题。
+首先，provider是在Util类被加载的时候初始化的，要早于Util的实例化。
+其次，如果provider初始化失败，会导致Util类加载失败，在实例化的时候就会抛异常。
+问题的直接原因是在Provider的构造过程，由于构造函数执行了loadData的动作，这里就存在一些不确定因素，会导致错误的发生，从而影响到了Util的加载。
+改进思路 精简类初始化的过程，优先保证对象能实例化成功，从而再执行数据加载的逻辑。可以利用Spring的PostConstruct注解来实现实例化和数据加载动作的分离。">
 <meta property="og:locale" content="zh-cn">
 
   
-    <meta property="article:published_time" content="2023-04-24T22:27:50">
+    <meta property="article:published_time" content="2023-09-20T00:24:55">
   
   
-    <meta property="article:modified_time" content="2023-04-24T22:27:50">
+    <meta property="article:modified_time" content="2023-09-20T00:24:55">
   
-  
-  
-    
-      <meta property="article:section" content="kubernetes">
-    
   
   
     
-      <meta property="article:tag" content="cloud-native">
+      <meta property="article:section" content="架构">
     
-      <meta property="article:tag" content="kubernetes">
+  
+  
     
-      <meta property="article:tag" content="kubernetes Labels">
+      <meta property="article:tag" content="JAVA">
     
   
 
@@ -105,14 +101,14 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
 
 
 
-    <title>Kubernetes Labels And Annotatios</title>
+    <title>关于类持有静态变量而引发的问题排查</title>
 
     <link rel="icon" href="https://open-native.com/images/favicon.png">
     
 
     
 
-    <link rel="canonical" href="https://open-native.com/article/kubernetes-labels/">
+    <link rel="canonical" href="https://open-native.com/article/static-property-java/">
 
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -282,15 +278,15 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title">
-      Kubernetes Labels And Annotatios
+      关于类持有静态变量而引发的问题排查
     </h1>
   
   
   <div class="postShorten-meta post-meta">
     
-      <time datetime="2023-04-24T22:27:50&#43;08:00">
+      <time datetime="2023-09-20T00:24:55&#43;08:00">
         
-  四月 24, 2023
+  九月 20, 2023
 
       </time>
     
@@ -299,7 +295,7 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
   
     <span>发布在</span>
     
-      <a class="category-link" href="https://open-native.com/categories/kubernetes">kubernetes</a>
+      <a class="category-link" href="https://open-native.com/categories/%e6%9e%b6%e6%9e%84">架构</a>
     
   
 
@@ -309,76 +305,78 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
           
           <div class="post-content markdown">
             <div class="main-content-wrap">
-              <p>In Kubernetes, you can use labels to assign key-value pairs to any resources.</p>
-<p>Labels are ubiquitous and necessary to everyday operations such as creating services.</p>
-<p>However, how should you name and use those labels?</p>
-<p>Let&rsquo;s start with the basics</p>
-<p>Any resource in Kubernetes can have labels</p>
-<p>Some labels are vital (e.g. service&rsquo;s selector, operators, etc.), and others are useful to tag resources (e.g. labelling a deployment)</p>
-<p><img src="https://pbs.twimg.com/media/Fuet2siaIAIYQD8?format=jpg&amp;name=medium" alt="img"></p>
-<p>Kubectl offers a <code>--show-labels</code> flag to help you list resources and their labels</p>
-<p>If you list pods, deployments and services in an empty cluster, you might notice that Kubernetes uses the <code>component=&lt;name&gt;</code> label to tag pods</p>
-<p><img src="https://pbs.twimg.com/media/Fuet6UVaAAE4bJ1?format=png&amp;name=medium" alt="img"></p>
-<p>Kubernetes recommends six labels for your resources:</p>
-<p>➀ Name
-➁ Instance
-➂ Version
-➃ Component
-➄ Part of
-➅ Managed By</p>
-<p><img src="https://pbs.twimg.com/media/Fuet-TBaMAAf52-?format=jpg&amp;name=medium" alt="img"></p>
-<p>Let&rsquo;s look at an excellent example of using those labels: the Prometheus Helm chart</p>
-<p>The charts install five pods (i.e. server, alter manager, node exporter, push gateway and kube state metrics)</p>
-<p>Notice how not all labels are applied to all pods
-<img src="https://pbs.twimg.com/media/FueuBddaUAIVo5h?format=jpg&amp;name=medium" alt="img"></p>
-<p>Labelling resources properly helps you make sense of what&rsquo;s deployed</p>
-<p>For example, you can filter results with kubectl:</p>
-<p><code>kubectl get pods -l &quot;environment in (staging, dev)&quot;</code></p>
-<p>The command only lists pod in staging and dev
-<img src="https://pbs.twimg.com/media/FueuFRvaIAEkjfv?format=png&amp;name=medium" alt="img"></p>
-<p>If those labels are not what you are after, you can always create your own</p>
-<p>A <code>&lt;prefix&gt;/&lt;name&gt;</code> key is recommended — e.g. <code>http://company.com/database</code></p>
-<p><img src="https://pbs.twimg.com/media/FueuI1paQAEzgKk?format=png&amp;name=medium" alt="img"></p>
-<p>The following labels could be used in a multitenant cluster:</p>
-<ul>
-<li>Business unit</li>
-<li>Development team</li>
-<li>Application</li>
-<li>Client</li>
-<li>Shared services</li>
-<li>Environment</li>
-<li>Compliance</li>
-<li>Asset classification</li>
-</ul>
-<p><img src="https://pbs.twimg.com/media/FueuL-ZaMAELDKd?format=png&amp;name=medium" alt="img"></p>
-<p>Alongside labels, you have annotations</p>
-<p>Whereas labels are used to select resources, annotations decorate resources with metadata</p>
-<p>You cannot select resources with annotations</p>
-<p><img src="https://pbs.twimg.com/media/FueuPfJaYAAr5_B?format=jpg&amp;name=medium" alt="img"></p>
-<p>Administrators can assign annotations to any workload</p>
-<p>However, more often, Kubernetes and operators decorate resources with extra annotations</p>
-<p>A good example is the annotation <code>kubernetes·io/ingress-bandwidth</code> to assign bandwidth to pods</p>
-<p><img src="https://pbs.twimg.com/media/FueuTRJaYAE8IlI?format=png&amp;name=medium" alt="img"></p>
-<p>The official <a href="https://kubernetes.io/docs/reference/labels-annotations-taints/">documentation</a> has a list of well-known labels and annotations</p>
-<p>Here are some examples:</p>
-<ul>
-<li>kubectl·kubernetesׄ·io/default-container</li>
-<li>topology·kubernetes·io/region</li>
-<li>node·kubernetes·io/instance-type</li>
-<li>kubernetes·io/egress-bandwidth</li>
-</ul>
-<p>Annotations are used extensively in operators</p>
-<p>Look at all the annotations you can use with the nginx-ingress controller</p>
-<p><img src="https://pbs.twimg.com/media/FueucfXaEAIH8XT?format=jpg&amp;name=medium" alt="img"></p>
-<p>Unfortunately, using operators/cloud providers/etc. annotations is not always a good idea if you wish to stay vendor-neutral</p>
-<p>However, sometimes it&rsquo;s also the only option (e.g. having an AWS ALB deployed in the correct subnet when using a service of type LoadBalancer)
-<img src="https://pbs.twimg.com/media/FueufsNacAI05g0?format=png&amp;name=medium" alt="img"></p>
-<p>Here are a few links if you want to learn more:</p>
-<ul>
-<li><a href="https://blog.kubecost.com/blog/kubernetes-labels/">https://blog.kubecost.com/blog/kubernetes-labels/</a></li>
-<li><a href="https://kubernetes.io/docs/reference/labels-annotations-taints/">https://kubernetes.io/docs/reference/labels-annotations-taints/</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/">https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/</a></li>
-</ul>
+              <h3 id="问题描述">问题描述</h3>
+<p>闲话少叙，先上代码。</p>
+<pre tabindex="0"><code>public function main() {
+  Util util = new Util();
+  util.print();
+}
+
+
+public class Util {
+
+  public static provider = new Provider();
+
+  public Util() {
+    # do sth
+  }
+
+  public void print() {
+    # print sth
+  }
+}
+
+public function Provider() {
+  
+  public Provider() {
+    loadData();
+  }
+
+  private void loadData() {
+    # load data
+  }
+}
+</code></pre><p>大概使用逻辑是这样，在调用入口，实例化Util对象并调用他的print方法。
+这个时候，获取到了一个runtime exception：class Util  not defined。</p>
+<p>类明明就摆在那里，为什么会报异常呢？
+大家如果了解了类静态成员变量的初始化过程，就一眼看出来问题。</p>
+<p>首先，provider是在Util类被加载的时候初始化的，要早于Util的实例化。</p>
+<p>其次，如果provider初始化失败，会导致Util类加载失败，在实例化的时候就会抛异常。</p>
+<p>问题的直接原因是在Provider的构造过程，由于构造函数执行了loadData的动作，这里就存在一些不确定因素，会导致错误的发生，从而影响到了Util的加载。</p>
+<h3 id="改进思路">改进思路</h3>
+<p>精简类初始化的过程，优先保证对象能实例化成功，从而再执行数据加载的逻辑。可以利用Spring的PostConstruct注解来实现实例化和数据加载动作的分离。</p>
+<pre tabindex="0"><code>public function main() {
+  Util util = new Util();
+  util.print();
+}
+
+
+public class Util {
+
+  @Resource
+  public Provider provider;
+
+  public Util() {
+    # do sth
+  }
+
+  public void print() {
+    # print sth
+  }
+}
+
+@Component
+public function Provider() {
+  
+  @PostConstruct
+  private void loadData() {
+    # load data
+  }
+}
+</code></pre><p>这样，就将问题暴露在运行时，就不会将问题隐藏的那么深了。</p>
+<p>总结一下，</p>
+<p>第一，尽量不要在构造函数里执行太多的业务逻辑，以及数据初始化的动作。</p>
+<p>第二，对象示例谨慎持有静态数据。</p>
 
               
 
@@ -393,11 +391,7 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
                   <div class="post-footer-tags">
                     <span class="text-color-light text-small">标签</span><br/>
                     
-  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/cloud-native/">cloud-native</a>
-
-  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/kubernetes/">kubernetes</a>
-
-  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/kubernetes-labels/">kubernetes Labels</a>
+  <a class="tag tag--primary tag--small" href="https://open-native.com/tags/java/">JAVA</a>
 
                   </div>
                 
@@ -410,7 +404,7 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
       
         <li class="post-action">
           
-            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/static-property-java/" data-tooltip="关于类持有静态变量而引发的问题排查" aria-label="下一篇: 关于类持有静态变量而引发的问题排查">
+            <a class="post-action-btn btn btn--disabled">
           
               <i class="fa fa-angle-left"></i>
               <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
@@ -418,7 +412,7 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
         </li>
         <li class="post-action">
           
-            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/kubernetes-security-pratices/" data-tooltip="Kubernetes Security Pratices" aria-label="上一篇: Kubernetes Security Pratices">
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/kubernetes-labels/" data-tooltip="Kubernetes Labels And Annotatios" aria-label="上一篇: Kubernetes Labels And Annotatios">
           
               <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
               <i class="fa fa-angle-right"></i>
@@ -436,19 +430,19 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
     </li>
     
       <li class="post-action hide-xs">
-        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/kubernetes-labels/" title="分享到 Facebook" aria-label="分享到 Facebook">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/static-property-java/" title="分享到 Facebook" aria-label="分享到 Facebook">
           <i class="fab fa-facebook-square" aria-hidden="true"></i>
         </a>
       </li>
     
       <li class="post-action hide-xs">
-        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/kubernetes-labels/" title="分享到 Twitter" aria-label="分享到 Twitter">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/static-property-java/" title="分享到 Twitter" aria-label="分享到 Twitter">
           <i class="fab fa-twitter" aria-hidden="true"></i>
         </a>
       </li>
     
       <li class="post-action hide-xs">
-        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/kubernetes-labels/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/static-property-java/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
           <i class="fab fa-linkedin" aria-hidden="true"></i>
         </a>
       </li>
@@ -479,9 +473,9 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
     </div>
     <script type="text/javascript">
       var disqus_config = function() {
-        this.page.url = 'https:\/\/open-native.com\/article\/kubernetes-labels\/';
+        this.page.url = 'https:\/\/open-native.com\/article\/static-property-java\/';
         
-          this.page.identifier = '\/article\/kubernetes-labels\/'
+          this.page.identifier = '\/article\/static-property-java\/'
         
       };
       (function() {
@@ -527,7 +521,7 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
       
         <li class="post-action">
           
-            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/static-property-java/" data-tooltip="关于类持有静态变量而引发的问题排查" aria-label="下一篇: 关于类持有静态变量而引发的问题排查">
+            <a class="post-action-btn btn btn--disabled">
           
               <i class="fa fa-angle-left"></i>
               <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
@@ -535,7 +529,7 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
         </li>
         <li class="post-action">
           
-            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/kubernetes-security-pratices/" data-tooltip="Kubernetes Security Pratices" aria-label="上一篇: Kubernetes Security Pratices">
+            <a class="post-action-btn btn btn--default tooltip--top" href="https://open-native.com/article/kubernetes-labels/" data-tooltip="Kubernetes Labels And Annotatios" aria-label="上一篇: Kubernetes Labels And Annotatios">
           
               <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
               <i class="fa fa-angle-right"></i>
@@ -553,19 +547,19 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
     </li>
     
       <li class="post-action hide-xs">
-        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/kubernetes-labels/" title="分享到 Facebook" aria-label="分享到 Facebook">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://open-native.com/article/static-property-java/" title="分享到 Facebook" aria-label="分享到 Facebook">
           <i class="fab fa-facebook-square" aria-hidden="true"></i>
         </a>
       </li>
     
       <li class="post-action hide-xs">
-        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/kubernetes-labels/" title="分享到 Twitter" aria-label="分享到 Twitter">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://open-native.com/article/static-property-java/" title="分享到 Twitter" aria-label="分享到 Twitter">
           <i class="fab fa-twitter" aria-hidden="true"></i>
         </a>
       </li>
     
       <li class="post-action hide-xs">
-        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/kubernetes-labels/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https://open-native.com/article/static-property-java/" title="分享到 Linkedin" aria-label="分享到 Linkedin">
           <i class="fab fa-linkedin" aria-hidden="true"></i>
         </a>
       </li>
@@ -596,19 +590,19 @@ Kubectl offers a --show-labels flag to help you list resources and their labels"
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Farticle%2Fkubernetes-labels%2F" aria-label="分享到 Facebook">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fopen-native.com%2Farticle%2Fstatic-property-java%2F" aria-label="分享到 Facebook">
           <i class="fab fa-facebook-square" aria-hidden="true"></i><span>分享到 Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Farticle%2Fkubernetes-labels%2F" aria-label="分享到 Twitter">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fopen-native.com%2Farticle%2Fstatic-property-java%2F" aria-label="分享到 Twitter">
           <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Farticle%2Fkubernetes-labels%2F" aria-label="分享到 Linkedin">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fopen-native.com%2Farticle%2Fstatic-property-java%2F" aria-label="分享到 Linkedin">
           <i class="fab fa-linkedin" aria-hidden="true"></i><span>分享到 Linkedin</span>
         </a>
       </li>

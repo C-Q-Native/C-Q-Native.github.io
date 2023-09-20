@@ -6,7 +6,19 @@
     <description>Recent content in java on 闲散工程师笔记</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 29 May 2023 11:36:26 +0800</lastBuildDate><atom:link href="https://open-native.com/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Aug 2023 23:36:26 +0800</lastBuildDate><atom:link href="https://open-native.com/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>java包装类型</title>
+      <link>https://open-native.com/java/box-type/</link>
+      <pubDate>Wed, 02 Aug 2023 23:36:26 +0800</pubDate>
+      
+      <guid>https://open-native.com/java/box-type/</guid>
+      <description>Java包装类型（也称为装箱类型）是为了解决基本数据类型不能直接参与面向对象的特性，例如使用泛型、集合等。然而，由于装箱类型在底层是通过对象包装基本数据类型，因此在某些情况下可能会导致性能问题，尤其是在频繁的装箱和拆箱操作中。
+如果在性能敏感的代码中使用包装类型，可以考虑以下几种方法来提高性能：
+使用基本数据类型：优先使用基本数据类型（如int、double等）而不是装箱类型（如Integer、Double等），这样可以避免装箱和拆箱操作的开销。 使用valueOf()方法：对于装箱操作，可以使用valueOf()方法来获取包装对象，而不是使用构造函数。valueOf()方法内部可能会使用缓存，从而避免创建不必要的新对象。 例如： Integer num = Integer.valueOf(42); // 使用valueOf()方法 使用缓存：对于小范围的整数或常用的浮点数，Java在装箱操作时会进行缓存，因此在这些值的装箱和拆箱操作上会更快。 例如： Integer num1 = 42; // 自动装箱，使用缓存 int num2 = num1; // 自动拆箱 避免频繁装箱和拆箱：在循环或高频操作中，尽量避免频繁地进行装箱和拆箱操作，可以将基本数据类型放入集合或数组中，而不是使用装箱类型的集合。 使用Java 8的Optional类：对于可能为null的值，可以使用Java 8中的Optional类来处理，而不是使用可能会引起装箱的装箱类型。 例如：
+Optional&amp;lt;Integer&amp;gt; optionalNum = Optional.ofNullable(someValue); // 使用Optional类 使用第三方库：有些第三方库专门针对性能进行了优化，可以考虑使用这些库来处理特定的性能问题。 总的来说，在性能敏感的代码中，尽量减少装箱和拆箱的次数，优先使用基本数据类型，并合理使用缓存和第三方库来提高性能。在其他情况下，使用装箱类型可以带来更好的可读性和灵活性。优化性能时应先进行性能测试，确保优化方案真正带来了实质的性能提升。</description>
+    </item>
+    
     <item>
       <title>各种设计模式如何用java代码体现？</title>
       <link>https://open-native.com/java/design-pattern/</link>

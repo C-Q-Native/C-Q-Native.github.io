@@ -253,6 +253,72 @@
     <div class="postShorten-header">
       <h1 class="postShorten-title">
       
+        <a class="link-unstyled" href="https://open-native.com/article/static-property-java/" aria-label="打开帖子: 关于类持有静态变量而引发的问题排查">
+      
+          关于类持有静态变量而引发的问题排查
+        </a>
+      </h1>
+      
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2023-09-20T00:24:55&#43;08:00">
+        
+  九月 20, 2023
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="https://open-native.com/categories/%e6%9e%b6%e6%9e%84">架构</a>
+    
+  
+
+  </div>
+
+    </div>
+    <div class="postShorten-excerpt">
+      
+        问题描述 闲话少叙，先上代码。
+public function main() { Util util = new Util(); util.print(); } public class Util { public static provider = new Provider(); public Util() { # do sth } public void print() { # print sth } } public function Provider() { public Provider() { loadData(); } private void loadData() { # load data } } 大概使用逻辑是这样，在调用入口，实例化Util对象并调用他的print方法。 这个时候，获取到了一个runtime exception：class Util not defined。
+类明明就摆在那里，为什么会报异常呢？ 大家如果了解了类静态成员变量的初始化过程，就一眼看出来问题。
+首先，provider是在Util类被加载的时候初始化的，要早于Util的实例化。
+其次，如果provider初始化失败，会导致Util类加载失败，在实例化的时候就会抛异常。
+问题的直接原因是在Provider的构造过程，由于构造函数执行了loadData的动作，这里就存在一些不确定因素，会导致错误的发生，从而影响到了Util的加载。
+改进思路 精简类初始化的过程，优先保证对象能实例化成功，从而再执行数据加载的逻辑。可以利用Spring的PostConstruct注解来实现实例化和数据加载动作的分离。
+      
+      <p>
+        
+          <a href="https://open-native.com/article/static-property-java/" class="postShorten-excerpt_link link" aria-label="打开帖子: 关于类持有静态变量而引发的问题排查">阅读全文</a>
+        
+        
+      </p>
+    </div>
+  </div>
+  
+</article>
+
+          
+            
+  
+    
+      
+        
+      
+    
+  
+
+
+  
+
+<article class="postShorten postShorten--thumbnailimg-bottom">
+  <div class="postShorten-wrap">
+    
+    <div class="postShorten-header">
+      <h1 class="postShorten-title">
+      
         <a class="link-unstyled" href="https://open-native.com/article/kubernetes-labels/" aria-label="打开帖子: Kubernetes Labels And Annotatios">
       
           Kubernetes Labels And Annotatios
@@ -607,72 +673,6 @@ The big challenge that we see in terms of Kubernetes security is that it&rsquo;s
       <p>
         
           <a href="https://open-native.com/article/pilot-intro/" class="postShorten-excerpt_link link" aria-label="打开帖子: ISTIO Pilot 组件架构详解">阅读全文</a>
-        
-        
-      </p>
-    </div>
-  </div>
-  
-</article>
-
-          
-            
-  
-    
-      
-        
-      
-    
-  
-
-
-  
-
-<article class="postShorten postShorten--thumbnailimg-bottom">
-  <div class="postShorten-wrap">
-    
-    <div class="postShorten-header">
-      <h1 class="postShorten-title">
-      
-        <a class="link-unstyled" href="https://open-native.com/article/kernel-upgrade/" aria-label="打开帖子: Centos 7.x内核版本升级实践">
-      
-          Centos 7.x内核版本升级实践
-        </a>
-      </h1>
-      
-  <div class="postShorten-meta post-meta">
-    
-      <time datetime="2023-03-19T16:26:38&#43;08:00">
-        
-  三月 19, 2023
-
-      </time>
-    
-    
-  
-  
-    <span>发布在</span>
-    
-      <a class="category-link" href="https://open-native.com/categories/kubernetes">kubernetes</a>
-    
-  
-
-  </div>
-
-    </div>
-    <div class="postShorten-excerpt">
-      
-        <p>默认情况下，Centos7.X的内核版本是3.10，如何去升级内核呢？</p>
-<ol>
-<li>查看一下当前的系统版本</li>
-</ol>
-<pre tabindex="0"><code>~ uname -r
-3.10.0-1160.el7.x86_64
-</code></pre>
-      
-      <p>
-        
-          <a href="https://open-native.com/article/kernel-upgrade/" class="postShorten-excerpt_link link" aria-label="打开帖子: Centos 7.x内核版本升级实践">阅读全文</a>
         
         
       </p>
